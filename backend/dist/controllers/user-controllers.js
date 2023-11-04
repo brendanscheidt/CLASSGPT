@@ -1,5 +1,7 @@
 import User from "../models/User.js";
 import { hash, compare } from "bcrypt";
+import { createToken } from "../utils/token-manager.js";
+import { COOKIE_NAME } from "../utils/constants.js";
 export const getAllUsers = async (req, res, next) => {
     //get all users
     try {
@@ -21,6 +23,23 @@ export const userSignup = async (req, res, next) => {
         const hashedPass = await hash(password, 10);
         const user = new User({ name, email, password: hashedPass });
         await user.save();
+        //create token and store cookie
+        res.clearCookie(COOKIE_NAME, {
+            httpOnly: true,
+            domain: "localhost",
+            signed: true,
+            path: "/",
+        });
+        const token = createToken(existingUser._id.toString(), existingUser.email, "7d");
+        const expires = new Date();
+        expires.setDate(expires.getDate() + 7);
+        res.cookie(COOKIE_NAME, token, {
+            path: "/",
+            domain: "localhost",
+            expires,
+            httpOnly: true,
+            signed: true,
+        });
         return res.status(201).json({ message: "OK", id: user._id.toString() });
     }
     catch (err) {
@@ -38,6 +57,23 @@ export const userLogin = async (req, res, next) => {
         const isPasswordCorrect = await compare(password, existingUser.password);
         if (!isPasswordCorrect)
             return res.status(403).send("Incorrect Password");
+        //create token and store cookie
+        res.clearCookie(COOKIE_NAME, {
+            httpOnly: true,
+            domain: "localhost",
+            signed: true,
+            path: "/",
+        });
+        const token = createToken(existingUser._id.toString(), existingUser.email, "7d");
+        const expires = new Date();
+        expires.setDate(expires.getDate() + 7);
+        res.cookie(COOKIE_NAME, token, {
+            path: "/",
+            domain: "localhost",
+            expires,
+            httpOnly: true,
+            signed: true,
+        });
         return res
             .status(201)
             .json({ message: "OK", id: existingUser._id.toString() });
