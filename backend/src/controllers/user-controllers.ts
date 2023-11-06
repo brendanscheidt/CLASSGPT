@@ -63,7 +63,11 @@ export const userSignup = async (
       signed: true,
     });
 
-    return res.status(201).json({ message: "OK", id: user._id.toString() });
+    return res.status(201).json({
+      message: "OK",
+      name: existingUser.name,
+      email: existingUser.email,
+    });
   } catch (err) {
     console.log(err);
 
@@ -112,9 +116,11 @@ export const userLogin = async (
       signed: true,
     });
 
-    return res
-      .status(201)
-      .json({ message: "OK", id: existingUser._id.toString() });
+    return res.status(201).json({
+      message: "OK",
+      name: existingUser.name,
+      email: existingUser.email,
+    });
   } catch (err) {
     console.log(err);
 
