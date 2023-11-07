@@ -81,6 +81,7 @@ export const userLogin = async (
   next: NextFunction
 ) => {
   //user login
+  console.log("test");
   try {
     const { email, password } = req.body;
     const existingUser = await User.findOne({ email });
@@ -115,6 +116,34 @@ export const userLogin = async (
       httpOnly: true,
       signed: true,
     });
+
+    return res.status(201).json({
+      message: "OK",
+      name: existingUser.name,
+      email: existingUser.email,
+    });
+  } catch (err) {
+    console.log(err);
+
+    return res.status(404).json({ message: "ERROR", cause: err.message });
+  }
+};
+
+export const verifyUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  //user token check
+  try {
+    const existingUser = await User.findById(res.locals.jwtData.id);
+
+    if (!existingUser)
+      return res.status(401).send("User not registered OR Token malfunctioned");
+
+    if (existingUser._id.toString() !== res.locals.jwtData.id) {
+      return res.status(401).send("Permissions didn't match");
+    }
 
     return res.status(201).json({
       message: "OK",
