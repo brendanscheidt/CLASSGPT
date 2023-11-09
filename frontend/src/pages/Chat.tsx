@@ -1,10 +1,18 @@
-import { Box, Avatar, Typography, Button } from "@mui/material";
+import { Box, Avatar, Typography, Button, IconButton } from "@mui/material";
+import { IoMdSend } from "react-icons/io";
 import { red } from "@mui/material/colors";
 import { useAuth } from "../context/AuthContext";
+import ChatItem from "../components/chat/ChatItem";
 
-const chatMessages = [
+const chatMessages: { role: "user" | "ai-assistant"; content: string }[] = [
   { role: "user", content: "Hi there, can you help me with my math homework?" },
   { role: "ai-assistant", content: "Of course! What do you need help with?" },
+  { role: "user", content: "I’m trying to understand quadratic equations." },
+  {
+    role: "ai-assistant",
+    content:
+      "No problem, I can explain that. A quadratic equation is an equation of the second degree, meaning it contains at least one term that is squared.",
+  },
   { role: "user", content: "I’m trying to understand quadratic equations." },
   {
     role: "ai-assistant",
@@ -120,10 +128,35 @@ const Chat = () => {
             scrollBehavior: "smooth",
           }}
         >
-          {chatMessages.map((chat) => (
-            <div>{chat.content}</div>
+          {chatMessages.map((chat, index) => (
+            <ChatItem key={index} content={chat.content} role={chat.role} />
           ))}
         </Box>
+        <div
+          style={{
+            width: "100%",
+            borderRadius: 8,
+            backgroundColor: "rgb(17,27,39)",
+            display: "flex",
+            margin: "auto",
+          }}
+        >
+          <input
+            type="text"
+            style={{
+              width: "100%",
+              backgroundColor: "transparent",
+              padding: "30px",
+              border: "none",
+              outline: "none",
+              color: "white",
+              fontSize: "20px",
+            }}
+          />
+          <IconButton sx={{ mx: 1, color: "white" }}>
+            <IoMdSend />
+          </IconButton>
+        </div>
       </Box>
     </Box>
   );
