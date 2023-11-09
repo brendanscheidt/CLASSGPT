@@ -1,29 +1,48 @@
 import { Box, Avatar, Typography, Button, IconButton } from "@mui/material";
+import { useRef, useState } from "react";
 import { IoMdSend } from "react-icons/io";
 import { red } from "@mui/material/colors";
 import { useAuth } from "../context/AuthContext";
 import ChatItem from "../components/chat/ChatItem";
 
-const chatMessages: { role: "user" | "ai-assistant"; content: string }[] = [
+const chatMessages: { role: "user" | "assistant"; content: string }[] = [
   { role: "user", content: "Hi there, can you help me with my math homework?" },
-  { role: "ai-assistant", content: "Of course! What do you need help with?" },
+  { role: "assistant", content: "Of course! What do you need help with?" },
   { role: "user", content: "I’m trying to understand quadratic equations." },
   {
-    role: "ai-assistant",
+    role: "assistant",
     content:
       "No problem, I can explain that. A quadratic equation is an equation of the second degree, meaning it contains at least one term that is squared.",
   },
   { role: "user", content: "I’m trying to understand quadratic equations." },
   {
-    role: "ai-assistant",
+    role: "assistant",
     content:
       "No problem, I can explain that. A quadratic equation is an equation of the second degree, meaning it contains at least one term that is squared.",
   },
   // ... more chat objects
 ];
 
+type MessageType = {
+  role: "user" | "assistant";
+  content: string;
+};
+
 const Chat = () => {
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const auth = useAuth();
+  const [chatMessages, setChatMessages] = useState<MessageType[]>([]);
+
+  const handleSubmit = async () => {
+    const content = inputRef.current?.value as string;
+
+    if (inputRef && inputRef.current) {
+      inputRef.current.value = "";
+    }
+
+    const newMessage: MessageType = { role: "user", content };
+    setChatMessages((prev) => [...prev, newMessage]);
+  };
 
   return (
     <Box
@@ -141,7 +160,9 @@ const Chat = () => {
             margin: "auto",
           }}
         >
+          {" "}
           <input
+            ref={inputRef}
             type="text"
             style={{
               width: "100%",
@@ -153,7 +174,7 @@ const Chat = () => {
               fontSize: "20px",
             }}
           />
-          <IconButton sx={{ mx: 1, color: "white" }}>
+          <IconButton onClick={handleSubmit} sx={{ mx: 1, color: "white" }}>
             <IoMdSend />
           </IconButton>
         </div>
