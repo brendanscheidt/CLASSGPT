@@ -4,24 +4,7 @@ import { IoMdSend } from "react-icons/io";
 import { red } from "@mui/material/colors";
 import { useAuth } from "../context/AuthContext";
 import ChatItem from "../components/chat/ChatItem";
-
-const chatMessages: { role: "user" | "assistant"; content: string }[] = [
-  { role: "user", content: "Hi there, can you help me with my math homework?" },
-  { role: "assistant", content: "Of course! What do you need help with?" },
-  { role: "user", content: "I’m trying to understand quadratic equations." },
-  {
-    role: "assistant",
-    content:
-      "No problem, I can explain that. A quadratic equation is an equation of the second degree, meaning it contains at least one term that is squared.",
-  },
-  { role: "user", content: "I’m trying to understand quadratic equations." },
-  {
-    role: "assistant",
-    content:
-      "No problem, I can explain that. A quadratic equation is an equation of the second degree, meaning it contains at least one term that is squared.",
-  },
-  // ... more chat objects
-];
+import { sendChatRequest } from "../helpers/api-communicator";
 
 type MessageType = {
   role: "user" | "assistant";
@@ -41,7 +24,13 @@ const Chat = () => {
     }
 
     const newMessage: MessageType = { role: "user", content };
-    setChatMessages((prev) => [...prev, newMessage]);
+
+    if (newMessage.content) {
+      setChatMessages((prev) => [...prev, newMessage]);
+
+      const chatData = await sendChatRequest(content);
+      setChatMessages([...chatData.chats]);
+    }
   };
 
   return (
@@ -164,6 +153,12 @@ const Chat = () => {
           <input
             ref={inputRef}
             type="text"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleSubmit();
+              }
+            }}
             style={{
               width: "100%",
               backgroundColor: "transparent",
