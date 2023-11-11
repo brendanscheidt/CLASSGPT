@@ -2,6 +2,7 @@ import { Router } from "express";
 import { verifyToken } from "../utils/token-manager.js";
 import { chatCompletionValidator, validate } from "../utils/validators.js";
 import {
+  deleteChats,
   generateChatCompletion,
   sendChatsToUser,
 } from "../controllers/chat-contollers.js";
@@ -17,5 +18,6 @@ chatRoutes.post(
 );
 
 chatRoutes.get("/all-chats", verifyToken, sendChatsToUser);
+chatRoutes.delete("/delete", verifyToken, deleteChats);
 
 export default chatRoutes;
