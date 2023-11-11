@@ -11,16 +11,25 @@ function extractCodeFromString(message: string) {
 }
 
 function isCodeBlock(str: string) {
-  if (
-    str.includes("=") ||
-    str.includes(";") ||
-    str.includes("[") ||
-    str.includes("]") ||
-    str.includes("{") ||
-    str.includes("}") ||
-    str.includes("#") ||
-    str.includes("//")
-  ) {
+  const patterns = [
+    /\bfunction\b|\bdef\b|\bclass\b|\binterface\b/, // Function and class definitions
+    /\bvar\b|\blet\b|\bconst\b|\bpublic\b|\bprivate\b/, // Variable declarations
+    /\bif\b|\belse\b|\bfor\b|\bwhile\b|\bdo\b|\bswitch\b|\bcase\b/, // Control structures
+    /\breturn\b|\bbreak\b|\bcontinue\b/, // Common keywords
+    /\bconsole\.log\b|\bprint\b|\becho\b|\bsystem\.out\.print\b/, // Print statements
+    /=>|->/, // Lambdas or arrow functions
+    /[\w]+\([\w\s,]*\)/, // Function calls with parameters
+    /\{[\s\S]*?\}|\([\s\S]*?\)|\[[\s\S]*?\]/, // Code blocks or brackets
+    /\/\/.*|\/\*[\s\S]*?\*\/|#.*|;$/, // Comments in various languages
+    /\bimport\b|\binclude\b|\brequire\b/, // Import or include statements
+    /".*"|'.*'|`.*`/, // Strings in various languages
+    /\bnew\b|\bthis\b|\bsuper\b|\bself\b/, // Object-oriented keywords
+    /&&|\|\||!|\+\+|--/, // Logical and arithmetic operators
+    /==|!=|<=|>=|<|>/, // Comparison operators
+    /\b\d+\b/, // Numbers
+    /[^=\s]:\s*[\w\s]+/, // Type annotations or object properties
+  ];
+  if (patterns.some((pattern) => pattern.test(str))) {
     return [true, str.trim().split("\n")[0].trim()];
   }
   return [false, ""];
