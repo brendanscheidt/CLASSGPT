@@ -34,4 +34,23 @@ export const generateChatCompletion = async (req, res, next) => {
         return res.status(500).json({ message: "Something went wrong" });
     }
 };
+export const sendChatsToUser = async (req, res, next) => {
+    //user token check
+    try {
+        const existingUser = await User.findById(res.locals.jwtData.id);
+        if (!existingUser)
+            return res.status(401).send("User not registered OR Token malfunctioned");
+        if (existingUser._id.toString() !== res.locals.jwtData.id) {
+            return res.status(401).send("Permissions didn't match");
+        }
+        return res.status(201).json({
+            message: "OK",
+            chats: existingUser.chats,
+        });
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(404).json({ message: "ERROR", cause: err.message });
+    }
+};
 //# sourceMappingURL=chat-contollers.js.map
