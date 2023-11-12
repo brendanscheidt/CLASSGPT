@@ -45,7 +45,6 @@ export const getUserChats = async () => {
 };
 
 export const deleteUserChats = async () => {
-  console.log("here");
   const res = await axios.delete("/chat/delete");
 
   if (res.status != 201) {
