@@ -43,6 +43,7 @@ const ChatItem = ({
         gap: 2,
         borderRadius: 2,
         my: 1,
+        boxSizing: "border-box",
       }}
     >
       <Avatar sx={{ ml: "0" }}>
@@ -85,6 +86,7 @@ const ChatItem = ({
         bgcolor: "#004d56",
         gap: 2,
         borderRadius: 2,
+        boxSizing: "border-box",
       }}
     >
       <Avatar sx={{ ml: "0", bgcolor: "black", color: "white" }}>

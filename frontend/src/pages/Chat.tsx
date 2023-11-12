@@ -19,8 +19,13 @@ type Message = {
 const Chat = () => {
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const auth = useAuth();
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const handleSubmit = async () => {
     const content = inputRef.current?.value as string;
@@ -45,6 +50,7 @@ const Chat = () => {
       toast.error("Deleting chats failed", { id: "deletechats" });
     }
   };
+
   useLayoutEffect(() => {
     if (auth?.isLoggedIn && auth.user) {
       toast.loading("Loading Chats", { id: "loadchats" });
@@ -59,12 +65,10 @@ const Chat = () => {
         });
     }
   }, [auth]);
-  /* 
+
   useEffect(() => {
-    if (!auth?.user) {
-      return navigate("/login");
-    }
-  }, [auth]); */
+    scrollToBottom();
+  }, [chatMessages]);
 
   return (
     <Box
@@ -161,17 +165,35 @@ const Chat = () => {
             height: "60vh",
             borderRadius: 3,
             mx: "auto",
+            paddingRight: 1,
             display: "flex",
             flexDirection: "column",
             overflow: "scroll",
             overflowX: "hidden",
             overflowY: "auto",
             scrollBehavior: "smooth",
+            "&::-webkit-scrollbar": {
+              width: "0.4em",
+            },
+            "&::-webkit-scrollbar-track": {
+              boxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+              webkitBoxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "rgba(0,0,0, 0.1)",
+              outline: "1px solid slategrey",
+              position: "relative",
+              borderRadius: "2px",
+            },
+            // Add other browser-specific styles if needed
+            scrollbarColor: "rgba(0,0,0, 0.1) slategrey", // For Firefox
+            scrollbarWidth: "thin", // For Firefox
           }}
         >
           {chatMessages.map((chat, index) => (
             <ChatItem content={chat.content} role={chat.role} key={index} />
           ))}
+          <div ref={messagesEndRef} />
         </Box>
         <div
           style={{
