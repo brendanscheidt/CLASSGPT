@@ -38,14 +38,6 @@ export const userSignup = async (
 
     await user.save();
 
-    //create token and store cookie
-    res.clearCookie(COOKIE_NAME, {
-      httpOnly: true,
-      domain: "localhost",
-      signed: true,
-      path: "/",
-    });
-
     const token = createToken(
       existingUser._id.toString(),
       existingUser.email,
@@ -92,14 +84,6 @@ export const userLogin = async (
 
     if (!isPasswordCorrect) return res.status(403).send("Incorrect Password");
 
-    //create token and store cookie
-    res.clearCookie(COOKIE_NAME, {
-      httpOnly: true,
-      domain: "localhost",
-      signed: true,
-      path: "/",
-    });
-
     const token = createToken(
       existingUser._id.toString(),
       existingUser.email,
@@ -138,12 +122,48 @@ export const verifyUser = async (
   try {
     const existingUser = await User.findById(res.locals.jwtData.id);
 
+    if (!existingUser) {
+      return res.status(401).send("User not registered OR Token malfunctioned");
+    }
+
+    if (existingUser._id.toString() !== res.locals.jwtData.id) {
+      return res.status(401).send("Permissions didn't match");
+    }
+
+    return res.status(201).json({
+      message: "OK",
+      name: existingUser.name,
+      email: existingUser.email,
+    });
+  } catch (err) {
+    console.log(err);
+
+    return res.status(404).json({ message: "ERROR", cause: err.message });
+  }
+};
+
+export const userLogout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  //user token check
+  try {
+    const existingUser = await User.findById(res.locals.jwtData.id);
+
     if (!existingUser)
       return res.status(401).send("User not registered OR Token malfunctioned");
 
     if (existingUser._id.toString() !== res.locals.jwtData.id) {
       return res.status(401).send("Permissions didn't match");
     }
+
+    res.clearCookie(COOKIE_NAME, {
+      path: "/",
+      httpOnly: true,
+      signed: true,
+      // domain: "localhost", // You might not need this line at all
+    });
 
     return res.status(201).json({
       message: "OK",

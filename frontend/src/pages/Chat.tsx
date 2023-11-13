@@ -70,6 +70,16 @@ const Chat = () => {
     scrollToBottom();
   }, [chatMessages]);
 
+  useEffect(() => {
+    const checkAuthAndRedirect = () => {
+      if (!auth?.isLoading && !auth?.user) {
+        return navigate("/login");
+      }
+    };
+
+    checkAuthAndRedirect();
+  }, [auth?.isLoading, auth?.user, navigate]);
+
   return (
     <Box
       sx={{

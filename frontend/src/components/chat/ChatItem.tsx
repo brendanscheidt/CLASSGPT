@@ -19,7 +19,8 @@ function isCodeBlock(str: string) {
     str.includes("{") ||
     str.includes("}") ||
     str.includes("#") ||
-    str.includes("//")
+    str.includes("//") ||
+    str.includes("def ")
   ) {
     return true;
   }
@@ -42,7 +43,7 @@ const ChatItem = ({
         bgcolor: "#004d5612",
         gap: 2,
         borderRadius: 2,
-        my: 1,
+        my: 2,
         boxSizing: "border-box",
       }}
     >
@@ -59,13 +60,16 @@ const ChatItem = ({
             const isCode = isCodeBlock(block);
             if (isCode) {
               const language = block.split("\n")[0].trim().toLowerCase();
+              const blockArr = block.split("\n");
+              blockArr.splice(0, 1);
+              const croppedBlock = blockArr.join("\n");
               return (
                 <SyntaxHighlighter
                   key={index}
                   style={coldarkDark}
                   language={language}
                 >
-                  {block}
+                  {croppedBlock}
                 </SyntaxHighlighter>
               );
             } else {
@@ -86,6 +90,7 @@ const ChatItem = ({
         bgcolor: "#004d56",
         gap: 2,
         borderRadius: 2,
+        my: 2,
         boxSizing: "border-box",
       }}
     >
@@ -106,13 +111,16 @@ const ChatItem = ({
             const isCode = isCodeBlock(block);
             if (isCode) {
               const language = block.split("\n")[0].trim().toLowerCase();
+              const blockArr = block.split("\n");
+              blockArr.splice(0, 1);
+              const croppedBlock = blockArr.join("\n");
               return (
                 <SyntaxHighlighter
                   key={index}
                   style={coldarkDark}
                   language={language}
                 >
-                  {block}
+                  {croppedBlock}
                 </SyntaxHighlighter>
               );
             } else {

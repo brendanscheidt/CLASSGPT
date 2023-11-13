@@ -1,6 +1,9 @@
-import React from "react";
+import { useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 
 const Home = () => {
+  const auth = useAuth();
+
   return <div>Home</div>;
 };
 
