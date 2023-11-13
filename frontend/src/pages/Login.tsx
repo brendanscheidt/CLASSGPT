@@ -4,6 +4,7 @@ import { IoIosLogIn } from "react-icons/io";
 import { toast } from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const Login = () => {
   const auth = useAuth();
@@ -20,12 +21,17 @@ const Login = () => {
       toast.loading("Signing In!", { id: "login" });
       await auth?.login(email, password);
       toast.success("Signed In Successfully!", { id: "login" });
-      navigate("/");
     } catch (err) {
       console.log(err);
       toast.error("Signing In Failed", { id: "login" });
     }
   };
+
+  useEffect(() => {
+    if (auth?.user) {
+      navigate("/chat");
+    }
+  }, [auth, navigate]);
 
   return (
     <Box width={"100%"} height={"100%"} display="flex" flex={1}>

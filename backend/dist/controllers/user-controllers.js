@@ -23,7 +23,7 @@ export const userSignup = async (req, res, next) => {
         const hashedPass = await hash(password, 10);
         const user = new User({ name, email, password: hashedPass });
         await user.save();
-        const token = createToken(existingUser._id.toString(), existingUser.email, "7d");
+        const token = createToken(user._id.toString(), user.email, "7d");
         const expires = new Date();
         expires.setDate(expires.getDate() + 7);
         res.cookie(COOKIE_NAME, token, {
@@ -35,8 +35,8 @@ export const userSignup = async (req, res, next) => {
         });
         return res.status(201).json({
             message: "OK",
-            name: existingUser.name,
-            email: existingUser.email,
+            name: user.name,
+            email: user.email,
         });
     }
     catch (err) {

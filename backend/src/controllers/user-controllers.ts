@@ -38,11 +38,7 @@ export const userSignup = async (
 
     await user.save();
 
-    const token = createToken(
-      existingUser._id.toString(),
-      existingUser.email,
-      "7d"
-    );
+    const token = createToken(user._id.toString(), user.email, "7d");
 
     const expires = new Date();
     expires.setDate(expires.getDate() + 7);
@@ -57,8 +53,8 @@ export const userSignup = async (
 
     return res.status(201).json({
       message: "OK",
-      name: existingUser.name,
-      email: existingUser.email,
+      name: user.name,
+      email: user.email,
     });
   } catch (err) {
     console.log(err);

@@ -83,7 +83,6 @@ export const deleteChats = async (
 ) => {
   //user token check
   try {
-    console.log("here");
     const existingUser = await User.findById(res.locals.jwtData.id);
 
     if (!existingUser)

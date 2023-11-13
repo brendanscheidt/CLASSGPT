@@ -56,7 +56,6 @@ export const sendChatsToUser = async (req, res, next) => {
 export const deleteChats = async (req, res, next) => {
     //user token check
     try {
-        console.log("here");
         const existingUser = await User.findById(res.locals.jwtData.id);
         if (!existingUser)
             return res.status(401).send("User not registered OR Token malfunctioned");
