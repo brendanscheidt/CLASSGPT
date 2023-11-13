@@ -13,6 +13,19 @@ body {
   filter: invert(100%);
 }
 
+.rotate {
+  animation: rotation 8s infinite linear;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+
 .nav-link {
   font-weight: 600;
   text-transform: uppercase;

@@ -43,7 +43,7 @@ const ChatItem = ({
         bgcolor: "#004d5612",
         gap: 2,
         borderRadius: 2,
-        my: 2,
+        my: 1,
         boxSizing: "border-box",
       }}
     >
@@ -90,7 +90,6 @@ const ChatItem = ({
         bgcolor: "#004d56",
         gap: 2,
         borderRadius: 2,
-        my: 2,
         boxSizing: "border-box",
       }}
     >

@@ -14,7 +14,8 @@ const Login = () => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
+    let email = formData.get("email") as string;
+    email = email.toLowerCase();
     const password = formData.get("password") as string;
 
     try {
