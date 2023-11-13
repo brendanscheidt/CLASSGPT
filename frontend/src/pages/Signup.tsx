@@ -15,7 +15,8 @@ const Signup = () => {
 
     const formData = new FormData(e.currentTarget);
     const name = formData.get("name") as string;
-    const email = formData.get("email") as string;
+    let email = formData.get("email") as string;
+    email = email.toLowerCase();
     const password = formData.get("password") as string;
 
     try {
