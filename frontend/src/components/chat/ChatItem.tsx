@@ -106,43 +106,13 @@ const ChatItem = ({
                 wrapper="div"
                 repeat={0}
                 cursor={true}
+                speed={80}
                 style={{ fontSize: "20px" }}
               />
             );
           }
         })}
       </Box>
-      {/* <Box>
-        {!messageBlocks && (
-          <Typography sx={{ fontSize: "20px" }}>{content}</Typography>
-        )}
-        {messageBlocks &&
-          messageBlocks.length > 0 &&
-          messageBlocks.map((block, index) => {
-            const isCode = isCodeBlock(block);
-            if (isCode) {
-              const language = block.split("\n")[0].trim().toLowerCase();
-              const blockArr = block.split("\n");
-              blockArr.splice(0, 1);
-              const croppedBlock = blockArr.join("\n");
-              return (
-                <SyntaxHighlighter
-                  key={index}
-                  style={coldarkDark}
-                  language={language}
-                >
-                  {croppedBlock}
-                </SyntaxHighlighter>
-              );
-            } else {
-              return (
-                <Typography key={index} sx={{ fontSize: "20px" }}>
-                  {block}
-                </Typography>
-              );
-            }
-          })}
-      </Box> */}
     </Box>
   ) : (
     <Box
