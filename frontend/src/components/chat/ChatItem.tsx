@@ -2,12 +2,15 @@ import { Box, Avatar, Typography } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { coldarkDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { useEffect, useMemo, useState } from "react";
+import { TypeAnimation } from "react-type-animation";
 
-function extractCodeFromString(message: string) {
+function extractCodeFromString(message: string): string[] {
   if (message.includes("```")) {
     const blocks = message.split("```");
     return blocks;
   }
+  return [message];
 }
 
 function isCodeBlock(str: string) {
@@ -29,12 +32,30 @@ function isCodeBlock(str: string) {
 const ChatItem = ({
   content,
   role,
+  isNewMessage,
 }: {
   content: string;
   role: "user" | "assistant";
+  isNewMessage: boolean;
 }) => {
-  const messageBlocks = extractCodeFromString(content);
+  const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
+
+  const messageBlocks = useMemo(
+    () => extractCodeFromString(content),
+    [content]
+  );
   const auth = useAuth();
+
+  useEffect(() => {
+    if (isNewMessage && role === "assistant") {
+      setCurrentBlockIndex(0);
+    }
+  }, [isNewMessage, role]);
+
+  const handleBlockAnimationEnd = () => {
+    setCurrentBlockIndex((prevIndex) => prevIndex + 1);
+  };
+
   return role == "assistant" ? (
     <Box
       sx={{
@@ -54,32 +75,43 @@ const ChatItem = ({
         {!messageBlocks && (
           <Typography sx={{ fontSize: "20px" }}>{content}</Typography>
         )}
-        {messageBlocks &&
-          messageBlocks.length > 0 &&
-          messageBlocks.map((block, index) => {
-            const isCode = isCodeBlock(block);
-            if (isCode) {
-              const language = block.split("\n")[0].trim().toLowerCase();
-              const blockArr = block.split("\n");
-              blockArr.splice(0, 1);
-              const croppedBlock = blockArr.join("\n");
-              return (
-                <SyntaxHighlighter
-                  key={index}
-                  style={coldarkDark}
-                  language={language}
-                >
-                  {croppedBlock}
-                </SyntaxHighlighter>
-              );
-            } else {
-              return (
-                <Typography key={index} sx={{ fontSize: "20px" }}>
-                  {block}
-                </Typography>
-              );
-            }
-          })}
+        {messageBlocks.map((block, index) => {
+          const isCode = isCodeBlock(block);
+          const language = block.split("\n")[0].trim().toLowerCase();
+          const blockArr = block.split("\n");
+          blockArr.splice(0, 1);
+          const croppedBlock = blockArr.join("\n");
+          // Show the block if it's been animated or is not a new message
+          if (index < currentBlockIndex || !isNewMessage) {
+            return isCode ? (
+              <SyntaxHighlighter
+                key={index}
+                style={coldarkDark}
+                language={language}
+              >
+                {croppedBlock}
+              </SyntaxHighlighter>
+            ) : (
+              <Typography key={index} sx={{ fontSize: "20px" }}>
+                {block}
+              </Typography>
+            );
+          }
+          // Animate the current block if it's new and we're at the right index
+          if (isNewMessage && index === currentBlockIndex) {
+            return (
+              <TypeAnimation
+                key={index}
+                sequence={[block, 1000, () => handleBlockAnimationEnd()]}
+                wrapper="div"
+                repeat={0}
+                cursor={true}
+                speed={80}
+                style={{ fontSize: "20px" }}
+              />
+            );
+          }
+        })}
       </Box>
     </Box>
   ) : (
