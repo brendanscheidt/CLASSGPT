@@ -4,13 +4,12 @@ const TypingAnim = () => {
   return (
     <TypeAnimation
       sequence={[
-        "Chat With Your Own AI",
+        "Get Help With Your Classes 🍎",
         1000,
-        "Built With OpenAI 🤖",
+        "Your Own Personal AI Tutor 📚",
         2000,
-        "Your Own Customized ChatGPT 💻",
+        "Built With OpenAI 🧠",
         1500,
-        "",
       ]}
       speed={50}
       style={{

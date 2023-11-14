@@ -34,12 +34,13 @@ const Home = () => {
             src="robot.png"
             alt="robot"
             style={{ width: "200px", margin: "auto" }}
+            className="img-border"
           />
           <img
-            className="image-inverted rotate"
-            src="openai.png"
-            alt="openai"
-            style={{ width: "200px", margin: "auto" }}
+            className="image-inverted bob-image"
+            src="classgpt.png"
+            alt="classgpt"
+            style={{ width: "300px", margin: "auto" }}
           />
         </Box>
         <Box sx={{ display: "flex", width: "100%", mx: "auto" }}>

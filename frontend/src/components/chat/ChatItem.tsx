@@ -68,8 +68,8 @@ const ChatItem = ({
         boxSizing: "border-box",
       }}
     >
-      <Avatar sx={{ ml: "0" }}>
-        <img src="openai.png" alt="openai" width={"30px"} />
+      <Avatar sx={{ ml: "0", backgroundColor: "#dcf0f2" }}>
+        <img src="classgpt.png" alt="classgpt" width={"40px"} />
       </Avatar>
       <Box>
         {!messageBlocks && (
