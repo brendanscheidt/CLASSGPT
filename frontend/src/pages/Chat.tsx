@@ -11,6 +11,7 @@ import {
   sendChatRequest,
 } from "../helpers/api-communicator";
 import toast from "react-hot-toast";
+
 type Message = {
   role: "user" | "assistant";
   content: string;
@@ -22,6 +23,7 @@ const Chat = () => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const auth = useAuth();
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
+  const prevChatMessagesRef = useRef<Message[] | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -36,6 +38,7 @@ const Chat = () => {
     setChatMessages((prev) => [...prev, newMessage]);
     const chatData = await sendChatRequest(content);
     setChatMessages([...chatData.chats]);
+    prevChatMessagesRef.current = chatMessages.concat(newMessage);
     //
   };
 
@@ -79,6 +82,12 @@ const Chat = () => {
 
     checkAuthAndRedirect();
   }, [auth?.isLoading, auth?.user, navigate]);
+
+  useEffect(() => {
+    if (!prevChatMessagesRef.current && chatMessages.length) {
+      prevChatMessagesRef.current = chatMessages;
+    }
+  }, [chatMessages]);
 
   return (
     <Box
@@ -200,9 +209,22 @@ const Chat = () => {
             scrollbarWidth: "thin", // For Firefox
           }}
         >
-          {chatMessages.map((chat, index) => (
-            <ChatItem content={chat.content} role={chat.role} key={index} />
-          ))}
+          {chatMessages.map((chat, index) => {
+            const isNewMessage =
+              (prevChatMessagesRef.current &&
+                index >= prevChatMessagesRef.current.length) ??
+              false;
+
+            return (
+              <ChatItem
+                content={chat.content}
+                role={chat.role}
+                isNewMessage={isNewMessage}
+                key={index}
+              />
+            );
+            //<ChatTypeAnim content={chat.content} />
+          })}
           <div ref={messagesEndRef} />
         </Box>
         <div
