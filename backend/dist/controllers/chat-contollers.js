@@ -2,7 +2,7 @@ import User from "../models/User.js";
 import { configureOpenAI } from "../config/openai-config.js";
 import { OpenAIApi } from "openai";
 export const generateChatCompletion = async (req, res, next) => {
-    const { message } = req.body;
+    const { message, className } = req.body;
     try {
         const user = await User.findById(res.locals.jwtData.id);
         if (!user) {
@@ -10,13 +10,16 @@ export const generateChatCompletion = async (req, res, next) => {
                 .status(401)
                 .json({ message: "User not registered OR Token malfunction" });
         }
+        let classForChat = user.classes.find((userClass) => userClass.name === className);
+        if (!classForChat) {
+            return res.status(404).json({ message: "Class not found" });
+        }
         //grab chats of user
-        const chats = user.chats.map(({ role, content }) => ({
+        const chats = classForChat.chats.map(({ role, content }) => ({
             role,
             content,
         }));
         chats.push({ content: message, role: "user" });
-        user.chats.push({ content: message, role: "user" });
         //send all chats with new one to openAI API
         const config = configureOpenAI();
         const openai = new OpenAIApi(config);
@@ -25,9 +28,10 @@ export const generateChatCompletion = async (req, res, next) => {
             messages: chats,
         });
         //get latest response
-        user.chats.push(chatResponse.data.choices[0].message);
+        classForChat.chats.push({ content: message, role: "user" });
+        classForChat.chats.push(chatResponse.data.choices[0].message);
         await user.save();
-        return res.status(200).json({ chats: user.chats });
+        return res.status(200).json({ chats: classForChat.chats });
     }
     catch (err) {
         console.log(err);
@@ -38,14 +42,21 @@ export const sendChatsToUser = async (req, res, next) => {
     //user token check
     try {
         const existingUser = await User.findById(res.locals.jwtData.id);
+        const classForChat = req.params.classname;
         if (!existingUser)
             return res.status(401).send("User not registered OR Token malfunctioned");
         if (existingUser._id.toString() !== res.locals.jwtData.id) {
             return res.status(401).send("Permissions didn't match");
         }
+        let userClassChats = [];
+        existingUser.classes.forEach((userClass) => {
+            if (userClass.name === classForChat) {
+                userClassChats = userClass.chats;
+            }
+        });
         return res.status(201).json({
             message: "OK",
-            chats: existingUser.chats,
+            chats: userClassChats,
         });
     }
     catch (err) {
@@ -53,7 +64,7 @@ export const sendChatsToUser = async (req, res, next) => {
         return res.status(404).json({ message: "ERROR", cause: err.message });
     }
 };
-export const deleteChats = async (req, res, next) => {
+export const sendClassesToUser = async (req, res, next) => {
     //user token check
     try {
         const existingUser = await User.findById(res.locals.jwtData.id);
@@ -62,8 +73,44 @@ export const deleteChats = async (req, res, next) => {
         if (existingUser._id.toString() !== res.locals.jwtData.id) {
             return res.status(401).send("Permissions didn't match");
         }
+        return res.status(201).json({
+            message: "OK",
+            classes: existingUser.classes,
+        });
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(404).json({ message: "ERROR", cause: err.message });
+    }
+};
+export const createUserClass = async (req, res, next) => {
+    try {
+        const { name } = req.body;
+        const existingUser = await User.findById(res.locals.jwtData.id);
+        existingUser.classes.push({ name: name });
+        await existingUser.save();
+        return res.status(201).json({
+            message: "OK",
+            classes: existingUser.classes,
+        });
+    }
+    catch (err) {
+        return res.status(404).send("Error");
+    }
+};
+export const deleteChats = async (req, res, next) => {
+    //user token check
+    try {
+        const className = req.params.classname;
+        const existingUser = await User.findById(res.locals.jwtData.id);
+        if (!existingUser)
+            return res.status(401).send("User not registered OR Token malfunctioned");
+        if (existingUser._id.toString() !== res.locals.jwtData.id) {
+            return res.status(401).send("Permissions didn't match");
+        }
+        let classForChat = existingUser.classes.find((userClass) => userClass.name === className);
         //@ts-ignore
-        existingUser.chats = [];
+        classForChat.chats = [];
         await existingUser.save();
         return res.status(201).json({
             message: "OK",

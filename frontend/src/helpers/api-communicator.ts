@@ -37,8 +37,8 @@ export const checkAuthStatus = async () => {
   return data;
 };
 
-export const sendChatRequest = async (message: string) => {
-  const res = await axios.post("/chat/new", { message });
+export const sendChatRequest = async (message: string, className: string) => {
+  const res = await axios.post("/chat/new", { message, className });
 
   if (res.status != 200) {
     throw new Error("Unable to send chat");
@@ -48,8 +48,8 @@ export const sendChatRequest = async (message: string) => {
   return data;
 };
 
-export const getUserChats = async () => {
-  const res = await axios.get("/chat/all-chats");
+export const getUserChats = async (className: string) => {
+  const res = await axios.get(`/chat/${className}`);
 
   if (res.status != 201) {
     throw new Error("Unable to send chat");
@@ -59,8 +59,19 @@ export const getUserChats = async () => {
   return data;
 };
 
-export const deleteUserChats = async () => {
-  const res = await axios.delete("/chat/delete");
+export const getUserClasses = async () => {
+  const res = await axios.get(`/chat/classes`);
+
+  if (res.status != 201) {
+    throw new Error("Unable to get classes");
+  }
+
+  const data = await res.data;
+  return data;
+};
+
+export const deleteUserChats = async (className: string) => {
+  const res = await axios.delete(`/chat/delete/${className}`);
 
   if (res.status != 201) {
     throw new Error("Unable to delete chat");

@@ -21,7 +21,21 @@ export const userSignup = async (req, res, next) => {
         if (existingUser)
             return res.status(401).send("User already registered");
         const hashedPass = await hash(password, 10);
-        const user = new User({ name, email, password: hashedPass });
+        const user = new User({
+            name,
+            email,
+            password: hashedPass,
+            classes: [
+                {
+                    name: "default",
+                    model: {
+                        name: "gpt",
+                        instructions: "default",
+                        model: "gpt-3.5-turbo",
+                    },
+                },
+            ],
+        });
         await user.save();
         const token = createToken(user._id.toString(), user.email, "7d");
         const expires = new Date();

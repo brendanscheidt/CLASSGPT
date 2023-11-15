@@ -3,9 +3,9 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Chat from "./pages/Chat";
 import NotFound from "./pages/NotFound";
 import PrivateRoute from "./components/shared/PrivateRoute";
+import ClassChat from "./pages/ClassChat";
 
 function App() {
   return (
@@ -19,7 +19,7 @@ function App() {
           path="/chat"
           element={
             <PrivateRoute>
-              <Chat />
+              <ClassChat />
             </PrivateRoute>
           }
         />

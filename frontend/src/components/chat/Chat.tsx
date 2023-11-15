@@ -1,25 +1,27 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Box, Avatar, Typography, Button, IconButton } from "@mui/material";
-import red from "@mui/material/colors/red";
-import { useAuth } from "../context/AuthContext";
-import ChatItem from "../components/chat/ChatItem";
+import { Box, Typography, IconButton, Button } from "@mui/material";
+import { useAuth } from "../../context/AuthContext";
+import ChatItem from "./ChatItem";
 import { IoMdSend } from "react-icons/io";
 import { CircularProgress } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import {
   deleteUserChats,
   getUserChats,
   sendChatRequest,
-} from "../helpers/api-communicator";
+} from "../../helpers/api-communicator";
 import toast from "react-hot-toast";
+import { red } from "@mui/material/colors";
 
 type Message = {
   role: "user" | "assistant";
   content: string;
 };
 
-const Chat = () => {
-  const navigate = useNavigate();
+type PropsType = {
+  userClass: string;
+};
+
+const Chat = (props: PropsType) => {
   const [isSending, setIsSending] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -42,7 +44,7 @@ const Chat = () => {
     setChatMessages((prev) => [...prev, newMessage]);
     setIsSending(true);
     try {
-      const chatData = await sendChatRequest(content);
+      const chatData = await sendChatRequest(content, props.userClass);
       setChatMessages([...chatData.chats]);
     } catch (err) {
       console.error(err);
@@ -58,7 +60,7 @@ const Chat = () => {
   const handleDeleteChats = async () => {
     try {
       toast.loading("Deleting Chats", { id: "deletechats" });
-      await deleteUserChats();
+      await deleteUserChats(props.userClass);
       setChatMessages([]);
       toast.success("Deleted Chats Successfully", { id: "deletechats" });
     } catch (error) {
@@ -70,7 +72,7 @@ const Chat = () => {
   useLayoutEffect(() => {
     if (auth?.isLoggedIn && auth.user) {
       toast.loading("Loading Chats", { id: "loadchats" });
-      getUserChats()
+      getUserChats(props.userClass)
         .then((data) => {
           setChatMessages([...data.chats]);
           toast.success("Successfully loaded chats", { id: "loadchats" });
@@ -80,13 +82,13 @@ const Chat = () => {
           toast.error("Loading Failed", { id: "loadchats" });
         });
     }
-  }, [auth]);
+  }, [auth, props.userClass]);
 
   useEffect(() => {
     scrollToBottom();
   }, [chatMessages, prevChatMessagesRef]);
 
-  useEffect(() => {
+  /*   useEffect(() => {
     const checkAuthAndRedirect = () => {
       if (!auth?.isLoading && !auth?.user) {
         return navigate("/login");
@@ -94,7 +96,7 @@ const Chat = () => {
     };
 
     checkAuthAndRedirect();
-  }, [auth?.isLoading, auth?.user, navigate]);
+  }, [auth?.isLoading, auth?.user, navigate]); */
 
   useEffect(() => {
     if (!prevChatMessagesRef.current && chatMessages.length) {
@@ -113,65 +115,8 @@ const Chat = () => {
         gap: 3,
       }}
     >
-      <Box
-        sx={{
-          display: { md: "flex", xs: "none", sm: "none" },
-          flex: 0.2,
-          flexDirection: "column",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            width: "100%",
-            height: "60vh",
-            bgcolor: "rgb(17,29,39)",
-            borderRadius: 5,
-            flexDirection: "column",
-            mx: 3,
-          }}
-        >
-          <Avatar
-            sx={{
-              mx: "auto",
-              my: 2,
-              bgcolor: "white",
-              color: "black",
-              fontWeight: 700,
-            }}
-          >
-            {/* first letter of first and last name */}
-            {auth?.user?.name[0]}
-            {auth?.user?.name.split(" ")[1]
-              ? auth?.user?.name.split(" ")[1][0]
-              : ""}
-          </Avatar>
-          <Typography sx={{ mx: "auto", fontFamily: "work sans" }}>
-            You are talking to a ChatBOT
-          </Typography>
-          <Typography sx={{ mx: "auto", fontFamily: "work sans", my: 4, p: 3 }}>
-            You can ask some questions related to Knowledge, Business, Advices,
-            Education, etc. But avoid sharing personal information
-          </Typography>
-          <Button
-            onClick={handleDeleteChats}
-            sx={{
-              width: "200px",
-              my: "auto",
-              color: "white",
-              fontWeight: "700",
-              borderRadius: 3,
-              mx: "auto",
-              bgcolor: red[300],
-              ":hover": {
-                bgcolor: red.A400,
-              },
-            }}
-          >
-            Clear Conversation
-          </Button>
-        </Box>
-      </Box>
+      {/* Start folders */}
+
       <Box
         sx={{
           display: "flex",
@@ -189,7 +134,7 @@ const Chat = () => {
             fontWeight: "600",
           }}
         >
-          Model - GPT 3.5 Turbo
+          {props.userClass}
         </Typography>
         <Box
           sx={{
@@ -287,6 +232,23 @@ const Chat = () => {
             )}
           </IconButton>
         </div>
+        <Button
+          onClick={handleDeleteChats}
+          sx={{
+            width: "200px",
+            my: "auto",
+            color: "white",
+            fontWeight: "700",
+            borderRadius: 3,
+            mx: "auto",
+            bgcolor: red[300],
+            ":hover": {
+              bgcolor: red.A400,
+            },
+          }}
+        >
+          Clear Conversation
+        </Button>
       </Box>
     </Box>
   );

@@ -7,6 +7,7 @@ import {
 } from "react";
 import {
   checkAuthStatus,
+  getUserClasses,
   loginUser,
   logoutUser,
   signupUser,
@@ -16,10 +17,27 @@ type User = {
   name: string;
   email: string;
 };
+
+type UserClasses = {
+  name: string;
+  model: {
+    name: string;
+    instructions: string;
+    tools: { type: string }[];
+    model: string;
+  };
+  chats: {
+    id: string;
+    role: string;
+    content: string;
+  };
+}[];
+
 type UserAuth = {
   isLoggedIn: boolean;
   isLoading: boolean;
   user: User | null;
+  classes: UserClasses;
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -31,6 +49,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [classes, setClasses] = useState([]);
 
   useEffect(() => {
     //fetch if user's cookies are valid then skip login
@@ -42,6 +61,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (data) {
           setUser({ email: data.email, name: data.name });
           setIsLoggedIn(true);
+          getClasses();
         }
       } catch (err) {
         setIsLoggedIn(false);
@@ -54,12 +74,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     checkStatus();
   }, []);
 
+  const getClasses = async () => {
+    try {
+      console.log("fetching...");
+      const data = await getUserClasses();
+
+      if (data) {
+        setClasses(data.classes);
+      }
+    } catch (err) {
+      setClasses([]);
+      console.log(err);
+    }
+  };
+
   const login = async (email: string, password: string) => {
     const data = await loginUser(email, password);
 
     if (data) {
       setUser({ email: data.email, name: data.name });
       setIsLoggedIn(true);
+      getClasses();
     }
   };
 
@@ -69,6 +104,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (data) {
       setUser({ email: data.email, name: data.name });
       setIsLoggedIn(true);
+      getClasses();
     }
   };
 
@@ -89,6 +125,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     logout,
     signup,
     isLoading,
+    classes,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

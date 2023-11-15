@@ -34,7 +34,21 @@ export const userSignup = async (
     if (existingUser) return res.status(401).send("User already registered");
 
     const hashedPass = await hash(password, 10);
-    const user = new User({ name, email, password: hashedPass });
+    const user = new User({
+      name,
+      email,
+      password: hashedPass,
+      classes: [
+        {
+          name: "default",
+          model: {
+            name: "gpt",
+            instructions: "default",
+            model: "gpt-3.5-turbo",
+          },
+        },
+      ],
+    });
 
     await user.save();
 
