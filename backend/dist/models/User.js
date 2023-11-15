@@ -31,6 +31,14 @@ const chatSchema = new mongoose.Schema({
         required: true,
     },
 });
+const pageSchema = new mongoose.Schema({
+    name: {
+        type: String,
+    },
+    chats: {
+        type: [chatSchema],
+    },
+}, { timestamps: true });
 const classSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -40,8 +48,8 @@ const classSchema = new mongoose.Schema({
         type: gptModelSchema,
         required: true,
     },
-    chats: {
-        type: [chatSchema],
+    pages: {
+        type: [pageSchema],
     },
 });
 const userSchema = new mongoose.Schema({

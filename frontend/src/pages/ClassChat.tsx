@@ -8,7 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 const ClassChat = () => {
   const auth = useAuth();
   const navigate = useNavigate();
-  const { classname } = useParams();
+  const { classname, pagename } = useParams();
 
   useLayoutEffect(() => {
     const checkAuthAndRedirect = () => {
@@ -23,16 +23,16 @@ const ClassChat = () => {
   return (
     <Box
       sx={{
-        display: { md: "flex", xs: "none", sm: "none" },
+        display: "flex",
         flex: 0.2,
-        flexDirection: "column",
+        flexDirection: { md: "row", xs: "column" },
       }}
     >
       <Box
         sx={{
           display: "flex",
-          width: "100%",
-          height: "60vh",
+          width: { md: "20vw", xs: "90%" },
+          height: "100%",
           bgcolor: "rgb(17,29,39)",
           borderRadius: 5,
           flexDirection: "column",
@@ -67,15 +67,15 @@ const ClassChat = () => {
               <ClassFolder
                 key={index}
                 className={singleClass.name}
-                classChats={singleClass.chats}
+                classPages={singleClass.pages}
               />
             );
           })}
       </Box>
-      {classname ? (
-        <Chat userClass={classname} />
+      {classname && pagename ? (
+        <Chat userClass={classname} userPage={pagename} />
       ) : (
-        <Chat userClass="default" />
+        <Chat userClass="default" userPage="default" />
       )}
     </Box>
   );

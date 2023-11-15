@@ -38,16 +38,6 @@ export const userSignup = async (
       name,
       email,
       password: hashedPass,
-      classes: [
-        {
-          name: "default",
-          model: {
-            name: "gpt",
-            instructions: "default",
-            model: "gpt-3.5-turbo",
-          },
-        },
-      ],
     });
 
     await user.save();

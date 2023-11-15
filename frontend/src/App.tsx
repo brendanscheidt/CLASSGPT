@@ -25,7 +25,7 @@ function App() {
           }
         />
         <Route
-          path="/chat/:classname"
+          path="/chat/:classname/:pagename"
           element={
             <PrivateRoute>
               <ClassChat />

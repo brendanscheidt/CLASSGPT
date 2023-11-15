@@ -15,21 +15,39 @@ const Header = () => {
         <Logo />
         <div>
           {auth?.isLoggedIn ? (
-            <>
-              <NavigationLink
-                bg="#00fffc"
-                to="/chat/default"
-                text="Go To Chat"
-                textColor="black"
-              />
-              <NavigationLink
-                bg="#51538f"
-                textColor="white"
-                to="/"
-                text="Logout"
-                onClick={auth.logout}
-              />
-            </>
+            auth?.classes.length ? (
+              <>
+                <NavigationLink
+                  bg="#00fffc"
+                  to={`/chat/${auth.classes[0].name}/default`}
+                  text="Go To Chat"
+                  textColor="black"
+                />
+                <NavigationLink
+                  bg="#51538f"
+                  textColor="white"
+                  to="/"
+                  text="Logout"
+                  onClick={auth.logout}
+                />
+              </>
+            ) : (
+              <>
+                <NavigationLink
+                  bg="#00fffc"
+                  to="/createClass"
+                  text="Create Your First Class"
+                  textColor="black"
+                />
+                <NavigationLink
+                  bg="#51538f"
+                  textColor="white"
+                  to="/"
+                  text="Logout"
+                  onClick={auth.logout}
+                />
+              </>
+            )
           ) : (
             <>
               <NavigationLink

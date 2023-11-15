@@ -19,6 +19,7 @@ type Message = {
 
 type PropsType = {
   userClass: string;
+  userPage: string;
 };
 
 const Chat = (props: PropsType) => {
@@ -44,8 +45,13 @@ const Chat = (props: PropsType) => {
     setChatMessages((prev) => [...prev, newMessage]);
     setIsSending(true);
     try {
-      const chatData = await sendChatRequest(content, props.userClass);
+      const chatData = await sendChatRequest(
+        content,
+        props.userClass,
+        props.userPage
+      );
       setChatMessages([...chatData.chats]);
+      auth?.updateClasses();
     } catch (err) {
       console.error(err);
       toast.error("Failed to send message.");
@@ -60,8 +66,9 @@ const Chat = (props: PropsType) => {
   const handleDeleteChats = async () => {
     try {
       toast.loading("Deleting Chats", { id: "deletechats" });
-      await deleteUserChats(props.userClass);
+      await deleteUserChats(props.userClass, props.userPage);
       setChatMessages([]);
+      auth?.updateClasses();
       toast.success("Deleted Chats Successfully", { id: "deletechats" });
     } catch (error) {
       console.log(error);
@@ -72,7 +79,7 @@ const Chat = (props: PropsType) => {
   useLayoutEffect(() => {
     if (auth?.isLoggedIn && auth.user) {
       toast.loading("Loading Chats", { id: "loadchats" });
-      getUserChats(props.userClass)
+      getUserChats(props.userClass, props.userPage)
         .then((data) => {
           setChatMessages([...data.chats]);
           toast.success("Successfully loaded chats", { id: "loadchats" });
@@ -82,7 +89,7 @@ const Chat = (props: PropsType) => {
           toast.error("Loading Failed", { id: "loadchats" });
         });
     }
-  }, [auth, props.userClass]);
+  }, [auth, props.userClass, props.userPage]);
 
   useEffect(() => {
     scrollToBottom();
@@ -113,14 +120,13 @@ const Chat = (props: PropsType) => {
         height: "100%",
         mt: 3,
         gap: 3,
+        // px: 3,
       }}
     >
-      {/* Start folders */}
-
       <Box
         sx={{
           display: "flex",
-          flex: { md: 0.8, xs: 1, sm: 1 },
+          flex: { md: 0.98, xs: 1, sm: 1 },
           flexDirection: "column",
           px: 3,
         }}

@@ -26,11 +26,14 @@ type UserClasses = {
     tools: { type: string }[];
     model: string;
   };
-  chats: {
-    id: string;
-    role: string;
-    content: string;
-  };
+  pages: {
+    name: string;
+    chats: {
+      id: string;
+      role: string;
+      content: string;
+    }[];
+  }[];
 }[];
 
 type UserAuth = {
@@ -77,7 +80,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const updateClasses = async () => {
     try {
-      console.log("fetching...");
+      console.log("fetching classes ...");
       const data = await getUserClasses();
 
       if (data) {

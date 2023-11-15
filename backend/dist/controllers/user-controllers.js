@@ -25,16 +25,6 @@ export const userSignup = async (req, res, next) => {
             name,
             email,
             password: hashedPass,
-            classes: [
-                {
-                    name: "default",
-                    model: {
-                        name: "gpt",
-                        instructions: "default",
-                        model: "gpt-3.5-turbo",
-                    },
-                },
-            ],
         });
         await user.save();
         const token = createToken(user._id.toString(), user.email, "7d");

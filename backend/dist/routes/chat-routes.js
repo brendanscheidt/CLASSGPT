@@ -5,9 +5,9 @@ import { createUserClass, deleteChats, generateChatCompletion, sendChatsToUser, 
 // protected API
 const chatRoutes = Router();
 chatRoutes.post("/new", validate(chatCompletionValidator), verifyToken, generateChatCompletion);
-chatRoutes.delete("/delete/:classname", verifyToken, deleteChats);
 chatRoutes.get("/classes", verifyToken, sendClassesToUser);
 chatRoutes.post("/createClass", verifyToken, createUserClass);
-chatRoutes.get("/:classname", verifyToken, sendChatsToUser);
+chatRoutes.get("/:classname/:pagename", verifyToken, sendChatsToUser);
+chatRoutes.delete("/delete/:classname/:pagename", verifyToken, deleteChats);
 export default chatRoutes;
 //# sourceMappingURL=chat-routes.js.map

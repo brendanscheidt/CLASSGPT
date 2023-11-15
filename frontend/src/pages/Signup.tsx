@@ -31,7 +31,7 @@ const Signup = () => {
 
   useEffect(() => {
     if (auth?.user) {
-      navigate("/chat");
+      navigate("/createClass");
     }
   }, [auth, navigate]);
 

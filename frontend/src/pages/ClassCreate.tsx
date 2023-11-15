@@ -4,12 +4,13 @@ import { IoIosLogIn } from "react-icons/io";
 import { toast } from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createNewClass } from "../helpers/api-communicator";
 
 const ClassCreate = () => {
   const auth = useAuth();
   const navigate = useNavigate();
+  const [isNew, setIsNew] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,7 +28,7 @@ const ClassCreate = () => {
       });
       toast.success("Class Created Successfully!", { id: "class" });
       auth?.updateClasses();
-      navigate("/chat");
+      navigate(`/chat/${name}/default`);
     } catch (err) {
       console.log(err);
       toast.error("Creating New Class Failed.", { id: "class" });
@@ -43,6 +44,17 @@ const ClassCreate = () => {
 
     checkAuthAndRedirect();
   }, [auth?.isLoading, auth?.user, navigate]);
+
+  useEffect(() => {
+    const checkNew = () => {
+      if (!auth?.classes) {
+        console.log(auth?.classes);
+        setIsNew(true);
+      }
+    };
+
+    checkNew();
+  }, [auth?.classes, auth]);
 
   return (
     <Box width={"100%"} height={"100%"} display="flex" flex={1}>
@@ -80,14 +92,26 @@ const ClassCreate = () => {
               justifyContent: "center",
             }}
           >
-            <Typography
-              variant="h4"
-              textAlign="center"
-              padding={2}
-              fontWeight={600}
-            >
-              Create Class
-            </Typography>
+            {isNew ? (
+              <Typography
+                variant="h4"
+                textAlign="center"
+                padding={2}
+                fontWeight={600}
+              >
+                Create Your First Class
+              </Typography>
+            ) : (
+              <Typography
+                variant="h4"
+                textAlign="center"
+                padding={2}
+                fontWeight={600}
+              >
+                Create Class
+              </Typography>
+            )}
+
             <CustomizedInput type="name" name="name" label="Class Name" />
             <CustomizedInput
               type="modelInstructions"

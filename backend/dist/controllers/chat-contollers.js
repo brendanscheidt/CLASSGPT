@@ -2,7 +2,7 @@ import User from "../models/User.js";
 import { configureOpenAI } from "../config/openai-config.js";
 import { OpenAIApi } from "openai";
 export const generateChatCompletion = async (req, res, next) => {
-    const { message, className } = req.body;
+    const { message, className, pageName } = req.body;
     try {
         const user = await User.findById(res.locals.jwtData.id);
         if (!user) {
@@ -14,8 +14,16 @@ export const generateChatCompletion = async (req, res, next) => {
         if (!classForChat) {
             return res.status(404).json({ message: "Class not found" });
         }
+        let pageForChat = classForChat.pages.find((classPage) => classPage.name === pageName);
+        if (!pageForChat) {
+            classForChat.pages.push({ name: pageName });
+        }
+        pageForChat = classForChat.pages.find((classPage) => classPage.name === pageName);
+        if (!pageForChat) {
+            return res.status(404).json({ message: "Page Not Found." });
+        }
         //grab chats of user
-        const chats = classForChat.chats.map(({ role, content }) => ({
+        const chats = pageForChat.chats.map(({ role, content }) => ({
             role,
             content,
         }));
@@ -28,10 +36,10 @@ export const generateChatCompletion = async (req, res, next) => {
             messages: chats,
         });
         //get latest response
-        classForChat.chats.push({ content: message, role: "user" });
-        classForChat.chats.push(chatResponse.data.choices[0].message);
+        pageForChat.chats.push({ content: message, role: "user" });
+        pageForChat.chats.push(chatResponse.data.choices[0].message);
         await user.save();
-        return res.status(200).json({ chats: classForChat.chats });
+        return res.status(200).json({ chats: pageForChat.chats });
     }
     catch (err) {
         console.log(err);
@@ -43,20 +51,27 @@ export const sendChatsToUser = async (req, res, next) => {
     try {
         const existingUser = await User.findById(res.locals.jwtData.id);
         const classForChat = req.params.classname;
+        const pageForChat = req.params.pagename;
         if (!existingUser)
             return res.status(401).send("User not registered OR Token malfunctioned");
         if (existingUser._id.toString() !== res.locals.jwtData.id) {
             return res.status(401).send("Permissions didn't match");
         }
-        let userClassChats = [];
+        let userClassPages = [];
         existingUser.classes.forEach((userClass) => {
             if (userClass.name === classForChat) {
-                userClassChats = userClass.chats;
+                userClassPages = userClass.pages;
+            }
+        });
+        let userPageChats = [];
+        userClassPages.forEach((page) => {
+            if (page.name === pageForChat) {
+                userPageChats = page.chats;
             }
         });
         return res.status(201).json({
             message: "OK",
-            chats: userClassChats,
+            chats: userPageChats,
         });
     }
     catch (err) {
@@ -104,6 +119,7 @@ export const deleteChats = async (req, res, next) => {
     //user token check
     try {
         const className = req.params.classname;
+        const pagename = req.params.pagename;
         const existingUser = await User.findById(res.locals.jwtData.id);
         if (!existingUser)
             return res.status(401).send("User not registered OR Token malfunctioned");
@@ -111,8 +127,12 @@ export const deleteChats = async (req, res, next) => {
             return res.status(401).send("Permissions didn't match");
         }
         let classForChat = existingUser.classes.find((userClass) => userClass.name === className);
+        let pageWithChat = classForChat.pages.find((page) => {
+            if (page.name === pagename)
+                classForChat.pages.remove(page);
+        });
         //@ts-ignore
-        classForChat.chats = [];
+        //pageWithChat.chats = [];
         await existingUser.save();
         return res.status(201).json({
             message: "OK",
