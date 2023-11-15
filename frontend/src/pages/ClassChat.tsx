@@ -1,16 +1,14 @@
-import { Avatar, Box, Button, Typography } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
-import { red } from "@mui/material/colors";
 import Chat from "../components/chat/Chat";
 import ClassFolder from "../components/classes/ClassFolder";
 import { useLayoutEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
-import { deleteUserChats } from "../helpers/api-communicator";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ClassChat = () => {
   const auth = useAuth();
   const navigate = useNavigate();
+  const { classname } = useParams();
 
   useLayoutEffect(() => {
     const checkAuthAndRedirect = () => {
@@ -21,18 +19,6 @@ const ClassChat = () => {
 
     checkAuthAndRedirect();
   }, [auth?.isLoading, auth?.user, navigate]);
-
-  const handleDeleteChats = async (userClass: string) => {
-    try {
-      toast.loading("Deleting Chats", { id: "deletechats" });
-      await deleteUserChats(userClass);
-      //setChatMessages([]);
-      toast.success("Deleted Chats Successfully", { id: "deletechats" });
-    } catch (error) {
-      console.log(error);
-      toast.error("Deleting chats failed", { id: "deletechats" });
-    }
-  };
 
   return (
     <Box
@@ -85,25 +71,12 @@ const ClassChat = () => {
               />
             );
           })}
-        <Button
-          onClick={handleDeleteChats}
-          sx={{
-            width: "200px",
-            my: "auto",
-            color: "white",
-            fontWeight: "700",
-            borderRadius: 3,
-            mx: "auto",
-            bgcolor: red[300],
-            ":hover": {
-              bgcolor: red.A400,
-            },
-          }}
-        >
-          Clear Conversation
-        </Button>
       </Box>
-      <Chat userClass="default" />
+      {classname ? (
+        <Chat userClass={classname} />
+      ) : (
+        <Chat userClass="default" />
+      )}
     </Box>
   );
 };

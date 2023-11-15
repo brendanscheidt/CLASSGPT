@@ -13,7 +13,7 @@ const Logo = () => {
     >
       <Link to={"/"}>
         <img
-          src="classgpt.png"
+          src="../classgpt.png"
           alt="classgpt"
           width={"70px"}
           height={"70px"}

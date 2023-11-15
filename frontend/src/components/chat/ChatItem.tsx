@@ -69,7 +69,7 @@ const ChatItem = ({
       }}
     >
       <Avatar sx={{ ml: "0", backgroundColor: "#dcf0f2" }}>
-        <img src="classgpt.png" alt="classgpt" width={"40px"} />
+        <img src="/../classgpt.png" alt="classgpt" width={"40px"} />
       </Avatar>
       <Box>
         {!messageBlocks && (

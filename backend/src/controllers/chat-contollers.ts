@@ -125,13 +125,15 @@ export const createUserClass = async (
   next: NextFunction
 ) => {
   try {
-    const { name } = req.body;
+    const { name, model } = req.body;
 
     const existingUser = await User.findById(res.locals.jwtData.id);
 
-    existingUser.classes.push({ name: name });
+    existingUser.classes.push({ name, model });
+    console.log(existingUser.classes);
 
     await existingUser.save();
+    console.log("hit");
 
     return res.status(201).json({
       message: "OK",

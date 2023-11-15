@@ -38,6 +38,7 @@ type UserAuth = {
   isLoading: boolean;
   user: User | null;
   classes: UserClasses;
+  updateClasses: () => void;
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -61,7 +62,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (data) {
           setUser({ email: data.email, name: data.name });
           setIsLoggedIn(true);
-          getClasses();
+          updateClasses();
         }
       } catch (err) {
         setIsLoggedIn(false);
@@ -74,7 +75,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     checkStatus();
   }, []);
 
-  const getClasses = async () => {
+  const updateClasses = async () => {
     try {
       console.log("fetching...");
       const data = await getUserClasses();
@@ -94,7 +95,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (data) {
       setUser({ email: data.email, name: data.name });
       setIsLoggedIn(true);
-      getClasses();
+      updateClasses();
     }
   };
 
@@ -104,7 +105,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (data) {
       setUser({ email: data.email, name: data.name });
       setIsLoggedIn(true);
-      getClasses();
+      updateClasses();
     }
   };
 
@@ -113,6 +114,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       await logoutUser();
       setIsLoggedIn(false);
       setUser(null);
+      setClasses([]);
     } catch (err) {
       console.log(err);
     }
@@ -126,6 +128,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     signup,
     isLoading,
     classes,
+    updateClasses,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

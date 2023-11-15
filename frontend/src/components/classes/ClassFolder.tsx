@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 type PropsType = {
   className: string;
   classChats: {
@@ -8,7 +10,11 @@ type PropsType = {
 };
 
 const ClassFolder = (props: PropsType) => {
-  return <div>{props.className}</div>;
+  return (
+    <Link to={`/chat/${props.className}`}>
+      <div>{props.className}</div>
+    </Link>
+  );
 };
 
 export default ClassFolder;

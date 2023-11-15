@@ -70,6 +70,21 @@ export const getUserClasses = async () => {
   return data;
 };
 
+export const createNewClass = async (
+  name: string,
+  model: { name: string; instructions: string; model: string }
+) => {
+  console.log(model.instructions);
+  const res = await axios.post("/chat/createClass", { name, model });
+
+  if (res.status != 201) {
+    throw new Error("Unable to create new class");
+  }
+
+  const data = await res.data;
+  return data;
+};
+
 export const deleteUserChats = async (className: string) => {
   const res = await axios.delete(`/chat/delete/${className}`);
 

@@ -18,7 +18,7 @@ const Header = () => {
             <>
               <NavigationLink
                 bg="#00fffc"
-                to="/chat"
+                to="/chat/default"
                 text="Go To Chat"
                 textColor="black"
               />
