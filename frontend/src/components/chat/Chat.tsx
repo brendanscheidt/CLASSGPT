@@ -11,7 +11,7 @@ import {
 } from "../../helpers/api-communicator";
 import toast from "react-hot-toast";
 import { red } from "@mui/material/colors";
-import InvalidClassOrPage from "./InvalidClassOrPage";
+import PageView from "./PageView";
 
 type Message = {
   role: "user" | "assistant";
@@ -32,12 +32,19 @@ const Chat = (props: PropsType) => {
   const auth = useAuth();
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
   const prevChatMessagesRef = useRef<Message[] | null>(null);
+  const [newMessageHasntBeenReceived, setNewMessageHasntBeenReceived] =
+    useState(true);
+
+  const handleAnimationComplete = () => {
+    setNewMessageHasntBeenReceived(false);
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleSubmit = async () => {
+    setNewMessageHasntBeenReceived(true);
     const content = inputRef.current?.value as string;
     if (content.trim()) {
       if (inputRef && inputRef.current) {
@@ -195,7 +202,8 @@ const Chat = (props: PropsType) => {
             {chatMessages.map((chat, index) => {
               const isNewMessage =
                 (prevChatMessagesRef.current &&
-                  index >= prevChatMessagesRef.current.length) ??
+                  index >= prevChatMessagesRef.current.length &&
+                  newMessageHasntBeenReceived) ??
                 false;
 
               return (
@@ -204,9 +212,9 @@ const Chat = (props: PropsType) => {
                   role={chat.role}
                   isNewMessage={isNewMessage}
                   key={index}
+                  onAnimationComplete={handleAnimationComplete}
                 />
               );
-              //<ChatTypeAnim content={chat.content} />
             })}
             <div ref={messagesEndRef} />
           </Box>
@@ -281,7 +289,7 @@ const Chat = (props: PropsType) => {
     );
   } else {
     return (
-      <InvalidClassOrPage
+      <PageView
         className={props.userClass}
         pageName={props.userPage}
         classExists={isClassInUser}

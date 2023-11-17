@@ -33,10 +33,12 @@ const ChatItem = ({
   content,
   role,
   isNewMessage,
+  onAnimationComplete,
 }: {
   content: string;
   role: "user" | "assistant";
   isNewMessage: boolean;
+  onAnimationComplete: () => void;
 }) => {
   const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
 
@@ -54,6 +56,10 @@ const ChatItem = ({
 
   const handleBlockAnimationEnd = () => {
     setCurrentBlockIndex((prevIndex) => prevIndex + 1);
+    if (currentBlockIndex === messageBlocks.length - 1) {
+      console.log("hit");
+      onAnimationComplete(); // Call this function when the last block animation completes
+    }
   };
 
   return role == "assistant" ? (

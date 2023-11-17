@@ -22,7 +22,7 @@ type PageType = {
   }[];
 }[];
 
-const InvalidClassOrPage = (props: PropsType) => {
+const PageView = (props: PropsType) => {
   const auth = useAuth();
   const [pages, setPages] = useState<PageType>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -110,6 +110,7 @@ const InvalidClassOrPage = (props: PropsType) => {
               isOpen={isModalOpen}
               onClose={handleCloseModal}
               onSubmit={handleSubmitModal}
+              className={props.className}
             />
           </Box>
         </Box>
@@ -120,4 +121,4 @@ const InvalidClassOrPage = (props: PropsType) => {
   }
 };
 
-export default InvalidClassOrPage;
+export default PageView;

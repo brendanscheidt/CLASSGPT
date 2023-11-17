@@ -1,11 +1,12 @@
 import { Avatar, Box, Button, Typography } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
 import Chat from "../components/chat/Chat";
-import ClassFolder from "../components/classes/ClassFolder";
+import { RiFolderAddLine } from "react-icons/ri";
 import { useLayoutEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ClassModal from "../modals/ClassModal";
 import { createNewClass, createNewPage } from "../helpers/api-communicator";
+import ClassSidebar from "../components/chat/ClassSidebar";
 
 const ClassChat = () => {
   const auth = useAuth();
@@ -54,6 +55,13 @@ const ClassChat = () => {
         // Optionally, show a user-friendly error message here
       } else {
         // Proceed with submitting data
+        auth?.classes.map((userClass) => {
+          console.log(userClass.name);
+          console.log("data: " + data.className);
+          if (userClass.name === data.className.trim()) {
+            throw new Error("Duplicate class names not allowed.");
+          }
+        });
         await createNewClass(data.className, {
           name: data.className,
           instructions: data.modelInstructions,
@@ -86,41 +94,69 @@ const ClassChat = () => {
           display: "flex",
           width: { md: "20vw", xs: "90%" },
           height: "100%",
+          maxHeight: { md: "90vh", sm: "30vh" },
           bgcolor: "rgb(17,29,39)",
           borderRadius: 5,
           flexDirection: "column",
           mx: 3,
         }}
       >
-        <Avatar
+        <Box
           sx={{
-            mx: "auto",
-            my: 2,
-            bgcolor: "white",
-            color: "black",
-            fontWeight: 700,
+            overflowY: "auto",
+            height: "100%", // Ensure inner container takes the full height
+            "&::-webkit-scrollbar": {
+              width: "0.4em",
+            },
+            "&::-webkit-scrollbar-track": {
+              boxShadow: "inset 0 0 6px rgba(0,0,0,0.3)",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#888",
+              outline: "1px solid slategrey",
+              borderRadius: "2px",
+            },
+            scrollbarColor: "#888 slategrey",
+            scrollbarWidth: "thin",
           }}
         >
-          {/* first letter of first and last name */}
-          {auth?.user?.name[0]}
-          {auth?.user?.name.split(" ")[1]
-            ? auth?.user?.name.split(" ")[1][0]
-            : ""}
-        </Avatar>
-        <Typography sx={{ mx: "auto", fontFamily: "work sans" }}>
-          Your School Notebook
-        </Typography>
-        <Typography sx={{ mx: "auto", fontFamily: "work sans", my: 4, p: 3 }}>
-          Here are your classes and your pages for each class. Each class has a
-          specialized tutor defined by your instructions!
-        </Typography>
-        <Button onClick={handleOpenModal}>Create New Class</Button>
-        <ClassModal
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          onSubmit={handleSubmitModal}
-        />
-        {Array.isArray(auth?.classes) &&
+          <Box
+            sx={{
+              textAlign: "left",
+              display: "flex",
+              flex: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <Button
+              onClick={handleOpenModal}
+              sx={{ color: "white", marginLeft: "-5px" }}
+            >
+              <RiFolderAddLine size={25} />
+            </Button>
+            <Avatar
+              sx={{
+                my: 2,
+                bgcolor: "white",
+                color: "black",
+                fontWeight: 700,
+              }}
+            >
+              {/* first letter of first and last name */}
+              {auth?.user?.name[0]}
+              {auth?.user?.name.split(" ")[1]
+                ? auth?.user?.name.split(" ")[1][0]
+                : ""}
+            </Avatar>
+            <div style={{ width: "48px" }}></div>
+          </Box>
+
+          <ClassModal
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+            onSubmit={handleSubmitModal}
+          />
+          {/* {Array.isArray(auth?.classes) &&
           auth?.classes.map((singleClass, index) => {
             return (
               <ClassFolder
@@ -129,7 +165,9 @@ const ClassChat = () => {
                 classPages={singleClass.pages}
               />
             );
-          })}
+          })} */}
+          {auth?.classes ? <ClassSidebar classes={auth?.classes} /> : <></>}
+        </Box>
       </Box>
       {classname && pagename ? (
         <Chat userClass={classname} userPage={pagename} />
