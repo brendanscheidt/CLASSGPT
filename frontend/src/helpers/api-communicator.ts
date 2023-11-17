@@ -100,6 +100,7 @@ export const createNewPage = async (className: string, pageName: string) => {
 };
 
 export const deleteUserChats = async (className: string, pageName: string) => {
+  console.log(`/chat/delete/${className}/${pageName}`);
   const res = await axios.delete(`/chat/delete/${className}/${pageName}`);
 
   if (res.status != 201) {

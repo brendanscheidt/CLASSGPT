@@ -217,9 +217,17 @@ export const deleteChats = async (
       (userClass) => userClass.name === className
     );
 
-    let pageWithChat = classForChat.pages.find((page) => {
-      if (page.name === pagename) classForChat.pages.remove(page);
-    });
+    // Find the index of the page to be removed
+    const pageIndex = classForChat.pages.findIndex(
+      (page) => page.name === pagename
+    );
+
+    // If the page is found, remove it
+    if (pageIndex !== -1) {
+      classForChat.pages.splice(pageIndex, 1);
+    } else {
+      return res.status(404).send("Page not found");
+    }
 
     //@ts-ignore
     //pageWithChat.chats = [];

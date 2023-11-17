@@ -8,7 +8,7 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import Collapse from "@mui/material/Collapse";
 import Divider from "@mui/material/Divider";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ListItemButton } from "@mui/material";
 import PageModal from "../../modals/PageModal";
 import { createNewPage } from "../../helpers/api-communicator";
@@ -39,6 +39,7 @@ const ClassSidebar = (props: PropsType) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeClass, setActiveClass] = useState("");
   const auth = useAuth();
+  const navigate = useNavigate();
 
   const handleClassClick = (className: string) => {
     if (openFolder === className) {
@@ -83,6 +84,7 @@ const ClassSidebar = (props: PropsType) => {
         setIsModalOpen(false);
         // Update the classes data here if needed
         await auth?.updateClasses();
+        navigate(`/chat/${activeClass}/${pageName}`);
       }
     } catch (err) {
       console.log(err);

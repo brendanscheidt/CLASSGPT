@@ -12,6 +12,7 @@ import {
 import toast from "react-hot-toast";
 import { red } from "@mui/material/colors";
 import PageView from "./PageView";
+import { useNavigate } from "react-router-dom";
 
 type Message = {
   role: "user" | "assistant";
@@ -30,10 +31,14 @@ const Chat = (props: PropsType) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const auth = useAuth();
+  const navigate = useNavigate();
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
   const prevChatMessagesRef = useRef<Message[] | null>(null);
   const [newMessageHasntBeenReceived, setNewMessageHasntBeenReceived] =
     useState(true);
+  const fullClass = auth?.classes.find(
+    (userClass) => userClass.name === props.userClass
+  );
 
   const handleAnimationComplete = () => {
     setNewMessageHasntBeenReceived(false);
@@ -78,8 +83,9 @@ const Chat = (props: PropsType) => {
       toast.loading("Deleting Chats", { id: "deletechats" });
       await deleteUserChats(props.userClass, props.userPage);
       setChatMessages([]);
-      auth?.updateClasses();
+      await auth?.updateClasses();
       toast.success("Deleted Chats Successfully", { id: "deletechats" });
+      navigate(`/chat/${props.userClass}/${fullClass?.pages[0].name}`);
     } catch (error) {
       console.log(error);
       toast.error("Deleting chats failed", { id: "deletechats" });
