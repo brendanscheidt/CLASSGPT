@@ -44,7 +44,6 @@ const Chat = (props: PropsType) => {
   };
 
   const handleSubmit = async () => {
-    setNewMessageHasntBeenReceived(true);
     const content = inputRef.current?.value as string;
     if (content.trim()) {
       if (inputRef && inputRef.current) {
@@ -68,6 +67,7 @@ const Chat = (props: PropsType) => {
     } finally {
       prevChatMessagesRef.current = chatMessages.concat(newMessage);
       setIsSending(false);
+      setNewMessageHasntBeenReceived(true);
     }
 
     //
