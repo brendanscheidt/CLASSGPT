@@ -15,28 +15,46 @@ const Header = () => {
         <Logo />
         <div>
           {auth?.isLoggedIn ? (
-            auth?.classes.length ? (
-              <>
-                <NavigationLink
-                  bg="#00fffc"
-                  to={`/chat/${auth.classes[0].name}/default`}
-                  text="Go To Chat"
-                  textColor="black"
-                />
-                <NavigationLink
-                  bg="#51538f"
-                  textColor="white"
-                  to="/"
-                  text="Logout"
-                  onClick={auth.logout}
-                />
-              </>
+            auth.classes.length ? (
+              auth.classes[0].pages.length ? (
+                <>
+                  <NavigationLink
+                    bg="#00fffc"
+                    to={`/chat/${auth.classes[0].name}/${auth.classes[0].pages[0].name}`}
+                    text="Go To Chats"
+                    textColor="black"
+                  />
+                  <NavigationLink
+                    bg="#51538f"
+                    textColor="white"
+                    to="/"
+                    text="Logout"
+                    onClick={auth.logout}
+                  />
+                </>
+              ) : (
+                <>
+                  <NavigationLink
+                    bg="#00fffc"
+                    to={`/chat/${auth.classes[0].name}/default`}
+                    text="Go To Chats"
+                    textColor="black"
+                  />
+                  <NavigationLink
+                    bg="#51538f"
+                    textColor="white"
+                    to="/"
+                    text="Logout"
+                    onClick={auth.logout}
+                  />
+                </>
+              )
             ) : (
               <>
                 <NavigationLink
                   bg="#00fffc"
-                  to="/createClass"
-                  text="Create Your First Class"
+                  to="/chat/default/default"
+                  text="Go To Chats"
                   textColor="black"
                 />
                 <NavigationLink

@@ -11,6 +11,7 @@ import {
 } from "../../helpers/api-communicator";
 import toast from "react-hot-toast";
 import { red } from "@mui/material/colors";
+import InvalidClassOrPage from "./InvalidClassOrPage";
 
 type Message = {
   role: "user" | "assistant";
@@ -24,6 +25,8 @@ type PropsType = {
 
 const Chat = (props: PropsType) => {
   const [isSending, setIsSending] = useState(false);
+  const [isClassInUser, setIsClassInUser] = useState(false);
+  const [isPageInClass, setIsPageInClass] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const auth = useAuth();
@@ -111,153 +114,181 @@ const Chat = (props: PropsType) => {
     }
   }, [chatMessages]);
 
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        flex: 1,
-        width: "100%",
-        height: "100%",
-        mt: 3,
-        gap: 3,
-        // px: 3,
-      }}
-    >
+  useEffect(() => {
+    const classExists =
+      auth?.classes.some((userClass) => userClass.name === props.userClass) ??
+      false;
+    const pageExists =
+      auth?.classes.some((userClass) =>
+        userClass.pages.some((page) => page.name === props.userPage)
+      ) ?? false;
+
+    setIsClassInUser(classExists);
+    setIsPageInClass(pageExists);
+  }, [auth, auth?.classes, props.userClass, props.userPage]);
+
+  if (isClassInUser && isPageInClass) {
+    return (
       <Box
         sx={{
           display: "flex",
-          flex: { md: 0.98, xs: 1, sm: 1 },
-          flexDirection: "column",
-          px: 3,
+          flex: 1,
+          width: "100%",
+          height: "100%",
+          mt: 3,
+          gap: 3,
+          // px: 3,
         }}
       >
-        <Typography
-          sx={{
-            fontSize: "40px",
-            color: "white",
-            mb: 2,
-            mx: "auto",
-            fontWeight: "600",
-          }}
-        >
-          {props.userClass}
-        </Typography>
         <Box
           sx={{
-            width: "100%",
-            height: "60vh",
-            borderRadius: 3,
-            mx: "auto",
-            paddingRight: 1,
             display: "flex",
+            flex: { md: 0.98, xs: 1, sm: 1 },
             flexDirection: "column",
-            overflow: "scroll",
-            overflowX: "hidden",
-            overflowY: "auto",
-            scrollBehavior: "smooth",
-            "&::-webkit-scrollbar": {
-              width: "0.4em",
-            },
-            "&::-webkit-scrollbar-track": {
-              boxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
-              webkitBoxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "rgba(0,0,0, 0.1)",
-              outline: "1px solid slategrey",
-              position: "relative",
-              borderRadius: "2px",
-            },
-            // Add other browser-specific styles if needed
-            scrollbarColor: "rgba(0,0,0, 0.1) slategrey", // For Firefox
-            scrollbarWidth: "thin", // For Firefox
+            px: 3,
           }}
         >
-          {chatMessages.map((chat, index) => {
-            const isNewMessage =
-              (prevChatMessagesRef.current &&
-                index >= prevChatMessagesRef.current.length) ??
-              false;
-
-            return (
-              <ChatItem
-                content={chat.content}
-                role={chat.role}
-                isNewMessage={isNewMessage}
-                key={index}
-              />
-            );
-            //<ChatTypeAnim content={chat.content} />
-          })}
-          <div ref={messagesEndRef} />
-        </Box>
-        <div
-          style={{
-            width: "100%",
-            borderRadius: 8,
-            backgroundColor: isSending ? "#0E1620" : "#111b27",
-            display: "flex",
-            margin: "auto",
-            marginTop: "10px",
-          }}
-        >
-          {" "}
-          <input
-            disabled={isSending}
-            placeholder={
-              isSending ? "Waiting for response..." : "Message ChatBOT..."
-            }
-            ref={inputRef}
-            type="text"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                handleSubmit();
-              }
+          <Typography
+            sx={{
+              fontSize: "40px",
+              color: "white",
+              mb: 2,
+              mx: "auto",
+              fontWeight: "600",
             }}
+          >
+            {props.userClass === "default" || props.userPage === "default"
+              ? ""
+              : `${props.userClass} - (${props.userPage})`}
+          </Typography>
+          <Box
+            sx={{
+              width: "100%",
+              height: "60vh",
+              borderRadius: 3,
+              mx: "auto",
+              paddingRight: 1,
+              display: "flex",
+              flexDirection: "column",
+              overflow: "scroll",
+              overflowX: "hidden",
+              overflowY: "auto",
+              scrollBehavior: "smooth",
+              "&::-webkit-scrollbar": {
+                width: "0.4em",
+              },
+              "&::-webkit-scrollbar-track": {
+                boxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+                webkitBoxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "rgba(0,0,0, 0.1)",
+                outline: "1px solid slategrey",
+                position: "relative",
+                borderRadius: "2px",
+              },
+              // Add other browser-specific styles if needed
+              scrollbarColor: "rgba(0,0,0, 0.1) slategrey", // For Firefox
+              scrollbarWidth: "thin", // For Firefox
+            }}
+          >
+            {chatMessages.map((chat, index) => {
+              const isNewMessage =
+                (prevChatMessagesRef.current &&
+                  index >= prevChatMessagesRef.current.length) ??
+                false;
+
+              return (
+                <ChatItem
+                  content={chat.content}
+                  role={chat.role}
+                  isNewMessage={isNewMessage}
+                  key={index}
+                />
+              );
+              //<ChatTypeAnim content={chat.content} />
+            })}
+            <div ref={messagesEndRef} />
+          </Box>
+          <div
             style={{
               width: "100%",
-              backgroundColor: "transparent",
-              padding: "30px",
-              border: "none",
-              outline: "none",
-              color: "white",
-              fontSize: "20px",
-              cursor: isSending ? "wait" : "text",
+              borderRadius: 8,
+              backgroundColor: isSending ? "#0E1620" : "#111b27",
+              display: "flex",
+              margin: "auto",
+              marginTop: "10px",
             }}
-          />
-          <IconButton
-            onClick={handleSubmit}
-            disabled={isSending}
-            sx={{ color: "white", mx: 1 }}
           >
-            {isSending ? (
-              <CircularProgress sx={{ color: "#03fcfc" }} size={24} />
-            ) : (
-              <IoMdSend />
-            )}
-          </IconButton>
-        </div>
-        <Button
-          onClick={handleDeleteChats}
-          sx={{
-            width: "200px",
-            my: "auto",
-            color: "white",
-            fontWeight: "700",
-            borderRadius: 3,
-            mx: "auto",
-            bgcolor: red[300],
-            ":hover": {
-              bgcolor: red.A400,
-            },
-          }}
-        >
-          Clear Conversation
-        </Button>
+            {" "}
+            <input
+              disabled={isSending}
+              placeholder={
+                isSending
+                  ? "Waiting for response..."
+                  : `Message Your ${props.userClass} Tutor...`
+              }
+              ref={inputRef}
+              type="text"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleSubmit();
+                }
+              }}
+              style={{
+                width: "100%",
+                backgroundColor: "transparent",
+                padding: "30px",
+                border: "none",
+                outline: "none",
+                color: "white",
+                fontSize: "20px",
+                cursor: isSending ? "wait" : "text",
+              }}
+            />
+            <IconButton
+              onClick={handleSubmit}
+              disabled={isSending}
+              sx={{ color: "white", mx: 1 }}
+            >
+              {isSending ? (
+                <CircularProgress sx={{ color: "#03fcfc" }} size={24} />
+              ) : (
+                <IoMdSend />
+              )}
+            </IconButton>
+          </div>
+          <Button
+            onClick={handleDeleteChats}
+            sx={{
+              width: "200px",
+              my: "auto",
+              color: "white",
+              fontWeight: "700",
+              borderRadius: 3,
+              mx: "auto",
+              bgcolor: red[300],
+              ":hover": {
+                bgcolor: red.A400,
+              },
+            }}
+          >
+            Delete Page
+          </Button>
+        </Box>
       </Box>
-    </Box>
-  );
+    );
+  } else {
+    return (
+      <InvalidClassOrPage
+        className={props.userClass}
+        pageName={props.userPage}
+        classExists={isClassInUser}
+        pageExists={isPageInClass}
+      />
+    );
+  }
 };
 
 export default Chat;

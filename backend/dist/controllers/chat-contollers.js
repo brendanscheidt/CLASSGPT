@@ -16,10 +16,6 @@ export const generateChatCompletion = async (req, res, next) => {
         }
         let pageForChat = classForChat.pages.find((classPage) => classPage.name === pageName);
         if (!pageForChat) {
-            classForChat.pages.push({ name: pageName });
-        }
-        pageForChat = classForChat.pages.find((classPage) => classPage.name === pageName);
-        if (!pageForChat) {
             return res.status(404).json({ message: "Page Not Found." });
         }
         //grab chats of user
@@ -40,6 +36,28 @@ export const generateChatCompletion = async (req, res, next) => {
         pageForChat.chats.push(chatResponse.data.choices[0].message);
         await user.save();
         return res.status(200).json({ chats: pageForChat.chats });
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: "Something went wrong" });
+    }
+};
+export const createClassPage = async (req, res, next) => {
+    try {
+        const { className, pageName } = req.body;
+        const user = await User.findById(res.locals.jwtData.id);
+        if (!user) {
+            return res
+                .status(401)
+                .json({ message: "User not registered OR Token malfunction" });
+        }
+        const classForChat = user.classes.find((userClass) => userClass.name === className);
+        if (!classForChat) {
+            return res.status(404).json({ message: "Class not found" });
+        }
+        classForChat.pages.push({ name: pageName });
+        await user.save();
+        return res.status(201).json({ message: "OK", pages: classForChat.pages });
     }
     catch (err) {
         console.log(err);

@@ -78,11 +78,21 @@ export const createNewClass = async (
   name: string,
   model: { name: string; instructions: string; model: string }
 ) => {
-  console.log(model.instructions);
   const res = await axios.post("/chat/createClass", { name, model });
 
   if (res.status != 201) {
     throw new Error("Unable to create new class");
+  }
+
+  const data = await res.data;
+  return data;
+};
+
+export const createNewPage = async (className: string, pageName: string) => {
+  const res = await axios.post("/chat/createPage", { className, pageName });
+
+  if (res.status != 201) {
+    throw new Error("Unable to create new page");
   }
 
   const data = await res.data;

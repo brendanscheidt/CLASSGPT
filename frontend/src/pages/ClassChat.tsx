@@ -1,24 +1,77 @@
-import { Avatar, Box, Typography } from "@mui/material";
+import { Avatar, Box, Button, Typography } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
 import Chat from "../components/chat/Chat";
 import ClassFolder from "../components/classes/ClassFolder";
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import ClassModal from "../modals/ClassModal";
+import { createNewClass, createNewPage } from "../helpers/api-communicator";
 
 const ClassChat = () => {
   const auth = useAuth();
   const navigate = useNavigate();
   const { classname, pagename } = useParams();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useLayoutEffect(() => {
     const checkAuthAndRedirect = () => {
       if (!auth?.isLoading && !auth?.user) {
         return navigate("/login");
       }
+      auth.updateClasses();
+      if (!(auth.classes.length > 0)) {
+        setIsModalOpen(true);
+      }
     };
 
     checkAuthAndRedirect();
-  }, [auth?.isLoading, auth?.user, navigate]);
+  }, []);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    if (!auth?.classes.length) {
+      return;
+    }
+    setIsModalOpen(false);
+  };
+
+  const handleSubmitModal = async (data: {
+    className: string;
+    modelInstructions: string;
+    newPageName: string;
+  }) => {
+    try {
+      // Check if both fields are filled
+      if (
+        data.className.trim() === "" ||
+        data.modelInstructions.trim() === "" ||
+        data.newPageName.trim() === ""
+      ) {
+        console.log("All fields are required.");
+        // Optionally, show a user-friendly error message here
+      } else {
+        // Proceed with submitting data
+        await createNewClass(data.className, {
+          name: data.className,
+          instructions: data.modelInstructions,
+          model: "gpt-3.5-turbo",
+        });
+
+        await createNewPage(data.className, data.newPageName);
+
+        await auth?.updateClasses();
+
+        setIsModalOpen(false);
+        navigate(`/chat/${data.className}/${data.newPageName}`);
+      }
+    } catch (err) {
+      console.log(err);
+      // Optionally handle errors differently, perhaps keep the modal open
+    }
+  };
 
   return (
     <Box
@@ -55,12 +108,18 @@ const ClassChat = () => {
             : ""}
         </Avatar>
         <Typography sx={{ mx: "auto", fontFamily: "work sans" }}>
-          You are talking to a ChatBOT
+          Your School Notebook
         </Typography>
         <Typography sx={{ mx: "auto", fontFamily: "work sans", my: 4, p: 3 }}>
-          You can ask some questions related to Knowledge, Business, Advices,
-          Education, etc. But avoid sharing personal information
+          Here are your classes and your pages for each class. Each class has a
+          specialized tutor defined by your instructions!
         </Typography>
+        <Button onClick={handleOpenModal}>Create New Class</Button>
+        <ClassModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          onSubmit={handleSubmitModal}
+        />
         {Array.isArray(auth?.classes) &&
           auth?.classes.map((singleClass, index) => {
             return (
