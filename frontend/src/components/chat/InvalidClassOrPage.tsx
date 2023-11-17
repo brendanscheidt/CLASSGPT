@@ -90,6 +90,7 @@ const InvalidClassOrPage = (props: PropsType) => {
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 onSubmit={handleSubmitModal}
+                className={props.className}
               />
             </Box>
           </Box>

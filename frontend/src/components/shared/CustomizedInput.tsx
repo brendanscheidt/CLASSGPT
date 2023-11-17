@@ -2,24 +2,82 @@ import { TextField } from "@mui/material";
 
 type Props = {
   name: string;
-  type: string;
   label: string;
+  type: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  multiline?: boolean;
+  rows?: number;
 };
 
-const CustomizedInput = (props: Props) => {
+const CustomizedInput = ({
+  name,
+  label,
+  type,
+  value,
+  onChange,
+  multiline = false,
+  rows = 4,
+}: Props) => {
   return (
     <TextField
       margin="normal"
       InputLabelProps={{ style: { color: "white" } }}
-      name={props.name}
-      label={props.label}
-      type={props.type}
-      inputProps={{
-        style: {
-          width: "400px",
-          borderRadius: 10,
-          fontSize: 20,
-          color: "white",
+      name={name}
+      label={label}
+      type={type}
+      value={value}
+      onChange={onChange}
+      multiline={multiline}
+      rows={multiline ? rows : 1}
+      sx={{
+        width: 400,
+        "& .MuiInputBase-input": {
+          color: "white", // Input text color
+          "&::placeholder": {
+            color: "white", // Placeholder text color
+          },
+        },
+        "& label.Mui-focused": {
+          color: "white", // Label color when focused
+        },
+        "& label": {
+          color: "white", // Label color
+        },
+        "& .MuiInput-underline:before": {
+          borderBottomColor: "white", // Underline color before focus
+        },
+        "& .MuiInput-underline:after": {
+          borderBottomColor: "white", // Underline color after focus
+        },
+        "& .MuiOutlinedInput-root": {
+          "& fieldset": {
+            borderColor: "white", // Border color
+          },
+          "&:hover fieldset": {
+            borderColor: "white", // Hover border color
+          },
+          "&.Mui-focused fieldset": {
+            borderColor: "white", // Border color when focused
+          },
+        },
+        "& .MuiInputBase-inputMultiline": {
+          // Ensures the scrollbar is applied to the multiline text field
+          overflow: "auto",
+          "&::-webkit-scrollbar": {
+            width: "0.4em",
+          },
+          "&::-webkit-scrollbar-track": {
+            boxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+            webkitBoxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "rgba(0,0,0, 0.1)",
+            outline: "1px solid slategrey",
+            borderRadius: "2px",
+          },
+          scrollbarColor: "darkgrey slategrey", // For Firefox/Edge
+          scrollbarWidth: "thin", // For Firefox/Edge
         },
       }}
     />
