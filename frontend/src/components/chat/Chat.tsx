@@ -223,6 +223,9 @@ const Chat = (props: PropsType) => {
                   borderRadius: "10px",
                   color: "white",
                   backgroundColor: "#355b87",
+                  ":hover": {
+                    bgcolor: "#1a2b40",
+                  },
                 }}
               >
                 <FiEdit3

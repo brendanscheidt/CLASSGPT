@@ -1,16 +1,40 @@
 import mongoose from "mongoose";
 import { randomUUID } from "crypto";
 const gptModelSchema = new mongoose.Schema({
+    id: {
+        type: String,
+    },
+    object: {
+        type: String,
+    },
+    created_at: {
+        type: Number,
+    },
     name: {
         type: String,
         required: true,
+    },
+    description: {
+        type: String,
     },
     instructions: {
         type: String,
         required: true,
     },
-    tools: {
-        type: [{ type: String }],
+    tools: [
+        {
+            type: {
+                type: String, // Note that 'type' is used twice: once to define the field and once as the field's type
+            },
+        },
+    ],
+    file_ids: [
+        {
+            type: String,
+        },
+    ],
+    metadata: {
+        type: Object,
     },
     model: {
         type: String,
@@ -37,6 +61,20 @@ const pageSchema = new mongoose.Schema({
     },
     chats: {
         type: [chatSchema],
+    },
+    thread: {
+        id: {
+            type: String,
+        },
+        object: {
+            type: String,
+        },
+        created_at: {
+            type: String,
+        },
+        metadata: {
+            type: Object,
+        },
     },
 }, { timestamps: true });
 const classSchema = new mongoose.Schema({

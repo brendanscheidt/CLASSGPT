@@ -3,6 +3,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Logo from "./shared/Logo";
 import { useAuth } from "../context/AuthContext";
 import NavigationLink from "./shared/NavigationLink";
+import { Box } from "@mui/material";
 
 const Header = () => {
   const auth = useAuth();
@@ -13,7 +14,7 @@ const Header = () => {
     >
       <Toolbar sx={{ display: "flex" }}>
         <Logo />
-        <div>
+        <Box sx={{ fontSize: { md: "20px", xs: "12px" } }}>
           {auth?.isLoggedIn ? (
             auth.classes.length ? (
               auth.classes[0].pages.length ? (
@@ -21,7 +22,7 @@ const Header = () => {
                   <NavigationLink
                     bg="#00fffc"
                     to={`/chat/${auth.classes[0].name}/${auth.classes[0].pages[0].name}`}
-                    text="Go To Chats"
+                    text="Chat"
                     textColor="black"
                   />
                   <NavigationLink
@@ -82,7 +83,7 @@ const Header = () => {
               />
             </>
           )}
-        </div>
+        </Box>
       </Toolbar>
     </AppBar>
   );
