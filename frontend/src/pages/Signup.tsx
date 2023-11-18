@@ -31,7 +31,7 @@ const Signup = () => {
 
   useEffect(() => {
     if (auth?.user) {
-      navigate("/chat/default/default");
+      navigate("/chat/none/none");
     }
   }, [auth, navigate]);
 

@@ -6,7 +6,6 @@ import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
 import PrivateRoute from "./components/shared/PrivateRoute";
 import ClassChat from "./pages/ClassChat";
-import ClassCreate from "./pages/ClassCreate";
 
 function App() {
   return (
@@ -16,14 +15,6 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route
-          path="/createClass"
-          element={
-            <PrivateRoute>
-              <ClassCreate />
-            </PrivateRoute>
-          }
-        />
         <Route
           path="/chat/:classname/:pagename"
           element={

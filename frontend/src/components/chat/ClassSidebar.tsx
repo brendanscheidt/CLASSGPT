@@ -9,10 +9,11 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import Collapse from "@mui/material/Collapse";
 import Divider from "@mui/material/Divider";
 import { Link, useNavigate } from "react-router-dom";
-import { ListItemButton } from "@mui/material";
+import { ListItemButton, useMediaQuery } from "@mui/material";
 import PageModal from "../../modals/PageModal";
 import { createNewPage } from "../../helpers/api-communicator";
 import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "@emotion/react";
 
 type PropsType = {
   classes: {
@@ -32,6 +33,7 @@ type PropsType = {
       }[];
     }[];
   }[];
+  onMobileDrawerClose?: () => void;
 };
 
 const ClassSidebar = (props: PropsType) => {
@@ -40,6 +42,10 @@ const ClassSidebar = (props: PropsType) => {
   const [activeClass, setActiveClass] = useState("");
   const auth = useAuth();
   const navigate = useNavigate();
+
+  if (auth?.isLoading) {
+    return <div>Loading...</div>;
+  }
 
   const handleClassClick = (className: string) => {
     if (openFolder === className) {
@@ -84,6 +90,10 @@ const ClassSidebar = (props: PropsType) => {
         setIsModalOpen(false);
         // Update the classes data here if needed
         await auth?.updateClasses();
+        if (props.onMobileDrawerClose) {
+          props.onMobileDrawerClose();
+        }
+
         navigate(`/chat/${activeClass}/${pageName}`);
       }
     } catch (err) {
@@ -111,8 +121,15 @@ const ClassSidebar = (props: PropsType) => {
               )}
             </ListItemIcon>
             <ListItemText
-              primary={classItem.name}
-              sx={{ "& .MuiListItemText-primary": { color: "#21a3a2" } }}
+              primary={
+                classItem.name.length > 10
+                  ? classItem.name.substring(0, 11) + "..."
+                  : classItem.name
+              }
+              sx={{
+                "& .MuiListItemText-primary": { color: "#21a3a2" },
+                paddingRight: "5px",
+              }}
             />
             {openFolder === classItem.name ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>{" "}
@@ -128,8 +145,21 @@ const ClassSidebar = (props: PropsType) => {
                   key={index}
                   component={Link}
                   to={`/chat/${classItem.name}/${page.name}`}
+                  onClick={() => {
+                    // Call the function to close the drawer
+                    if (props.onMobileDrawerClose) {
+                      props.onMobileDrawerClose();
+                    }
+                  }}
                 >
-                  <ListItemText inset primary={page.name} />
+                  <ListItemText
+                    inset
+                    primary={
+                      page.name.length > 10
+                        ? page.name.substring(0, 11) + "..."
+                        : page.name
+                    }
+                  />
                 </ListItemButton> // Also updated here
               ))}
             </List>

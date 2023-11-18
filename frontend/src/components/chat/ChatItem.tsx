@@ -57,7 +57,6 @@ const ChatItem = ({
   const handleBlockAnimationEnd = () => {
     setCurrentBlockIndex((prevIndex) => prevIndex + 1);
     if (currentBlockIndex === messageBlocks.length - 1) {
-      console.log("hit");
       onAnimationComplete(); // Call this function when the last block animation completes
     }
   };

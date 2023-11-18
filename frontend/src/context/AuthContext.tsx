@@ -41,6 +41,7 @@ type UserAuth = {
   isLoading: boolean;
   user: User | null;
   classes: UserClasses;
+  isClassesLoading: boolean;
   updateClasses: () => void;
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, email: string, password: string) => Promise<void>;
@@ -54,6 +55,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [classes, setClasses] = useState([]);
+  const [isClassesLoading, setIsClassesLoading] = useState(false);
 
   useEffect(() => {
     //fetch if user's cookies are valid then skip login
@@ -78,17 +80,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     checkStatus();
   }, []);
 
-  const updateClasses = async () => {
-    try {
-      console.log("fetching classes ...");
-      const data = await getUserClasses();
+  useEffect(() => {
+    if (isLoggedIn) {
+      updateClasses();
+    }
+  }, [isLoggedIn]);
 
-      if (data.classes.length) {
-        setClasses(data.classes);
-      }
+  const updateClasses = async () => {
+    if (!isLoggedIn) return; // Only fetch classes if the user is logged in
+
+    setIsClassesLoading(true);
+    try {
+      console.log("fetching classes...");
+      const data = await getUserClasses();
+      setClasses(data.classes);
     } catch (err) {
-      setClasses([]);
       console.log(err);
+      setClasses([]);
+    } finally {
+      setIsClassesLoading(false);
+      console.log("fetching completed.");
     }
   };
 
@@ -97,8 +108,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     if (data) {
       setUser({ email: data.email, name: data.name });
+
+      await updateClasses();
       setIsLoggedIn(true);
-      updateClasses();
     }
   };
 
@@ -132,6 +144,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     isLoading,
     classes,
     updateClasses,
+    isClassesLoading,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -38,6 +38,10 @@ const PageView = (props: PropsType) => {
     }
   }, [auth?.classes, props.className, props.pageName]);
 
+  if (auth?.isLoading) {
+    return <div>Loading...</div>;
+  }
+
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
@@ -116,8 +120,14 @@ const PageView = (props: PropsType) => {
         </Box>
       );
     }
-  } else if (!props.classExists || !props.pageExists) {
-    <Box></Box>;
+  } else if (!props.classExists && !props.pageExists) {
+    return (
+      <Box>
+        <Typography sx={{ color: "white" }}>
+          Create a class to start chatting!
+        </Typography>
+      </Box>
+    );
   }
 };
 

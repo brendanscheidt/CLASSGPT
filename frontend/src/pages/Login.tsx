@@ -21,7 +21,11 @@ const Login = () => {
     try {
       toast.loading("Signing In!", { id: "login" });
       await auth?.login(email, password);
+
+      // No need to check auth.user or auth.classes here
       toast.success("Signed In Successfully!", { id: "login" });
+
+      // The redirection logic should be handled elsewhere, where state updates are reflected
     } catch (err) {
       console.log(err);
       toast.error("Signing In Failed", { id: "login" });
@@ -29,10 +33,24 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (auth?.user) {
-      navigate("/chat/default/default");
-    }
-  }, [auth, navigate]);
+    const timeoutId = setTimeout(() => {
+      if (auth?.isLoggedIn && auth?.user && !auth.isClassesLoading) {
+        if (auth.classes.length > 0) {
+          navigate(`/chat/${auth.classes[0].name}/default`);
+        } else {
+          navigate("/chat/none/none");
+        }
+      }
+    }, 200); // Adjust delay as needed
+
+    return () => clearTimeout(timeoutId);
+  }, [
+    auth?.isLoggedIn,
+    auth?.user,
+    auth?.isClassesLoading,
+    auth?.classes,
+    navigate,
+  ]);
 
   return (
     <Box width={"100%"} height={"100%"} display="flex" flex={1}>

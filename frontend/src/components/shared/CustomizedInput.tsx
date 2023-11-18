@@ -4,8 +4,8 @@ type Props = {
   name: string;
   label: string;
   type: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   multiline?: boolean;
   rows?: number;
 };

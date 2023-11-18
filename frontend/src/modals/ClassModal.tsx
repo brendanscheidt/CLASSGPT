@@ -8,7 +8,7 @@ type ClassModalProps = {
   onSubmit: (data: {
     className: string;
     modelInstructions: string;
-    newPageName: string;
+    /* newPageName: string; */
   }) => void;
 };
 
@@ -19,20 +19,20 @@ const ClassModal: React.FC<ClassModalProps> = ({
 }) => {
   const [className, setClassName] = useState("");
   const [modelInstructions, setModelInstructions] = useState("");
-  const [newPageName, setNewPageName] = useState("");
+  /* const [newPageName, setNewPageName] = useState(""); */
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onSubmit({ className, modelInstructions, newPageName }); // Pass as an object
+    onSubmit({ className, modelInstructions /* newPageName */ }); // Pass as an object
     setClassName("");
     setModelInstructions("");
-    setNewPageName("");
+    /* setNewPageName(""); */
   };
 
   const handleClose = () => {
     setClassName("");
     setModelInstructions("");
-    setNewPageName("");
+    /* setNewPageName(""); */
     onClose();
   };
 
@@ -59,7 +59,7 @@ const ClassModal: React.FC<ClassModalProps> = ({
             />
           </div>
 
-          <div>
+          {/*  <div>
             <CustomizedInput
               name="newPageName"
               label="New Page Name"
@@ -67,7 +67,7 @@ const ClassModal: React.FC<ClassModalProps> = ({
               value={newPageName}
               onChange={(e) => setNewPageName(e.target.value)}
             />
-          </div>
+          </div> */}
           <div>
             <CustomizedInput
               name="modelInstructions"
