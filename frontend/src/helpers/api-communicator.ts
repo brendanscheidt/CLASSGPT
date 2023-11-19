@@ -99,6 +99,25 @@ export const createNewPage = async (className: string, pageName: string) => {
   return data;
 };
 
+export const editUserPage = async (
+  className: string,
+  oldName: string,
+  newName: string
+) => {
+  const res = await axios.patch("/chat/editPage", {
+    className,
+    oldName,
+    newName,
+  });
+
+  if (res.status != 201) {
+    throw new Error("Unable to edit page");
+  }
+
+  const data = await res.data;
+  return data;
+};
+
 export const deleteUserChats = async (className: string, pageName: string) => {
   const res = await axios.delete(`/chat/delete/${className}/${pageName}`);
 

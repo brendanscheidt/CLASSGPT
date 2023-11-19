@@ -3,8 +3,12 @@ import { useAuth } from "../../context/AuthContext";
 import { useEffect, useState } from "react";
 import NotePage from "../classes/NotePage";
 import PageModal from "../../modals/PageModal";
-import { createNewPage } from "../../helpers/api-communicator";
-import { useNavigate } from "react-router-dom";
+import {
+  createNewPage,
+  deleteUserChats,
+  editUserPage,
+} from "../../helpers/api-communicator";
+import toast from "react-hot-toast";
 
 type PropsType = {
   className: string;
@@ -26,21 +30,68 @@ const PageView = (props: PropsType) => {
   const auth = useAuth();
   const [pages, setPages] = useState<PageType>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    if (props.classExists) {
-      auth?.classes.map((userClass) => {
-        if (props.className === userClass.name) {
-          setPages(userClass.pages);
-        }
-      });
-    }
-  }, [auth?.classes, props.className, props.pageName]);
+    const timeoutId = setTimeout(() => {
+      if (!auth?.isClassesLoading && props.classExists) {
+        auth?.classes.map((userClass) => {
+          if (props.className === userClass.name) {
+            setPages(userClass.pages);
+          }
+        });
+      }
+    }, 200);
 
-  if (auth?.isLoading) {
+    return () => clearTimeout(timeoutId);
+  }, [
+    auth?.classes,
+    props.className,
+    props.pageName,
+    auth?.isClassesLoading,
+    props.classExists,
+  ]);
+
+  if (auth?.isClassesLoading) {
     return <div>Loading...</div>;
   }
+
+  const handlePageNameUpdated = (oldName: string, newName: string) => {
+    setPages((prevPages) =>
+      prevPages.map((page) =>
+        page.name === oldName ? { ...page, name: newName } : page
+      )
+    );
+  };
+
+  const handleDeleteChats = async (pName: string) => {
+    try {
+      toast.loading("Deleting Chats", { id: "deletechats" });
+      await deleteUserChats(props.className, pName);
+      await auth?.updateClasses();
+      toast.success("Deleted Chats Successfully", { id: "deletechats" });
+    } catch (error) {
+      console.log(error);
+      toast.error("Deleting chats failed", { id: "deletechats" });
+    }
+  };
+
+  const editPageName = async (
+    className: string,
+    oldName: string,
+    newName: string
+  ) => {
+    try {
+      if (newName.trim() === "") {
+        console.log("Page name is required.");
+      } else {
+        console.log(oldName, newName);
+        await editUserPage(className, oldName, newName);
+        await auth?.updateClasses();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -61,7 +112,7 @@ const PageView = (props: PropsType) => {
         const res = await createNewPage(props.className, pageName);
         await auth?.updateClasses();
         setIsModalOpen(false);
-        navigate(`/chat/${props.className}/${pageName}`);
+        //navigate(`/chat/${props.className}/${pageName}`);
       }
     } catch (err) {
       console.log(err);
@@ -84,9 +135,13 @@ const PageView = (props: PropsType) => {
                     key={index}
                     className={props.className}
                     pageName={page.name}
+                    handleDeletePage={() => handleDeleteChats(page.name)}
+                    handleEditPage={editPageName}
+                    onPageNameUpdated={handlePageNameUpdated} // New prop
                   />
                 );
               })}
+
               <Button onClick={handleOpenModal}>
                 Create New Page for {props.className} class
               </Button>
@@ -95,6 +150,7 @@ const PageView = (props: PropsType) => {
                 onClose={handleCloseModal}
                 onSubmit={handleSubmitModal}
                 className={props.className}
+                isNew={true}
               />
             </Box>
           </Box>
@@ -115,6 +171,7 @@ const PageView = (props: PropsType) => {
               onClose={handleCloseModal}
               onSubmit={handleSubmitModal}
               className={props.className}
+              isNew={true}
             />
           </Box>
         </Box>

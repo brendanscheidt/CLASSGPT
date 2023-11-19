@@ -172,6 +172,7 @@ const ClassSidebar = (props: PropsType) => {
         onClose={handleCloseModal}
         onSubmit={handleSubmitModal}
         className={activeClass}
+        isNew={true}
       />
     </List>
   );

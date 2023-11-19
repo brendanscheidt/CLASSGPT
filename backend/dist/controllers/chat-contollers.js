@@ -91,7 +91,7 @@ export const generateChatCompletion = async (req, res, next) => {
         });
         const run = await openai.beta.threads.runs.create(thread.id, {
             assistant_id: assistant.id,
-            instructions: "give thoughtful and in depth answers to the user's questions. Try to use real life examples to tie complicated concepts together.",
+            instructions: assistant.instructions,
         });
         let runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
         //polling mechanism to see if runStatus is completed
@@ -147,11 +147,52 @@ export const createClassPage = async (req, res, next) => {
         if (!classForChat) {
             return res.status(404).json({ message: "Class not found" });
         }
+        let pageAlreadyExists = false;
+        classForChat.pages.find((classPage) => {
+            if (classPage.name === pageName)
+                pageAlreadyExists = true;
+        });
+        if (pageAlreadyExists) {
+            return res.status(500).json({ message: "Cant Have duplicate page name" });
+        }
         const thread = await openai.beta.threads.create();
-        console.log(thread);
         classForChat.pages.push({ name: pageName, thread });
         await user.save();
         return res.status(201).json({ message: "OK", pages: classForChat.pages });
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: "Something went wrong" });
+    }
+};
+export const editClassPage = async (req, res, next) => {
+    try {
+        const { className, oldName, newName } = req.body;
+        const user = await User.findById(res.locals.jwtData.id);
+        if (!user) {
+            return res
+                .status(401)
+                .json({ message: "User not registered OR Token malfunction" });
+        }
+        const classForChat = user.classes.find((userClass) => userClass.name === className);
+        if (!classForChat) {
+            return res.status(404).json({ message: "Class not found" });
+        }
+        let pageAlreadyExists = false;
+        classForChat.pages.find((classPage) => {
+            if (classPage.name === newName)
+                pageAlreadyExists = true;
+        });
+        if (pageAlreadyExists) {
+            return res.status(500).json({ message: "Cant Have duplicate page name" });
+        }
+        let pageForChat = classForChat.pages.find((classPage) => classPage.name === oldName);
+        if (!pageForChat) {
+            return res.status(404).json({ message: "Page Not Found." });
+        }
+        pageForChat.name = newName;
+        await user.save();
+        return res.status(201).json({ message: "OK", pageForChat });
     }
     catch (err) {
         console.log(err);
