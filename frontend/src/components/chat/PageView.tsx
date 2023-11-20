@@ -6,9 +6,12 @@ import PageModal from "../../modals/PageModal";
 import {
   createNewPage,
   deleteUserChats,
+  editUserClass,
   editUserPage,
 } from "../../helpers/api-communicator";
 import toast from "react-hot-toast";
+import ClassModal from "../../modals/ClassModal";
+import { useNavigate } from "react-router-dom";
 
 type PropsType = {
   className: string;
@@ -26,16 +29,40 @@ type PageType = {
   }[];
 }[];
 
+type ClassType = {
+  name: string;
+  model: {
+    name: string;
+    instructions: string;
+    tools: { type: string }[];
+    model: string;
+  };
+  pages: {
+    name: string;
+    chats: { id: string; role: string; content: string }[];
+  }[];
+};
+
 const PageView = (props: PropsType) => {
   const auth = useAuth();
   const [pages, setPages] = useState<PageType>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modelInstructions, setModelInstructions] = useState("");
+  const [isPageModalOpen, setIsPageModalOpen] = useState(false);
+  const [isClassModalOpen, setIsClassModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (!auth?.isClassesLoading && props.classExists) {
         auth?.classes.map((userClass) => {
           if (props.className === userClass.name) {
+            console.log(userClass.model.instructions);
+            const instructions = userClass.model.instructions;
+            const userInstructionsRegex = /"""([^]*?)"""/;
+            const match = instructions.match(userInstructionsRegex);
+            const userInstructions = match ? match[1].trim() : ""; // Extract the user instructions
+
+            setModelInstructions(userInstructions);
             setPages(userClass.pages);
           }
         });
@@ -93,12 +120,46 @@ const PageView = (props: PropsType) => {
     }
   };
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
+  const handleEditClassClick = () => {
+    const classToEdit = auth?.classes.find((c) => c.name === props.className);
+    if (classToEdit) {
+      setIsClassModalOpen(true);
+    }
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  const handleEditClassSubmit = async ({
+    className,
+    modelInstructions,
+  }: {
+    className: string;
+    modelInstructions: string;
+  }) => {
+    // Call API to update class with editedClassData
+    // Update auth classes state if necessary
+    try {
+      if (className.trim() === "" || modelInstructions.trim() === "") {
+        console.log("Both fields are required.");
+      } else {
+        const res = await editUserClass(
+          props.className,
+          className,
+          modelInstructions
+        );
+        await auth?.updateClasses();
+        setIsClassModalOpen(false);
+        navigate(`/chat/${className}/default`);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleOpenPageModal = () => {
+    setIsPageModalOpen(true);
+  };
+
+  const handleClosePageModal = () => {
+    setIsPageModalOpen(false);
   };
 
   const handleSubmitModal = async (pageName: string) => {
@@ -111,7 +172,7 @@ const PageView = (props: PropsType) => {
         // Proceed with submitting data
         const res = await createNewPage(props.className, pageName);
         await auth?.updateClasses();
-        setIsModalOpen(false);
+        setIsPageModalOpen(false);
         //navigate(`/chat/${props.className}/${pageName}`);
       }
     } catch (err) {
@@ -124,6 +185,17 @@ const PageView = (props: PropsType) => {
     if (pages.length) {
       return (
         <Box>
+          <Button onClick={handleEditClassClick}>Edit Class</Button>
+          {isClassModalOpen && (
+            <ClassModal
+              isOpen={isClassModalOpen}
+              onClose={() => setIsClassModalOpen(false)}
+              onSubmit={handleEditClassSubmit}
+              isEditMode={true}
+              existingClassName={props.className}
+              existingModelInstructions={modelInstructions}
+            />
+          )}
           <Box>
             <Typography>
               Page manager for your {props.className} class
@@ -142,12 +214,12 @@ const PageView = (props: PropsType) => {
                 );
               })}
 
-              <Button onClick={handleOpenModal}>
+              <Button onClick={handleOpenPageModal}>
                 Create New Page for {props.className} class
               </Button>
               <PageModal
-                isOpen={isModalOpen}
-                onClose={handleCloseModal}
+                isOpen={isPageModalOpen}
+                onClose={handleClosePageModal}
                 onSubmit={handleSubmitModal}
                 className={props.className}
                 isNew={true}
@@ -163,12 +235,12 @@ const PageView = (props: PropsType) => {
             <Typography>
               Create your first page for your {props.className} class
             </Typography>
-            <Button onClick={handleOpenModal}>
+            <Button onClick={handleOpenPageModal}>
               Create First Page for {props.className} class
             </Button>
             <PageModal
-              isOpen={isModalOpen}
-              onClose={handleCloseModal}
+              isOpen={isPageModalOpen}
+              onClose={handleClosePageModal}
               onSubmit={handleSubmitModal}
               className={props.className}
               isNew={true}

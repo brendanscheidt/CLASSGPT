@@ -88,6 +88,25 @@ export const createNewClass = async (
   return data;
 };
 
+export const editUserClass = async (
+  oldClassName: string,
+  newClassName: string,
+  modelInstructions: string
+) => {
+  const res = await axios.patch("/chat/editClass", {
+    oldClassName,
+    newClassName,
+    modelInstructions,
+  });
+
+  if (res.status !== 201) {
+    throw new Error("Unable to edit class");
+  }
+
+  const data = await res.data;
+  return data;
+};
+
 export const createNewPage = async (className: string, pageName: string) => {
   const res = await axios.post("/chat/createPage", { className, pageName });
 

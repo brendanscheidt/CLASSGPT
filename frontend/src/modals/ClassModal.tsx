@@ -10,15 +10,25 @@ type ClassModalProps = {
     modelInstructions: string;
     /* newPageName: string; */
   }) => void;
+  isEditMode?: boolean;
+  existingClassName?: string;
+  existingModelInstructions?: string;
 };
 
 const ClassModal: React.FC<ClassModalProps> = ({
   isOpen,
   onClose,
   onSubmit,
+  isEditMode = false,
+  existingClassName = "",
+  existingModelInstructions = "",
 }) => {
-  const [className, setClassName] = useState("");
-  const [modelInstructions, setModelInstructions] = useState("");
+  const [className, setClassName] = useState(
+    isEditMode ? existingClassName : ""
+  );
+  const [modelInstructions, setModelInstructions] = useState(
+    isEditMode ? existingModelInstructions : ""
+  );
   /* const [newPageName, setNewPageName] = useState(""); */
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -46,7 +56,7 @@ const ClassModal: React.FC<ClassModalProps> = ({
         <form onSubmit={handleSubmit}>
           <div>
             <Typography sx={{ fontSize: "30px", color: "#49acd6" }}>
-              Create A New Class
+              {isEditMode ? "Edit Class" : "Create A New Class"}
             </Typography>
           </div>
           <div>
@@ -90,7 +100,7 @@ const ClassModal: React.FC<ClassModalProps> = ({
             }}
             type="submit"
           >
-            Submit
+            {isEditMode ? "Save Changes" : "Submit"}
           </Button>
           <Button
             sx={{

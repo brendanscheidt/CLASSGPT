@@ -6,6 +6,7 @@ import {
   createUserClass,
   deleteChats,
   editClassPage,
+  editUserClass,
   generateChatCompletion,
   sendChatsToUser,
   sendClassesToUser,
@@ -23,6 +24,7 @@ chatRoutes.post(
 
 chatRoutes.get("/classes", verifyToken, sendClassesToUser);
 chatRoutes.post("/createClass", verifyToken, createUserClass);
+chatRoutes.patch("/editClass", verifyToken, editUserClass);
 chatRoutes.post("/createPage", verifyToken, createClassPage);
 chatRoutes.patch("/editPage", verifyToken, editClassPage);
 chatRoutes.get("/:classname/:pagename", verifyToken, sendChatsToUser);

@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 type PropsType = {
   className: string;
@@ -25,6 +26,7 @@ const NotePage = (props: PropsType) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editedPageName, setEditedPageName] = useState(props.pageName);
   const editFieldRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   const toggleEditMode = () => {
     setIsEditMode(!isEditMode);
@@ -49,6 +51,12 @@ const NotePage = (props: PropsType) => {
     toggleEditMode();
   };
 
+  const handlePageClick = () => {
+    if (!isEditMode) {
+      navigate(`/chat/${props.className}/${props.pageName}`);
+    }
+  };
+
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardActionArea>
@@ -68,6 +76,7 @@ const NotePage = (props: PropsType) => {
               gutterBottom
               variant="h5"
               component="div"
+              onClick={handlePageClick} // Attach the click handler
             >
               {props.pageName}
             </Typography>
