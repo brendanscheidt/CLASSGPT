@@ -13,6 +13,7 @@ import {
 import toast from "react-hot-toast";
 import ClassModal from "../../modals/ClassModal";
 import { useNavigate } from "react-router-dom";
+import Divider from "@mui/material/Divider";
 
 type PropsType = {
   className: string;
@@ -192,9 +193,56 @@ const PageView = (props: PropsType) => {
   if (props.classExists && !props.pageExists) {
     if (pages.length) {
       return (
-        <Box>
-          <Button onClick={handleEditClassClick}>Edit Class</Button>
-          <Button onClick={handleDeleteClassClick}>Delete Class</Button>
+        <Box
+          sx={{
+            p: 2,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            textAlign: "center",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column", // Set to column to stack elements vertically
+              alignItems: "center", // Align items to the center horizontally
+              textAlign: "center", // Center the text
+            }}
+          >
+            <Typography
+              variant="h2"
+              sx={{
+                mb: 1,
+                letterSpacing: 5,
+                fontWeight: "bold",
+              }}
+            >
+              {props.className.toUpperCase()}
+            </Typography>
+            <Divider
+              sx={{ width: "100%", mb: 3, backgroundColor: "#18465c" }}
+            />{" "}
+            {/* Divider after the title */}
+            <Box sx={{ display: "flex", gap: 2, mb: 4 }}>
+              <Button
+                onClick={handleEditClassClick}
+                variant="contained"
+                color="primary"
+                sx={{ px: 3, py: 1 }}
+              >
+                Edit Class
+              </Button>
+              <Button
+                onClick={handleDeleteClassClick}
+                variant="contained"
+                color="secondary"
+                sx={{ px: 3, py: 1 }}
+              >
+                Delete Class
+              </Button>
+            </Box>
+          </Box>
           {isClassModalOpen && (
             <ClassModal
               isOpen={isClassModalOpen}
@@ -205,36 +253,46 @@ const PageView = (props: PropsType) => {
               existingModelInstructions={modelInstructions}
             />
           )}
-          <Box>
-            <Typography>
-              Page manager for your {props.className} class
-            </Typography>
-            <Box>
-              {pages.map((page, index) => {
-                return (
-                  <NotePage
-                    key={index}
-                    className={props.className}
-                    pageName={page.name}
-                    handleDeletePage={() => handleDeleteChats(page.name)}
-                    handleEditPage={editPageName}
-                    onPageNameUpdated={handlePageNameUpdated} // New prop
-                  />
-                );
-              })}
-
-              <Button onClick={handleOpenPageModal}>
-                Create New Page for {props.className} class
-              </Button>
-              <PageModal
-                isOpen={isPageModalOpen}
-                onClose={handleClosePageModal}
-                onSubmit={handleSubmitModal}
+          <Divider sx={{ width: "100%", mb: 3, backgroundColor: "#18465c" }} />{" "}
+          {/* Divider before the cards */}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              flexWrap: "wrap", // This allows the cards to wrap to a new row
+              gap: 2,
+            }}
+          >
+            {pages.map((page, index) => (
+              <NotePage
+                key={index}
                 className={props.className}
-                isNew={true}
+                pageName={page.name}
+                handleDeletePage={() => handleDeleteChats(page.name)}
+                handleEditPage={editPageName}
+                onPageNameUpdated={handlePageNameUpdated}
               />
-            </Box>
+            ))}
           </Box>
+          <Divider
+            sx={{ width: "100%", mt: 5, mb: 5, backgroundColor: "#18465c" }}
+          />{" "}
+          {/* Divider before the 'Create New Page' button */}
+          <Button
+            onClick={handleOpenPageModal}
+            variant="outlined"
+            color="primary"
+            sx={{ mt: 2, px: 3, py: 1 }}
+          >
+            Create New Page for {props.className} class
+          </Button>
+          <PageModal
+            isOpen={isPageModalOpen}
+            onClose={handleClosePageModal}
+            onSubmit={handleSubmitModal}
+            className={props.className}
+            isNew={true}
+          />
         </Box>
       );
     } else {

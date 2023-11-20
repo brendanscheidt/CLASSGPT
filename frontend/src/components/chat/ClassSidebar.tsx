@@ -131,7 +131,7 @@ const ClassSidebar = (props: PropsType) => {
                       justifyContent: "center", // Center the icon horizontally
                       color: "white",
                       minWidth: 0, // Set the minWidth to a smaller value or 0
-                      padding: 0, // Reduce horizontal padding
+                      paddingRight: "10px", // Reduce horizontal padding
                       whiteSpace: "nowrap",
                     }}
                   >

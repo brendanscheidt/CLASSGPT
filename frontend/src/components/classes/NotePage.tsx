@@ -9,6 +9,10 @@ import {
 } from "@mui/material";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { AiOutlineDelete } from "react-icons/ai";
+import { FiEdit } from "react-icons/fi";
+import { FaRegSave } from "react-icons/fa";
+import { red } from "@mui/material/colors";
 
 type PropsType = {
   className: string;
@@ -58,9 +62,34 @@ const NotePage = (props: PropsType) => {
   };
 
   return (
-    <Card sx={{ maxWidth: 345 }}>
-      <CardActionArea>
-        <CardContent>
+    <Card
+      sx={{
+        maxWidth: 345,
+        background: "#2b3a42", // Dark background
+
+        boxShadow: "0px 2px 5px rgba(0,0,0,0.3)", // Soft shadow for depth
+        border: "1px solid rgba(255, 255, 255, 0.1)", // Soft border
+        "&:hover": {
+          boxShadow: "0px 4px 10px rgba(0,0,0,0.5)", // Darker shadow on hover
+        },
+      }}
+    >
+      <CardActionArea
+        sx={{
+          backgroundImage: "url('../../circuit.png')", // Subtle circuit texture
+          backgroundSize: "cover", // Ensures the background image covers the entire Card
+          backgroundRepeat: "no-repeat", // Prevents the background image from repeating
+          backgroundPosition: "center", // Centers the background image
+        }}
+      >
+        <CardContent
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onClick={handlePageClick}
+        >
           {isEditMode ? (
             <TextField
               fullWidth
@@ -72,13 +101,26 @@ const NotePage = (props: PropsType) => {
             />
           ) : (
             <Typography
-              sx={{ color: "black" }}
+              sx={{
+                color: "white",
+                fontFamily: "'Courier New', Courier, monospace",
+                display: "flex",
+                fontWeight: "bold", // Make the font weight bolder
+                letterSpacing: "0.5px", // Adjust letter spacing
+                backgroundColor: "rgba(255, 255, 255, 0.1)", // Add a faint background color
+                justifyContent: "center",
+                alignItems: "center",
+                padding: "5px", // Add some padding if background color is used
+                borderRadius: "5px", // Optional: for rounded corners if background color is used
+              }}
               gutterBottom
               variant="h5"
               component="div"
-              onClick={handlePageClick} // Attach the click handler
+              // Attach the click handler
             >
-              {props.pageName}
+              {props.pageName.length > 10
+                ? props.pageName.substring(0, 11) + "..."
+                : props.pageName}
             </Typography>
           )}
         </CardContent>
@@ -89,15 +131,15 @@ const NotePage = (props: PropsType) => {
           size="small"
           color="primary"
         >
-          Delete
+          <AiOutlineDelete size={20} color={red[300]} />
         </Button>
         {isEditMode ? (
           <Button onClick={handleSave} size="small" color="primary">
-            Save
+            <FaRegSave size={20} />
           </Button>
         ) : (
           <Button onClick={toggleEditMode} size="small" color="primary">
-            Edit
+            <FiEdit size={20} />
           </Button>
         )}
       </CardActions>
