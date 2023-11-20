@@ -113,16 +113,6 @@ const Chat = (props: PropsType) => {
     scrollToBottom();
   }, [chatMessages, prevChatMessagesRef]);
 
-  /*   useEffect(() => {
-    const checkAuthAndRedirect = () => {
-      if (!auth?.isLoading && !auth?.user) {
-        return navigate("/login");
-      }
-    };
-
-    checkAuthAndRedirect();
-  }, [auth?.isLoading, auth?.user, navigate]); */
-
   useEffect(() => {
     if (!prevChatMessagesRef.current && chatMessages.length) {
       prevChatMessagesRef.current = chatMessages;

@@ -9,11 +9,11 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import Collapse from "@mui/material/Collapse";
 import Divider from "@mui/material/Divider";
 import { Link, useNavigate } from "react-router-dom";
-import { ListItemButton, useMediaQuery } from "@mui/material";
+import { Box, Button, ListItemButton } from "@mui/material";
 import PageModal from "../../modals/PageModal";
 import { createNewPage } from "../../helpers/api-communicator";
 import { useAuth } from "../../context/AuthContext";
-import { useTheme } from "@emotion/react";
+import { FiEdit3 } from "react-icons/fi";
 
 type PropsType = {
   classes: {
@@ -40,6 +40,7 @@ const ClassSidebar = (props: PropsType) => {
   const [openFolder, setOpenFolder] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeClass, setActiveClass] = useState("");
+  const [isClassModalOpen, setIsClassModalOpen] = useState(false);
   const auth = useAuth();
   const navigate = useNavigate();
 
@@ -62,6 +63,18 @@ const ClassSidebar = (props: PropsType) => {
     event.stopPropagation();
     setActiveClass(className);
     setIsModalOpen(true);
+  };
+
+  const handleClassManage = (
+    event: React.MouseEvent<HTMLDivElement>,
+    className: string
+  ) => {
+    event.stopPropagation();
+    setActiveClass(className);
+    if (props.onMobileDrawerClose) {
+      props.onMobileDrawerClose();
+    }
+    navigate(`/chat/${className}/default`);
   };
 
   const handleCloseModal = () => {
@@ -110,12 +123,44 @@ const ClassSidebar = (props: PropsType) => {
             {" "}
             <ListItemIcon sx={{ color: "white" }}>
               {openFolder === classItem.name ? (
-                <IoAddCircleSharp
-                  size={25}
-                  onClick={(event: React.MouseEvent<HTMLDivElement>) =>
-                    handleAddPage(event, classItem.name)
-                  }
-                />
+                <Box sx={{ display: "flex", flex: "row", padding: 0 }}>
+                  <Button
+                    sx={{
+                      display: "inline-flex", // Use 'inline-flex' for the button to only take up as much space as needed
+                      alignItems: "center",
+                      justifyContent: "center", // Center the icon horizontally
+                      color: "white",
+                      minWidth: 0, // Set the minWidth to a smaller value or 0
+                      padding: 0, // Reduce horizontal padding
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <IoAddCircleSharp
+                      size={25}
+                      onClick={(event: React.MouseEvent<HTMLDivElement>) =>
+                        handleAddPage(event, classItem.name)
+                      }
+                    />
+                  </Button>
+                  <Button
+                    sx={{
+                      display: "inline-flex", // Use 'inline-flex' for the button to only take up as much space as needed
+                      alignItems: "center",
+                      justifyContent: "center", // Center the icon horizontally
+                      color: "white",
+                      minWidth: 0, // Set the minWidth to a smaller value or 0
+                      padding: "10px", // Reduce horizontal padding
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <FiEdit3
+                      size={25}
+                      onClick={(event: React.MouseEvent<HTMLDivElement>) =>
+                        handleClassManage(event, classItem.name)
+                      }
+                    />
+                  </Button>
+                </Box>
               ) : (
                 <FolderIcon />
               )}
@@ -129,9 +174,15 @@ const ClassSidebar = (props: PropsType) => {
               sx={{
                 "& .MuiListItemText-primary": { color: "#21a3a2" },
                 paddingRight: "5px",
+                paddingLeft: "-20px",
+                marginLeft: "5px",
               }}
             />
-            {openFolder === classItem.name ? <ExpandLess /> : <ExpandMore />}
+            {openFolder === classItem.name ? (
+              <ExpandLess sx={{ color: "white", paddingLeft: "5px" }} />
+            ) : (
+              <ExpandMore sx={{ color: "white", paddingLeft: "5px" }} />
+            )}
           </ListItemButton>{" "}
           {/* Updated ListItem to ListItemButton */}
           <Collapse

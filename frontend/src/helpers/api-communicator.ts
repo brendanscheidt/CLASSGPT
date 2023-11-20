@@ -118,6 +118,17 @@ export const createNewPage = async (className: string, pageName: string) => {
   return data;
 };
 
+export const deleteUserClass = async (className: string) => {
+  const res = await axios.delete(`/chat/deleteClass/${className}`);
+
+  if (res.status != 200) {
+    throw new Error("Unable to delete class");
+  }
+
+  const data = await res.data;
+  return data;
+};
+
 export const editUserPage = async (
   className: string,
   oldName: string,

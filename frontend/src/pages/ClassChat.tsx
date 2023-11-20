@@ -191,6 +191,7 @@ const ClassChat = () => {
           sx={{
             display: "flex",
             width: { md: "20vw", xs: "90%" },
+            minWidth: { md: "250px" },
             /* height: "100%", */
             height: { md: "85vh", xs: "20vh" },
             maxHeight: { md: "85vh", xs: "20vh" },

@@ -6,6 +6,7 @@ import PageModal from "../../modals/PageModal";
 import {
   createNewPage,
   deleteUserChats,
+  deleteUserClass,
   editUserClass,
   editUserPage,
 } from "../../helpers/api-communicator";
@@ -56,7 +57,6 @@ const PageView = (props: PropsType) => {
       if (!auth?.isClassesLoading && props.classExists) {
         auth?.classes.map((userClass) => {
           if (props.className === userClass.name) {
-            console.log(userClass.model.instructions);
             const instructions = userClass.model.instructions;
             const userInstructionsRegex = /"""([^]*?)"""/;
             const match = instructions.match(userInstructionsRegex);
@@ -111,7 +111,6 @@ const PageView = (props: PropsType) => {
       if (newName.trim() === "") {
         console.log("Page name is required.");
       } else {
-        console.log(oldName, newName);
         await editUserPage(className, oldName, newName);
         await auth?.updateClasses();
       }
@@ -124,6 +123,15 @@ const PageView = (props: PropsType) => {
     const classToEdit = auth?.classes.find((c) => c.name === props.className);
     if (classToEdit) {
       setIsClassModalOpen(true);
+    }
+  };
+
+  const handleDeleteClassClick = async () => {
+    try {
+      await deleteUserClass(props.className);
+      await auth?.updateClasses();
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -186,6 +194,7 @@ const PageView = (props: PropsType) => {
       return (
         <Box>
           <Button onClick={handleEditClassClick}>Edit Class</Button>
+          <Button onClick={handleDeleteClassClick}>Delete Class</Button>
           {isClassModalOpen && (
             <ClassModal
               isOpen={isClassModalOpen}

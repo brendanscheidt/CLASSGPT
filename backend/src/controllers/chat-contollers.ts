@@ -417,6 +417,41 @@ export const editUserClass = async (
   }
 };
 
+export const deleteClass = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  console.log(req);
+  try {
+    const className = req.params.classname;
+
+    const existingUser = await User.findById(res.locals.jwtData.id);
+
+    if (!existingUser)
+      return res.status(401).send("User not registered OR Token malfunctioned");
+
+    if (existingUser._id.toString() !== res.locals.jwtData.id) {
+      return res.status(401).send("Permissions didn't match");
+    }
+
+    let classForChat = existingUser.classes.find(
+      (userClass) => userClass.name === className
+    );
+
+    if (!classForChat) {
+      return res.status(404).json({ message: "Class not found" });
+    }
+
+    existingUser.classes.pull({ name: className });
+    await existingUser.save();
+
+    return res.status(200).json({ message: "OK", existingUser });
+  } catch (err) {
+    return res.status(500).json({ message: "An error occured" });
+  }
+};
+
 export const deleteChats = async (
   req: Request,
   res: Response,
