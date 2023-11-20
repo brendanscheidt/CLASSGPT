@@ -387,6 +387,16 @@ export const editUserClass = async (
         .json({ message: "User not registered OR Token malfunction" });
     }
 
+    let classAlreadyExists = false;
+
+    user.classes.find((userClass) => {
+      if (userClass.name === newClassName) {
+        classAlreadyExists = true;
+      }
+    });
+
+    if (classAlreadyExists) return res.status(500).json({ message: "Error" });
+
     const classForChat = user.classes.find(
       (userClass) => userClass.name === oldClassName
     );
