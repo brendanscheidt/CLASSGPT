@@ -51,6 +51,7 @@ const PageView = (props: PropsType) => {
   const [modelInstructions, setModelInstructions] = useState("");
   const [isPageModalOpen, setIsPageModalOpen] = useState(false);
   const [isClassModalOpen, setIsClassModalOpen] = useState(false);
+  const [editingPage, setEditingPage] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -82,6 +83,14 @@ const PageView = (props: PropsType) => {
   if (auth?.isClassesLoading) {
     return <div>Loading...</div>;
   }
+
+  const handleStartEditing = (pageName: string) => {
+    setEditingPage(pageName);
+  };
+
+  const handleStopEditing = () => {
+    setEditingPage(null);
+  };
 
   const handlePageNameUpdated = (oldName: string, newName: string) => {
     setPages((prevPages) =>
@@ -268,9 +277,13 @@ const PageView = (props: PropsType) => {
                 key={index}
                 className={props.className}
                 pageName={page.name}
-                handleDeletePage={() => handleDeleteChats(page.name)}
-                handleEditPage={editPageName}
+                isEditMode={page.name === editingPage}
+                onStartEditing={() => handleStartEditing(page.name)}
+                onStopEditing={handleStopEditing}
                 onPageNameUpdated={handlePageNameUpdated}
+                handleDeletePage={handleDeleteChats}
+                handleEditPage={editPageName}
+                // other props...
               />
             ))}
           </Box>

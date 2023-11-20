@@ -338,12 +338,14 @@ const Chat = (props: PropsType) => {
     );
   } else {
     return (
-      <PageView
-        className={props.userClass}
-        pageName={props.userPage}
-        classExists={isClassInUser}
-        pageExists={isPageInClass}
-      />
+      <Box sx={{ width: "100%" }}>
+        <PageView
+          className={props.userClass}
+          pageName={props.userPage}
+          classExists={isClassInUser}
+          pageExists={isPageInClass}
+        />
+      </Box>
     );
   }
 };

@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineDelete } from "react-icons/ai";
 import { FiEdit } from "react-icons/fi";
@@ -17,6 +17,9 @@ import { red } from "@mui/material/colors";
 type PropsType = {
   className: string;
   pageName: string;
+  isEditMode: boolean; // New prop to determine if the page is in edit mode
+  onStartEditing: () => void; // Callback to start editing
+  onStopEditing: () => void; // Callback to stop editing
   onPageNameUpdated: (oldName: string, newName: string) => void;
   handleDeletePage: (pName: string) => Promise<void>;
   handleEditPage: (
@@ -26,18 +29,25 @@ type PropsType = {
   ) => Promise<void>;
 };
 
-const NotePage = (props: PropsType) => {
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [editedPageName, setEditedPageName] = useState(props.pageName);
+const NotePage = ({
+  className,
+  pageName,
+  isEditMode,
+  onStartEditing,
+  onStopEditing,
+  onPageNameUpdated,
+  handleDeletePage,
+  handleEditPage,
+}: PropsType) => {
+  const [editedPageName, setEditedPageName] = useState(pageName);
   const editFieldRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
-  const toggleEditMode = () => {
-    setIsEditMode(!isEditMode);
-    if (!isEditMode) {
+  useEffect(() => {
+    if (isEditMode) {
       setTimeout(() => editFieldRef.current?.focus(), 0); // Set focus when entering edit mode
     }
-  };
+  }, [isEditMode]);
 
   const handlePageNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEditedPageName(event.target.value);
@@ -50,14 +60,14 @@ const NotePage = (props: PropsType) => {
   };
 
   const handleSave = async () => {
-    await props.handleEditPage(props.className, props.pageName, editedPageName);
-    props.onPageNameUpdated(props.pageName, editedPageName); // Update parent component
-    toggleEditMode();
+    await handleEditPage(className, pageName, editedPageName);
+    onPageNameUpdated(pageName, editedPageName); // Update parent component
+    onStopEditing(); // Inform parent component to stop editing
   };
 
   const handlePageClick = () => {
     if (!isEditMode) {
-      navigate(`/chat/${props.className}/${props.pageName}`);
+      navigate(`/chat/${className}/${pageName}`);
     }
   };
 
@@ -98,6 +108,11 @@ const NotePage = (props: PropsType) => {
               onKeyPress={handleKeyPress}
               onChange={handlePageNameChange}
               inputRef={editFieldRef}
+              sx={{
+                "& .MuiInputBase-input": {
+                  color: "white", // This will change the text color
+                },
+              }}
             />
           ) : (
             <Typography
@@ -118,27 +133,27 @@ const NotePage = (props: PropsType) => {
               component="div"
               // Attach the click handler
             >
-              {props.pageName.length > 10
-                ? props.pageName.substring(0, 11) + "..."
-                : props.pageName}
+              {pageName.length > 10
+                ? pageName.substring(0, 11) + "..."
+                : pageName}
             </Typography>
           )}
         </CardContent>
       </CardActionArea>
       <CardActions>
         <Button
-          onClick={() => props.handleDeletePage(props.pageName)}
+          onClick={() => handleDeletePage(pageName)}
           size="small"
           color="primary"
         >
           <AiOutlineDelete size={20} color={red[300]} />
         </Button>
         {isEditMode ? (
-          <Button onClick={handleSave} size="small" color="primary">
+          <Button onClick={onStopEditing} size="small" color="primary">
             <FaRegSave size={20} />
           </Button>
         ) : (
-          <Button onClick={toggleEditMode} size="small" color="primary">
+          <Button onClick={onStartEditing} size="small" color="primary">
             <FiEdit size={20} />
           </Button>
         )}
