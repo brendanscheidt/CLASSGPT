@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import NotePage from "../classes/NotePage";
 import PageModal from "../../modals/PageModal";
 import {
+  createNewClass,
   createNewPage,
   deleteUserChats,
   deleteUserClass,
@@ -53,6 +54,24 @@ const PageView = (props: PropsType) => {
   const [isClassModalOpen, setIsClassModalOpen] = useState(false);
   const [editingPage, setEditingPage] = useState<string | null>(null);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(
+    () => {
+      setIsLoading(true); // Start loading when effect runs
+      const timeoutId = setTimeout(() => {
+        // ... existing logic
+        setIsLoading(false); // Stop loading once data is fetched
+      }, 200);
+
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    },
+    [
+      /* ...dependencies */
+    ]
+  );
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -80,8 +99,8 @@ const PageView = (props: PropsType) => {
     props.classExists,
   ]);
 
-  if (auth?.isClassesLoading) {
-    return <div>Loading...</div>;
+  if (isLoading) {
+    return <div>Loading...</div>; // Display loading screen while loading
   }
 
   const handleStartEditing = (pageName: string) => {
@@ -163,6 +182,33 @@ const PageView = (props: PropsType) => {
           className,
           modelInstructions
         );
+        await auth?.updateClasses();
+        setIsClassModalOpen(false);
+        navigate(`/chat/${className}/default`);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleCreateClassSubmit = async ({
+    className,
+    modelInstructions,
+  }: {
+    className: string;
+    modelInstructions: string;
+  }) => {
+    // Call API to update class with editedClassData
+    // Update auth classes state if necessary
+    try {
+      if (className.trim() === "" || modelInstructions.trim() === "") {
+        console.log("Both fields are required.");
+      } else {
+        const res = await createNewClass(className, {
+          name: "model",
+          instructions: modelInstructions,
+          model: "gpt-3.5-turbo",
+        });
         await auth?.updateClasses();
         setIsClassModalOpen(false);
         navigate(`/chat/${className}/default`);
@@ -310,13 +356,46 @@ const PageView = (props: PropsType) => {
       );
     } else {
       return (
-        <Box>
-          <Box>
-            <Typography>
-              Create your first page for your {props.className} class
+        <Box
+          sx={{
+            p: 2,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            textAlign: "center",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column", // Set to column to stack elements vertically
+              alignItems: "center", // Align items to the center horizontally
+              textAlign: "center", // Center the text
+            }}
+          >
+            <Typography
+              variant="h2"
+              color={"whitesmoke"}
+              sx={{ mt: 10, letterSpacing: 2, fontWeight: "bold" }}
+            >
+              Create The First Page For Your {props.className} Class
             </Typography>
-            <Button onClick={handleOpenPageModal}>
-              Create First Page for {props.className} class
+            <Button
+              onClick={handleOpenPageModal}
+              sx={{
+                mt: 20,
+                fontSize: "large", // Makes the font size larger
+                padding: "20px", // Adds padding to increase the button size
+                border: "2px solid black", // Adds a border with 2px thickness and black color
+                borderRadius: "10px",
+                color: "whitesmoke",
+                backgroundColor: "#1d3e57", // Sets the background color to sky blue
+                "&:hover": {
+                  backgroundColor: "#234a69", // Optional: Changes background color on hover
+                },
+              }}
+            >
+              Create {props.className} Page
             </Button>
             <PageModal
               isOpen={isPageModalOpen}
@@ -331,10 +410,56 @@ const PageView = (props: PropsType) => {
     }
   } else if (!props.classExists && !props.pageExists) {
     return (
-      <Box>
-        <Typography sx={{ color: "white" }}>
-          Create a class to start chatting!
-        </Typography>
+      <Box
+        sx={{
+          p: 2,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          textAlign: "center",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column", // Set to column to stack elements vertically
+            alignItems: "center", // Align items to the center horizontally
+            textAlign: "center", // Center the text
+          }}
+        >
+          <Typography
+            variant="h2"
+            color={"whitesmoke"}
+            sx={{ mt: 10, letterSpacing: 2, fontWeight: "bold" }}
+          >
+            Create Your First Class To Start Chatting!
+          </Typography>
+          <Button
+            onClick={() => setIsClassModalOpen(true)}
+            sx={{
+              mt: 20,
+              fontSize: "large", // Makes the font size larger
+              padding: "20px", // Adds padding to increase the button size
+              border: "2px solid black", // Adds a border with 2px thickness and black color
+              borderRadius: "10px",
+              color: "whitesmoke",
+              backgroundColor: "#1d3e57", // Sets the background color to sky blue
+              "&:hover": {
+                backgroundColor: "#234a69", // Optional: Changes background color on hover
+              },
+            }}
+          >
+            Create A New Class
+          </Button>
+          {isClassModalOpen && (
+            <ClassModal
+              isOpen={isClassModalOpen}
+              onClose={() => setIsClassModalOpen(false)}
+              onSubmit={handleCreateClassSubmit}
+              isEditMode={false}
+            />
+          )}
+        </Box>
       </Box>
     );
   }

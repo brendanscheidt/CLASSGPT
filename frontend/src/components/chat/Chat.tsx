@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 import { red } from "@mui/material/colors";
 import PageView from "./PageView";
 import { Link, useNavigate } from "react-router-dom";
-import { FiEdit3 } from "react-icons/fi";
+import { TbHomeEdit } from "react-icons/tb";
 import { MdDeleteForever } from "react-icons/md";
 
 type Message = {
@@ -96,11 +96,11 @@ const Chat = (props: PropsType) => {
 
   useLayoutEffect(() => {
     if (auth?.isLoggedIn && auth.user) {
-      toast.loading("Loading Chats", { id: "loadchats" });
+      //toast.loading("Loading Chats", { id: "loadchats" });
       getUserChats(props.userClass, props.userPage)
         .then((data) => {
           setChatMessages([...data.chats]);
-          toast.success("Successfully loaded chats", { id: "loadchats" });
+          //toast.success("Successfully loaded chats", { id: "loadchats" });
         })
         .catch((err) => {
           console.log(err);
@@ -218,7 +218,7 @@ const Chat = (props: PropsType) => {
                   },
                 }}
               >
-                <FiEdit3
+                <TbHomeEdit
                   size={20}
                   //style={{ marginRight: { md: "8px", xs: 0 } }}
                 />

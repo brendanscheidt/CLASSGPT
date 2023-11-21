@@ -13,7 +13,7 @@ import { Box, Button, ListItemButton } from "@mui/material";
 import PageModal from "../../modals/PageModal";
 import { createNewPage } from "../../helpers/api-communicator";
 import { useAuth } from "../../context/AuthContext";
-import { FiEdit3 } from "react-icons/fi";
+import { TbHomeEdit } from "react-icons/tb";
 
 type PropsType = {
   classes: {
@@ -153,7 +153,7 @@ const ClassSidebar = (props: PropsType) => {
                       whiteSpace: "nowrap",
                     }}
                   >
-                    <FiEdit3
+                    <TbHomeEdit
                       size={25}
                       onClick={(event: React.MouseEvent<HTMLDivElement>) =>
                         handleClassManage(event, classItem.name)

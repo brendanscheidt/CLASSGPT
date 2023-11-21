@@ -63,6 +63,9 @@ const pageSchema = new mongoose.Schema(
     name: {
       type: String,
     },
+    pageInstructions: {
+      type: String,
+    },
     chats: {
       type: [chatSchema],
     },
