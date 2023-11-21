@@ -66,19 +66,22 @@ const pageSchema = new mongoose.Schema({
         type: [chatSchema],
     },
     thread: {
-        id: {
-            type: String,
-        },
-        object: {
-            type: String,
-        },
-        created_at: {
-            type: String,
-        },
-        metadata: {
-            type: Object,
-        },
+        type: Object,
     },
+    /* thread: {
+      id: {
+        type: String,
+      },
+      object: {
+        type: String,
+      },
+      created_at: {
+        type: String,
+      },
+      metadata: {
+        type: Object,
+      },
+    }, */
 }, { timestamps: true });
 const classSchema = new mongoose.Schema({
     name: {

@@ -6,6 +6,7 @@ import PageModal from "../../modals/PageModal";
 import {
   createNewClass,
   createNewPage,
+  deleteClassPage,
   deleteUserChats,
   deleteUserClass,
   editUserClass,
@@ -62,6 +63,7 @@ const PageView = (props: PropsType) => {
 
   useEffect(
     () => {
+      console.log("effect");
       setIsLoading(true); // Start loading when effect runs
       const timeoutId = setTimeout(() => {
         // ... existing logic
@@ -79,13 +81,13 @@ const PageView = (props: PropsType) => {
 
   useEffect(() => {
     //setIsLoading(true);
-    console.log("\n");
+    /* console.log("\n");
     console.log("useEffect triggered");
     console.log("auth?.classes:", auth?.classes);
     console.log("props.className:", props.className);
     console.log("props.pageName:", props.pageName);
     console.log("auth?.isClassesLoading:", auth?.isClassesLoading);
-    console.log("props.classExists:", props.classExists);
+    console.log("props.classExists:", props.classExists); */
 
     const timeoutId = setTimeout(() => {
       if (!auth?.isClassesLoading && props.classExists) {
@@ -209,18 +211,15 @@ const PageView = (props: PropsType) => {
     setIsPageModalOpen(true);
   };
 
-  const handleDeleteChats = async (pName: string) => {
+  const handleDeletePage = async (pName: string) => {
     try {
-      setIsLoading(true);
-      toast.loading("Deleting Chats", { id: "deletechats" });
-      await deleteUserChats(props.className, pName);
+      toast.loading("Deleting Page", { id: "deletepage" });
+      await deleteClassPage(props.className, pName);
       await auth?.updateClasses();
-      toast.success("Deleted Chats Successfully", { id: "deletechats" });
-      setIsLoading(false);
+      toast.success("Deleted Page Successfully", { id: "deletepage" });
     } catch (error) {
       console.log(error);
-      toast.error("Deleting chats failed", { id: "deletechats" });
-      setIsLoading(false);
+      toast.error("Deleting page failed", { id: "deletepage" });
     }
   };
 
@@ -235,7 +234,12 @@ const PageView = (props: PropsType) => {
         console.log("Page name is required.");
       } else {
         //setIsLoading(true);
-        await editUserPage(className, oldName, newName, pageInstructions);
+        await editUserPage(
+          className,
+          oldName,
+          newName.trim(),
+          pageInstructions
+        );
         await auth?.updateClasses();
         //setIsLoading(false);
       }
@@ -254,14 +258,11 @@ const PageView = (props: PropsType) => {
 
   const handleDeleteClassClick = async () => {
     try {
-      setIsLoading(true);
       await deleteUserClass(props.className);
       await auth?.updateClasses();
-      setIsLoading(false);
       navigate(`/chat/${auth?.classes[0].name}/default`);
     } catch (err) {
       console.log(err);
-      setIsLoading(false);
     }
   };
 
@@ -459,7 +460,7 @@ const PageView = (props: PropsType) => {
                 onEditPage={() =>
                   handleStartEditing(page.name, page.pageInstructions)
                 }
-                handleDeletePage={handleDeleteChats}
+                handleDeletePage={handleDeletePage}
               />
             ))}
           </Box>

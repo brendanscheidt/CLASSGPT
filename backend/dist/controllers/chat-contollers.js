@@ -365,6 +365,7 @@ export const deleteChats = async (req, res, next) => {
         if (page) {
             // Clear the chats array while maintaining the Mongoose DocumentArray type
             page.chats.splice(0, page.chats.length);
+            page.thread = await openai.beta.threads.create();
         }
         else {
             return res.status(404).send("Page not found");
@@ -379,6 +380,37 @@ export const deleteChats = async (req, res, next) => {
     catch (err) {
         console.log(err);
         return res.status(404).json({ message: "ERROR", cause: err.message });
+    }
+};
+export const deletePage = async (req, res, next) => {
+    try {
+        const className = req.params.classname;
+        const pageName = req.params.pagename;
+        const existingUser = await User.findById(res.locals.jwtData.id);
+        if (!existingUser)
+            return res.status(401).send("User not registered OR Token malfunctioned");
+        if (existingUser._id.toString() !== res.locals.jwtData.id) {
+            return res.status(401).send("Permissions didn't match");
+        }
+        let classForChat = existingUser.classes.find((userClass) => userClass.name === className);
+        if (!classForChat) {
+            return res.status(404).send("Class not found");
+        }
+        // Check if the page exists
+        const pageIndex = classForChat.pages.findIndex((page) => page.name === pageName);
+        if (pageIndex === -1) {
+            return res.status(404).send("Page not found");
+        }
+        // Remove the page from the class
+        classForChat.pages.splice(pageIndex, 1);
+        await existingUser.save();
+        return res.status(200).json({
+            message: "Page deleted successfully",
+        });
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: "ERROR", cause: err.message });
     }
 };
 //# sourceMappingURL=chat-contollers.js.map

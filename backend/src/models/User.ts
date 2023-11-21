@@ -70,6 +70,9 @@ const pageSchema = new mongoose.Schema(
       type: [chatSchema],
     },
     thread: {
+      type: Object,
+    },
+    /* thread: {
       id: {
         type: String,
       },
@@ -82,7 +85,7 @@ const pageSchema = new mongoose.Schema(
       metadata: {
         type: Object,
       },
-    },
+    }, */
   },
   { timestamps: true }
 );

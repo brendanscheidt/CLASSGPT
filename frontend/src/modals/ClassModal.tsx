@@ -33,9 +33,16 @@ const ClassModal: React.FC<ClassModalProps> = ({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onSubmit({ className, modelInstructions /* newPageName */ }); // Pass as an object
-    setClassName("");
-    setModelInstructions("");
+    const classTrimmed = className.trim();
+    const instructionsTrimmed = modelInstructions.trim();
+    if (classTrimmed.length && instructionsTrimmed.length) {
+      onSubmit({
+        className: classTrimmed,
+        modelInstructions: instructionsTrimmed /* newPageName */,
+      }); // Pass as an object
+      handleClose();
+    }
+
     /* setNewPageName(""); */
   };
 
@@ -81,11 +88,12 @@ const ClassModal: React.FC<ClassModalProps> = ({
           <div>
             <CustomizedInput
               name="modelInstructions"
-              label="Model Instructions"
+              label="Tutor Instructions"
               type="text"
               value={modelInstructions}
               onChange={(e) => setModelInstructions(e.target.value)}
               multiline={true}
+              placeholder="Type the instructions you wish to give your tutor for this class. ie. Talk like an old-timey british guy. Make sarcastic jokes often."
             />
           </div>
 

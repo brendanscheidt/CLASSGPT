@@ -6,6 +6,7 @@ import {
   createUserClass,
   deleteChats,
   deleteClass,
+  deletePage,
   editClassPage,
   editUserClass,
   generateChatCompletion,
@@ -31,5 +32,6 @@ chatRoutes.patch("/editPage", verifyToken, editClassPage);
 chatRoutes.get("/:classname/:pagename", verifyToken, sendChatsToUser);
 chatRoutes.delete("/delete/:classname/:pagename", verifyToken, deleteChats);
 chatRoutes.delete("/deleteClass/:classname", verifyToken, deleteClass);
+chatRoutes.delete("/deletePage/:classname/:pagename", verifyToken, deletePage);
 
 export default chatRoutes;

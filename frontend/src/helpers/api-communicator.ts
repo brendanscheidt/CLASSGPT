@@ -179,3 +179,14 @@ export const logoutUser = async () => {
   const data = await res.data;
   return data;
 };
+
+export const deleteClassPage = async (className: string, pageName: string) => {
+  const res = await axios.delete(`/chat/deletePage/${className}/${pageName}`);
+
+  if (res.status != 200) {
+    throw new Error("Unable to delete page");
+  }
+
+  const data = await res.data;
+  return data;
+};

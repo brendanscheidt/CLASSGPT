@@ -8,6 +8,7 @@ type Props = {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   multiline?: boolean;
   rows?: number;
+  placeholder?: string;
 };
 
 const CustomizedInput = ({
@@ -18,6 +19,7 @@ const CustomizedInput = ({
   onChange,
   multiline = false,
   rows = 4,
+  placeholder = "",
 }: Props) => {
   return (
     <TextField
@@ -30,6 +32,7 @@ const CustomizedInput = ({
       onChange={onChange}
       multiline={multiline}
       rows={multiline ? rows : 1}
+      placeholder={placeholder}
       sx={{
         width: 400,
         "& .MuiInputBase-input": {

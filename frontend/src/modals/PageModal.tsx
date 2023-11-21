@@ -33,9 +33,11 @@ const PageModal: React.FC<ClassModalProps> = ({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onSubmit(pageName, pageInstructions); // Pass as an object
-    setPageName("");
-    setPageInstructions("");
+    if (pageInstructions.length && pageName.length) {
+      onSubmit(pageName.trim(), pageInstructions.trim()); // Pass as an object
+      setPageName("");
+      setPageInstructions("");
+    }
   };
 
   const handleClose = () => {
@@ -72,10 +74,12 @@ const PageModal: React.FC<ClassModalProps> = ({
               {/* <label htmlFor="className">Class Name:</label> */}
               <CustomizedInput
                 name="pageinstructions"
-                label="Page Instructions"
+                label="Topic Instructions"
                 type="text"
                 value={pageInstructions}
                 onChange={(e) => setPageInstructions(e.target.value)}
+                multiline={true}
+                placeholder="Type the instructions you want your tutor to have for this specific page or topic. ie. This page is about geometry and area."
               />
             </div>
             <Button
@@ -133,10 +137,12 @@ const PageModal: React.FC<ClassModalProps> = ({
               {/* <label htmlFor="className">Class Name:</label> */}
               <CustomizedInput
                 name="pageinstructions"
-                label="Page Instructions"
+                label="Topic Instructions"
                 type="text"
                 value={pageInstructions}
                 onChange={(e) => setPageInstructions(e.target.value)}
+                multiline={true}
+                placeholder="Type the instructions you want your tutor to have for this specific page or topic. ie. This page is about geometry and area."
               />
             </div>
             <Button
