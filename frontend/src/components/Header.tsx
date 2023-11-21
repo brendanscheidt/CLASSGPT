@@ -38,7 +38,7 @@ const Header = () => {
                   <NavigationLink
                     bg="#00fffc"
                     to={`/chat/${auth.classes[0].name}/default`}
-                    text="Go To Chats"
+                    text="Chat"
                     textColor="black"
                   />
                   <NavigationLink
@@ -55,7 +55,7 @@ const Header = () => {
                 <NavigationLink
                   bg="#00fffc"
                   to="/chat/none/none"
-                  text="Go To Chats"
+                  text="Chat"
                   textColor="black"
                 />
                 <NavigationLink

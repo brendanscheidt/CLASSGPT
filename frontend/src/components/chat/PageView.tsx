@@ -7,7 +7,6 @@ import {
   createNewClass,
   createNewPage,
   deleteClassPage,
-  deleteUserChats,
   deleteUserClass,
   editUserClass,
   editUserPage,
