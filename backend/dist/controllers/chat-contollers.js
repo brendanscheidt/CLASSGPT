@@ -133,7 +133,6 @@ export const generateChatCompletion = async (req, res, next) => {
             return res.status(500).json({ error: "Error: No message content found" });
         }
         await user.save();
-        console.log(pageForChat.chats);
         return res.status(200).json({ chats: pageForChat.chats });
     }
     catch (err) {
@@ -299,9 +298,15 @@ export const editUserClass = async (req, res, next) => {
         let classAlreadyExists = false;
         user.classes.find((userClass) => {
             if (userClass.name === newClassName) {
-                classAlreadyExists = true;
+                const regex = /"""(.*?)"""/s;
+                const match = userClass.model.instructions.match(regex);
+                const extractedText = match ? match[1] : "";
+                if (extractedText === modelInstructions) {
+                    classAlreadyExists = true;
+                }
             }
         });
+        console.log(classAlreadyExists);
         if (classAlreadyExists)
             return res.status(500).json({ message: "Error" });
         const classForChat = user.classes.find((userClass) => userClass.name === oldClassName);
@@ -352,11 +357,14 @@ export const deleteChats = async (req, res, next) => {
             return res.status(401).send("Permissions didn't match");
         }
         let classForChat = existingUser.classes.find((userClass) => userClass.name === className);
+        if (!classForChat) {
+            return res.status(404).send("Class not found");
+        }
         // Find the index of the page to be removed
-        const pageIndex = classForChat.pages.findIndex((page) => page.name === pagename);
-        // If the page is found, remove it
-        if (pageIndex !== -1) {
-            classForChat.pages.splice(pageIndex, 1);
+        const page = classForChat.pages.find((page) => page.name === pagename);
+        if (page) {
+            // Clear the chats array while maintaining the Mongoose DocumentArray type
+            page.chats.splice(0, page.chats.length);
         }
         else {
             return res.status(404).send("Page not found");

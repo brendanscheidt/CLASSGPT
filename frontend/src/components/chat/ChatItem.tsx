@@ -33,12 +33,14 @@ const ChatItem = ({
   content,
   role,
   isNewMessage,
+  onAnimationStart,
   onAnimationComplete,
 }: {
   content: string;
   role: "user" | "assistant";
   isNewMessage: boolean;
   onAnimationComplete: () => void;
+  onAnimationStart: () => void;
 }) => {
   const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
 
@@ -53,6 +55,12 @@ const ChatItem = ({
       setCurrentBlockIndex(0);
     }
   }, [isNewMessage, role]);
+
+  const handleBlockAnimationStart = () => {
+    if (isNewMessage && role === "assistant") {
+      onAnimationStart(); // Notify when typing animation starts
+    }
+  };
 
   const handleBlockAnimationEnd = () => {
     setCurrentBlockIndex((prevIndex) => prevIndex + 1);
@@ -104,7 +112,7 @@ const ChatItem = ({
           }
           // Animate the current block if it's new and we're at the right index
           if (isNewMessage && index === currentBlockIndex) {
-            return (
+            /* return (
               <TypeAnimation
                 key={index}
                 sequence={[block, 1000, () => handleBlockAnimationEnd()]}
@@ -113,6 +121,22 @@ const ChatItem = ({
                 cursor={true}
                 speed={80}
                 style={{ fontSize: "20px" }}
+              />
+            ); */
+            return (
+              <TypeAnimation
+                key={index}
+                sequence={[
+                  () => handleBlockAnimationStart(),
+                  block,
+                  1000,
+                  () => handleBlockAnimationEnd(),
+                ]}
+                wrapper="div"
+                repeat={0}
+                cursor={true}
+                speed={80}
+                style={{ fontSize: "20px", lineHeight: "1.5" }}
               />
             );
           }

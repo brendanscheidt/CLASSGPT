@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Skeleton, Typography } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
 import { useEffect, useState } from "react";
 import NotePage from "../classes/NotePage";
@@ -66,7 +66,7 @@ const PageView = (props: PropsType) => {
       const timeoutId = setTimeout(() => {
         // ... existing logic
         setIsLoading(false); // Stop loading once data is fetched
-      }, 200);
+      }, 700);
 
       return () => {
         clearTimeout(timeoutId);
@@ -78,6 +78,15 @@ const PageView = (props: PropsType) => {
   );
 
   useEffect(() => {
+    //setIsLoading(true);
+    console.log("\n");
+    console.log("useEffect triggered");
+    console.log("auth?.classes:", auth?.classes);
+    console.log("props.className:", props.className);
+    console.log("props.pageName:", props.pageName);
+    console.log("auth?.isClassesLoading:", auth?.isClassesLoading);
+    console.log("props.classExists:", props.classExists);
+
     const timeoutId = setTimeout(() => {
       if (!auth?.isClassesLoading && props.classExists) {
         auth?.classes.map((userClass) => {
@@ -92,6 +101,7 @@ const PageView = (props: PropsType) => {
           }
         });
       }
+      //setIsLoading(false);
     }, 200);
 
     return () => clearTimeout(timeoutId);
@@ -103,14 +113,93 @@ const PageView = (props: PropsType) => {
     props.classExists,
   ]);
 
-  /* useEffect(() => {
-    if (editingPageName && editingPageInstructions) {
-      setIsPageModalOpen(true);
-    }
-  }, [editingPageName, editingPageInstructions]); */
-
   if (isLoading) {
-    return <div>Loading...</div>; // Display loading screen while loading
+    return (
+      <Box
+        sx={{
+          p: 2,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          textAlign: "center",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            textAlign: "center",
+          }}
+        >
+          {/* Title Skeleton */}
+          <Skeleton
+            variant="text"
+            width={210}
+            height={60}
+            animation="wave"
+            sx={{ mb: 1, backgroundColor: "#272a30", borderRadius: "10px" }}
+          />
+
+          {/* Divider */}
+          <Divider sx={{ width: "100%", mb: 3 }} />
+
+          {/* Button Skeletons */}
+          <Box sx={{ display: "flex", gap: 2, mb: 4 }}>
+            <Skeleton
+              variant="rectangular"
+              width={100}
+              height={40}
+              animation="wave"
+              sx={{ backgroundColor: "#272a30", borderRadius: "10px" }}
+            />
+            <Skeleton
+              variant="rectangular"
+              width={100}
+              height={40}
+              animation="wave"
+              sx={{ backgroundColor: "#272a30", borderRadius: "10px" }}
+            />
+          </Box>
+        </Box>
+
+        {/* Divider */}
+        <Divider sx={{ width: "100%", mb: 3 }} />
+
+        {/* Cards Skeleton */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            flexWrap: "wrap",
+            gap: 2,
+          }}
+        >
+          {Array.from(new Array(3)).map((_, index) => (
+            <Skeleton
+              key={index}
+              variant="rectangular"
+              width={210}
+              height={118}
+              animation="wave"
+              sx={{ backgroundColor: "#272a30", borderRadius: "10px" }}
+            />
+          ))}
+        </Box>
+
+        {/* Divider */}
+        <Divider sx={{ width: "100%", mt: 5, mb: 5 }} />
+
+        {/* Create New Page Button Skeleton */}
+        <Skeleton
+          variant="rectangular"
+          width={180}
+          height={40}
+          animation="wave"
+          sx={{ backgroundColor: "#272a30", borderRadius: "5px" }}
+        />
+      </Box>
+    );
   }
 
   const handleStartEditing = (pageName: string, pageInstructions: string) => {
@@ -122,13 +211,16 @@ const PageView = (props: PropsType) => {
 
   const handleDeleteChats = async (pName: string) => {
     try {
+      setIsLoading(true);
       toast.loading("Deleting Chats", { id: "deletechats" });
       await deleteUserChats(props.className, pName);
       await auth?.updateClasses();
       toast.success("Deleted Chats Successfully", { id: "deletechats" });
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
       toast.error("Deleting chats failed", { id: "deletechats" });
+      setIsLoading(false);
     }
   };
 
@@ -142,11 +234,14 @@ const PageView = (props: PropsType) => {
       if (newName.trim() === "") {
         console.log("Page name is required.");
       } else {
+        //setIsLoading(true);
         await editUserPage(className, oldName, newName, pageInstructions);
         await auth?.updateClasses();
+        //setIsLoading(false);
       }
     } catch (err) {
       console.log(err);
+      setIsLoading(false);
     }
   };
 
@@ -159,10 +254,14 @@ const PageView = (props: PropsType) => {
 
   const handleDeleteClassClick = async () => {
     try {
+      setIsLoading(true);
       await deleteUserClass(props.className);
       await auth?.updateClasses();
+      setIsLoading(false);
+      navigate(`/chat/${auth?.classes[0].name}/default`);
     } catch (err) {
       console.log(err);
+      setIsLoading(false);
     }
   };
 
@@ -179,17 +278,21 @@ const PageView = (props: PropsType) => {
       if (className.trim() === "" || modelInstructions.trim() === "") {
         console.log("Both fields are required.");
       } else {
+        //setIsLoading(true);
         const res = await editUserClass(
           props.className,
           className,
           modelInstructions
         );
         await auth?.updateClasses();
+
         setIsClassModalOpen(false);
+        //setIsLoading(false);
         navigate(`/chat/${className}/default`);
       }
     } catch (err) {
       console.log(err);
+      //setIsLoading(false);
     }
   };
 
@@ -206,6 +309,7 @@ const PageView = (props: PropsType) => {
       if (className.trim() === "" || modelInstructions.trim() === "") {
         console.log("Both fields are required.");
       } else {
+        setIsLoading(true);
         const res = await createNewClass(className, {
           name: "model",
           instructions: modelInstructions,
@@ -213,10 +317,13 @@ const PageView = (props: PropsType) => {
         });
         await auth?.updateClasses();
         setIsClassModalOpen(false);
+
         navigate(`/chat/${className}/default`);
+        setIsLoading(false);
       }
     } catch (err) {
       console.log(err);
+      setIsLoading(false);
     }
   };
 
@@ -235,31 +342,37 @@ const PageView = (props: PropsType) => {
     pageName: string,
     pageInstructions: string
   ) => {
+    if (pageName.trim() === "") {
+      console.log("Page name is required.");
+      return;
+    }
+
+    //setIsLoading(true);
+
     try {
-      // Check if both fields are filled
-      if (pageName.trim() === "") {
-        console.log("Page name is required.");
+      if (editingPage) {
+        // Edit mode
+        await editPage(
+          props.className,
+          editingPage,
+          pageName,
+          pageInstructions
+        );
       } else {
-        if (editingPage) {
-          // Edit mode
-          await editPage(
-            props.className,
-            editingPage,
-            pageName,
-            pageInstructions
-          );
-        } else {
-          // Create mode
-          await createNewPage(props.className, pageName, pageInstructions);
-        }
-        await auth?.updateClasses();
-        setEditingPage(null);
-        setEditingPageName("");
-        setEditingPageInstructions("");
-        setIsPageModalOpen(false);
+        // Create mode
+        await createNewPage(props.className, pageName, pageInstructions);
       }
+      await auth?.updateClasses();
     } catch (err) {
       console.log(err);
+    } finally {
+      // Update all states at once
+      setIsPageModalOpen(false);
+      setEditingPage(null);
+      setEditingPageName("");
+      setEditingPageInstructions("");
+
+      //setIsLoading(false);
     }
   };
 

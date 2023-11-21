@@ -21,7 +21,7 @@ const Header = () => {
                 <>
                   <NavigationLink
                     bg="#00fffc"
-                    to={`/chat/${auth.classes[0].name}/${auth.classes[0].pages[0].name}`}
+                    to={`/chat/${auth.classes[0].name}/default`}
                     text="Chat"
                     textColor="black"
                   />

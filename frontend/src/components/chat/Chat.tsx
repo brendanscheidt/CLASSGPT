@@ -14,7 +14,7 @@ import { red } from "@mui/material/colors";
 import PageView from "./PageView";
 import { Link, useNavigate } from "react-router-dom";
 import { TbHomeEdit } from "react-icons/tb";
-import { MdDeleteForever } from "react-icons/md";
+import { VscClearAll } from "react-icons/vsc";
 
 type Message = {
   role: "user" | "assistant";
@@ -28,6 +28,10 @@ type PropsType = {
 
 const Chat = (props: PropsType) => {
   const [isSending, setIsSending] = useState(false);
+  const [lastMessageIndex, setLastMessageIndex] = useState<number>(-1);
+  const [tempNewAIMessage, setTempNewAIMessage] = useState<Message | null>(
+    null
+  );
   const [isClassInUser, setIsClassInUser] = useState(false);
   const [isPageInClass, setIsPageInClass] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -66,7 +70,10 @@ const Chat = (props: PropsType) => {
         props.userClass,
         props.userPage
       );
-      setChatMessages([...chatData.chats]);
+
+      // setChatMessages([...chatData.chats]);
+      const newAIMessage: Message = chatData.chats[chatData.chats.length - 1];
+      setTempNewAIMessage(newAIMessage);
       await auth?.updateClasses();
     } catch (err) {
       console.error(err);
@@ -74,7 +81,7 @@ const Chat = (props: PropsType) => {
     } finally {
       prevChatMessagesRef.current = chatMessages.concat(newMessage);
       setIsSending(false);
-      setNewMessageHasntBeenReceived(true);
+      //setNewMessageHasntBeenReceived(true);
     }
 
     //
@@ -87,7 +94,6 @@ const Chat = (props: PropsType) => {
       setChatMessages([]);
       await auth?.updateClasses();
       toast.success("Deleted Chats Successfully", { id: "deletechats" });
-      navigate(`/chat/${props.userClass}/default`);
     } catch (error) {
       console.log(error);
       toast.error("Deleting chats failed", { id: "deletechats" });
@@ -109,9 +115,23 @@ const Chat = (props: PropsType) => {
     }
   }, [auth, props.userClass, props.userPage]);
 
-  useEffect(() => {
+  /* useEffect(() => {
     scrollToBottom();
-  }, [chatMessages, prevChatMessagesRef]);
+  }, [chatMessages, prevChatMessagesRef]); */
+  useEffect(() => {
+    // Scroll to the bottom when new messages are added
+    if (chatMessages.length > lastMessageIndex + 1) {
+      scrollToBottom();
+    }
+  }, [chatMessages, lastMessageIndex]);
+
+  useEffect(() => {
+    if (tempNewAIMessage) {
+      setChatMessages((prev) => [...prev, tempNewAIMessage]); // Add the new AI message to the chatMessages
+      setTempNewAIMessage(null); // Reset the temporary message
+      setNewMessageHasntBeenReceived(true); // Set flag to trigger typing animation
+    }
+  }, [tempNewAIMessage]);
 
   useEffect(() => {
     if (!prevChatMessagesRef.current && chatMessages.length) {
@@ -170,6 +190,8 @@ const Chat = (props: PropsType) => {
           >
             <Button
               onClick={handleDeleteChats}
+              className="button-svg-icon"
+              id="deleteChatsButton"
               sx={{
                 display: "inline-flex", // Use 'inline-flex' for the button to only take up as much space as needed
                 alignItems: "center",
@@ -186,7 +208,7 @@ const Chat = (props: PropsType) => {
                 whiteSpace: "nowrap", // Prevent text wrapping
               }}
             >
-              <MdDeleteForever size={25} />
+              <VscClearAll size={25} />
             </Button>
             <Typography
               sx={{
@@ -265,7 +287,7 @@ const Chat = (props: PropsType) => {
               scrollbarWidth: "thin", // For Firefox
             }}
           >
-            {chatMessages.map((chat, index) => {
+            {/* {chatMessages.map((chat, index) => {
               const isNewMessage =
                 (prevChatMessagesRef.current &&
                   index >= prevChatMessagesRef.current.length &&
@@ -281,7 +303,35 @@ const Chat = (props: PropsType) => {
                   onAnimationComplete={handleAnimationComplete}
                 />
               );
+            })} */}
+            {chatMessages.map((chat, index) => {
+              const isNewMessage =
+                tempNewAIMessage && chat.content === tempNewAIMessage.content;
+
+              return (
+                <ChatItem
+                  content={chat.content}
+                  role={chat.role}
+                  isNewMessage={
+                    index === chatMessages.length - 1 &&
+                    newMessageHasntBeenReceived
+                  }
+                  key={index}
+                  onAnimationStart={() => {
+                    if (tempNewAIMessage && index === chatMessages.length - 1) {
+                      setChatMessages((prev) => [...prev, tempNewAIMessage]);
+                      setTempNewAIMessage(null);
+                    }
+                  }}
+                  onAnimationComplete={() => {
+                    if (index === chatMessages.length - 1) {
+                      setNewMessageHasntBeenReceived(false); // Reset flag once animation completes
+                    }
+                  }}
+                />
+              );
             })}
+
             <div ref={messagesEndRef} />
           </Box>
           <div
