@@ -66,6 +66,7 @@ const ChatItem = ({
     setCurrentBlockIndex((prevIndex) => prevIndex + 1);
     if (currentBlockIndex === messageBlocks.length - 1) {
       onAnimationComplete(); // Call this function when the last block animation completes
+      localStorage.setItem("animationPlayed", "true");
     }
   };
 

@@ -12,7 +12,7 @@ import {
 import toast from "react-hot-toast";
 import { red } from "@mui/material/colors";
 import PageView from "./PageView";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { TbHomeEdit } from "react-icons/tb";
 import { VscClearAll } from "react-icons/vsc";
 
@@ -28,7 +28,6 @@ type PropsType = {
 
 const Chat = (props: PropsType) => {
   const [isSending, setIsSending] = useState(false);
-  const [lastMessageIndex, setLastMessageIndex] = useState<number>(-1);
   const [tempNewAIMessage, setTempNewAIMessage] = useState<Message | null>(
     null
   );
@@ -37,18 +36,10 @@ const Chat = (props: PropsType) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const auth = useAuth();
-  const navigate = useNavigate();
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
   const prevChatMessagesRef = useRef<Message[] | null>(null);
   const [newMessageHasntBeenReceived, setNewMessageHasntBeenReceived] =
     useState(true);
-  const fullClass = auth?.classes.find(
-    (userClass) => userClass.name === props.userClass
-  );
-
-  const handleAnimationComplete = () => {
-    setNewMessageHasntBeenReceived(false);
-  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -61,6 +52,7 @@ const Chat = (props: PropsType) => {
         inputRef.current.value = "";
       }
     }
+    localStorage.removeItem("animationPlayed");
     const newMessage: Message = { role: "user", content };
     setChatMessages((prev) => [...prev, newMessage]);
     setIsSending(true);
@@ -81,6 +73,7 @@ const Chat = (props: PropsType) => {
     } finally {
       prevChatMessagesRef.current = chatMessages.concat(newMessage);
       setIsSending(false);
+
       //setNewMessageHasntBeenReceived(true);
     }
 
@@ -115,15 +108,9 @@ const Chat = (props: PropsType) => {
     }
   }, [auth, props.userClass, props.userPage]);
 
-  /* useEffect(() => {
-    scrollToBottom();
-  }, [chatMessages, prevChatMessagesRef]); */
   useEffect(() => {
-    // Scroll to the bottom when new messages are added
-    if (chatMessages.length > lastMessageIndex + 1) {
-      scrollToBottom();
-    }
-  }, [chatMessages, lastMessageIndex]);
+    scrollToBottom();
+  }, [chatMessages, prevChatMessagesRef]);
 
   useEffect(() => {
     if (tempNewAIMessage) {
@@ -305,17 +292,16 @@ const Chat = (props: PropsType) => {
               );
             })} */}
             {chatMessages.map((chat, index) => {
+              const animationPlayed =
+                localStorage.getItem("animationPlayed") === "true";
               const isNewMessage =
-                tempNewAIMessage && chat.content === tempNewAIMessage.content;
+                index === chatMessages.length - 1 && !animationPlayed;
 
               return (
                 <ChatItem
                   content={chat.content}
                   role={chat.role}
-                  isNewMessage={
-                    index === chatMessages.length - 1 &&
-                    newMessageHasntBeenReceived
-                  }
+                  isNewMessage={isNewMessage}
                   key={index}
                   onAnimationStart={() => {
                     if (tempNewAIMessage && index === chatMessages.length - 1) {
