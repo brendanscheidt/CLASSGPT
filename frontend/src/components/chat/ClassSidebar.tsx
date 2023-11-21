@@ -81,7 +81,10 @@ const ClassSidebar = (props: PropsType) => {
     setIsModalOpen(false);
   };
 
-  const handleSubmitModal = async (pageName: string) => {
+  const handleSubmitModal = async (
+    pageName: string,
+    pageInstructions: string
+  ) => {
     try {
       if (pageName.trim() === "") {
         console.log("Page name is required.");
@@ -98,7 +101,7 @@ const ClassSidebar = (props: PropsType) => {
             });
           }
         });
-        await createNewPage(activeClass, pageName);
+        await createNewPage(activeClass, pageName, pageInstructions);
         // Trigger any state updates or navigation after page creation
         setIsModalOpen(false);
         // Update the classes data here if needed

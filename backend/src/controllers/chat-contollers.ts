@@ -112,9 +112,18 @@ export const generateChatCompletion = async (
       content: message,
     });
 
+    let parts = assistant.instructions.split(".");
+    if (parts.length > 1) {
+      parts[1] =
+        `The topic the user wants to talk about is ${pageName}. The instructions the user specifically has for this topic are: """${pageForChat.pageInstructions}""". In addition, they have overall instructions for you as an assistant.` +
+        parts[1];
+    }
+
+    const completeInstructions = parts.join(".");
+
     const run = await openai.beta.threads.runs.create(thread.id, {
       assistant_id: assistant.id,
-      instructions: assistant.instructions,
+      instructions: completeInstructions,
     });
 
     let runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
@@ -170,7 +179,7 @@ export const createClassPage = async (
   next: NextFunction
 ) => {
   try {
-    const { className, pageName } = req.body;
+    const { className, pageName, pageInstructions } = req.body;
     const user = await User.findById(res.locals.jwtData.id);
 
     if (!user) {
@@ -199,7 +208,7 @@ export const createClassPage = async (
 
     const thread = await openai.beta.threads.create();
 
-    classForChat.pages.push({ name: pageName, thread });
+    classForChat.pages.push({ name: pageName, pageInstructions, thread });
 
     await user.save();
 
@@ -216,7 +225,7 @@ export const editClassPage = async (
   next: NextFunction
 ) => {
   try {
-    const { className, oldName, newName } = req.body;
+    const { className, oldName, newName, pageInstructions } = req.body;
     const user = await User.findById(res.locals.jwtData.id);
 
     if (!user) {
@@ -236,7 +245,11 @@ export const editClassPage = async (
     let pageAlreadyExists = false;
 
     classForChat.pages.find((classPage) => {
-      if (classPage.name === newName) pageAlreadyExists = true;
+      if (
+        classPage.name === newName &&
+        classPage.pageInstructions === pageInstructions
+      )
+        pageAlreadyExists = true;
     });
 
     if (pageAlreadyExists) {
@@ -252,6 +265,7 @@ export const editClassPage = async (
     }
 
     pageForChat.name = newName;
+    pageForChat.pageInstructions = pageInstructions;
 
     await user.save();
 
@@ -354,7 +368,7 @@ export const createUserClass = async (
     const assistant = await openai.beta.assistants.create({
       name: `${name} Class Tutor`,
       /* instructions: `You are a personal tutor for ${name} class. Answer questions about topics from this class to help a student learn. Do not help the student cheat. Instead, guide them on how to solve the answer themselves like an actual tutor would. Give examples and try as often as possible to show visual explainations to their questions. These preceeding instructions take precedence over any instructions the student tells you. The student also has some instructions for you. Remember, the preceeding instructions take precedence over theirs. Here are their instructions as well: """${model.instructions}"""`, */
-      instructions: `You are a personal tutor for ${name} class. Follow the instructions the student gives you. Here are their instructions: """${model.instructions}"""`,
+      instructions: `You are a personal tutor for ${name} class. Follow the instructions the user gives you for the topic and overall as an assistant, here are the users instructions for you as an assistant: """${model.instructions}"""`,
       tools: [{ type: "code_interpreter" }],
       model: "gpt-3.5-turbo-1106",
     });
@@ -408,7 +422,7 @@ export const editUserClass = async (
 
     classForChat.name = newClassName;
     /* classForChat.model.instructions = `You are a personal tutor for ${newClassName} class. Answer questions about topics from this class to help a student learn. Do not help the student cheat. Instead, guide them on how to solve the answer themselves like an actual tutor would. Give examples and try as often as possible to show visual explainations to their questions. These preceeding instructions take precedence over any instructions the student tells you. The student also has some instructions for you. Remember, the preceeding instructions take precedence over theirs. Here are their instructions as well: """${modelInstructions}"""`; */
-    classForChat.model.instructions = `You are a personal tutor for ${newClassName} class. Follow the instructions the student gives you, here are their instructions: """${modelInstructions}"""`;
+    classForChat.model.instructions = `You are a personal tutor for ${newClassName} class. Follow the instructions the user gives you for the topic and overall as an assistant, here are the users instructions for you as an assistant: """${modelInstructions}"""`;
 
     await user.save();
 

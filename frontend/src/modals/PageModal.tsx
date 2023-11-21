@@ -1,13 +1,15 @@
 import { Button, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomizedInput from "../components/shared/CustomizedInput";
 
 type ClassModalProps = {
   isOpen: boolean;
   className: string;
   isNew: boolean;
+  initialPageName?: string;
+  initialPageInstructions?: string;
   onClose: () => void;
-  onSubmit: (pageName: string) => void;
+  onSubmit: (pageName: string, pageInstructions: string) => void;
 };
 
 const PageModal: React.FC<ClassModalProps> = ({
@@ -16,17 +18,29 @@ const PageModal: React.FC<ClassModalProps> = ({
   onSubmit,
   className,
   isNew,
+  initialPageName = "",
+  initialPageInstructions = "",
 }) => {
-  const [pageName, setPageName] = useState("");
+  const [pageName, setPageName] = useState(initialPageName);
+  const [pageInstructions, setPageInstructions] = useState(
+    initialPageInstructions
+  );
+
+  useEffect(() => {
+    setPageName(initialPageName);
+    setPageInstructions(initialPageInstructions);
+  }, [initialPageName, initialPageInstructions]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onSubmit(pageName); // Pass as an object
+    onSubmit(pageName, pageInstructions); // Pass as an object
     setPageName("");
+    setPageInstructions("");
   };
 
   const handleClose = () => {
     setPageName("");
+    setPageInstructions("");
     onClose();
   };
 
@@ -52,6 +66,16 @@ const PageModal: React.FC<ClassModalProps> = ({
                 type="text"
                 value={pageName}
                 onChange={(e) => setPageName(e.target.value)}
+              />
+            </div>
+            <div>
+              {/* <label htmlFor="className">Class Name:</label> */}
+              <CustomizedInput
+                name="pageinstructions"
+                label="Page Instructions"
+                type="text"
+                value={pageInstructions}
+                onChange={(e) => setPageInstructions(e.target.value)}
               />
             </div>
             <Button
@@ -103,6 +127,16 @@ const PageModal: React.FC<ClassModalProps> = ({
                 type="text"
                 value={pageName}
                 onChange={(e) => setPageName(e.target.value)}
+              />
+            </div>
+            <div>
+              {/* <label htmlFor="className">Class Name:</label> */}
+              <CustomizedInput
+                name="pageinstructions"
+                label="Page Instructions"
+                type="text"
+                value={pageInstructions}
+                onChange={(e) => setPageInstructions(e.target.value)}
               />
             </div>
             <Button

@@ -28,6 +28,7 @@ type UserClasses = {
   };
   pages: {
     name: string;
+    pageInstructions: string;
     chats: {
       id: string;
       role: string;

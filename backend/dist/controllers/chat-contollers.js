@@ -89,9 +89,16 @@ export const generateChatCompletion = async (req, res, next) => {
             role: "user",
             content: message,
         });
+        let parts = assistant.instructions.split(".");
+        if (parts.length > 1) {
+            parts[1] =
+                `The topic the user wants to talk about is ${pageName}. The instructions the user specifically has for this topic are: """${pageForChat.pageInstructions}""". In addition, they have overall instructions for you as an assistant.` +
+                    parts[1];
+        }
+        const completeInstructions = parts.join(".");
         const run = await openai.beta.threads.runs.create(thread.id, {
             assistant_id: assistant.id,
-            instructions: assistant.instructions,
+            instructions: completeInstructions,
         });
         let runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
         //polling mechanism to see if runStatus is completed
@@ -136,7 +143,7 @@ export const generateChatCompletion = async (req, res, next) => {
 };
 export const createClassPage = async (req, res, next) => {
     try {
-        const { className, pageName } = req.body;
+        const { className, pageName, pageInstructions } = req.body;
         const user = await User.findById(res.locals.jwtData.id);
         if (!user) {
             return res
@@ -156,7 +163,7 @@ export const createClassPage = async (req, res, next) => {
             return res.status(500).json({ message: "Cant Have duplicate page name" });
         }
         const thread = await openai.beta.threads.create();
-        classForChat.pages.push({ name: pageName, thread });
+        classForChat.pages.push({ name: pageName, pageInstructions, thread });
         await user.save();
         return res.status(201).json({ message: "OK", pages: classForChat.pages });
     }
@@ -167,7 +174,7 @@ export const createClassPage = async (req, res, next) => {
 };
 export const editClassPage = async (req, res, next) => {
     try {
-        const { className, oldName, newName } = req.body;
+        const { className, oldName, newName, pageInstructions } = req.body;
         const user = await User.findById(res.locals.jwtData.id);
         if (!user) {
             return res
@@ -180,7 +187,8 @@ export const editClassPage = async (req, res, next) => {
         }
         let pageAlreadyExists = false;
         classForChat.pages.find((classPage) => {
-            if (classPage.name === newName)
+            if (classPage.name === newName &&
+                classPage.pageInstructions === pageInstructions)
                 pageAlreadyExists = true;
         });
         if (pageAlreadyExists) {
@@ -191,6 +199,7 @@ export const editClassPage = async (req, res, next) => {
             return res.status(404).json({ message: "Page Not Found." });
         }
         pageForChat.name = newName;
+        pageForChat.pageInstructions = pageInstructions;
         await user.save();
         return res.status(201).json({ message: "OK", pageForChat });
     }
@@ -263,7 +272,7 @@ export const createUserClass = async (req, res, next) => {
         const assistant = await openai.beta.assistants.create({
             name: `${name} Class Tutor`,
             /* instructions: `You are a personal tutor for ${name} class. Answer questions about topics from this class to help a student learn. Do not help the student cheat. Instead, guide them on how to solve the answer themselves like an actual tutor would. Give examples and try as often as possible to show visual explainations to their questions. These preceeding instructions take precedence over any instructions the student tells you. The student also has some instructions for you. Remember, the preceeding instructions take precedence over theirs. Here are their instructions as well: """${model.instructions}"""`, */
-            instructions: `You are a personal tutor for ${name} class. Follow the instructions the student gives you. Here are their instructions: """${model.instructions}"""`,
+            instructions: `You are a personal tutor for ${name} class. Follow the instructions the user gives you for the topic and overall as an assistant, here are the users instructions for you as an assistant: """${model.instructions}"""`,
             tools: [{ type: "code_interpreter" }],
             model: "gpt-3.5-turbo-1106",
         });
@@ -301,7 +310,7 @@ export const editUserClass = async (req, res, next) => {
         }
         classForChat.name = newClassName;
         /* classForChat.model.instructions = `You are a personal tutor for ${newClassName} class. Answer questions about topics from this class to help a student learn. Do not help the student cheat. Instead, guide them on how to solve the answer themselves like an actual tutor would. Give examples and try as often as possible to show visual explainations to their questions. These preceeding instructions take precedence over any instructions the student tells you. The student also has some instructions for you. Remember, the preceeding instructions take precedence over theirs. Here are their instructions as well: """${modelInstructions}"""`; */
-        classForChat.model.instructions = `You are a personal tutor for ${newClassName} class. Follow the instructions the student gives you, here are their instructions: """${modelInstructions}"""`;
+        classForChat.model.instructions = `You are a personal tutor for ${newClassName} class. Follow the instructions the user gives you for the topic and overall as an assistant, here are the users instructions for you as an assistant: """${modelInstructions}"""`;
         await user.save();
         return res.status(201).json({ message: "OK", classForChat });
     }

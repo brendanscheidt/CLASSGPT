@@ -25,6 +25,7 @@ type PropsType = {
 
 type PageType = {
   name: string;
+  pageInstructions: string;
   chats: {
     id: string;
     role: string;
@@ -42,6 +43,7 @@ type ClassType = {
   };
   pages: {
     name: string;
+    pageInstructions: string;
     chats: { id: string; role: string; content: string }[];
   }[];
 };
@@ -55,6 +57,8 @@ const PageView = (props: PropsType) => {
   const [editingPage, setEditingPage] = useState<string | null>(null);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
+  const [editingPageName, setEditingPageName] = useState("");
+  const [editingPageInstructions, setEditingPageInstructions] = useState("");
 
   useEffect(
     () => {
@@ -99,24 +103,21 @@ const PageView = (props: PropsType) => {
     props.classExists,
   ]);
 
+  /* useEffect(() => {
+    if (editingPageName && editingPageInstructions) {
+      setIsPageModalOpen(true);
+    }
+  }, [editingPageName, editingPageInstructions]); */
+
   if (isLoading) {
     return <div>Loading...</div>; // Display loading screen while loading
   }
 
-  const handleStartEditing = (pageName: string) => {
+  const handleStartEditing = (pageName: string, pageInstructions: string) => {
     setEditingPage(pageName);
-  };
-
-  const handleStopEditing = () => {
-    setEditingPage(null);
-  };
-
-  const handlePageNameUpdated = (oldName: string, newName: string) => {
-    setPages((prevPages) =>
-      prevPages.map((page) =>
-        page.name === oldName ? { ...page, name: newName } : page
-      )
-    );
+    setEditingPageName(pageName);
+    setEditingPageInstructions(pageInstructions);
+    setIsPageModalOpen(true);
   };
 
   const handleDeleteChats = async (pName: string) => {
@@ -131,16 +132,17 @@ const PageView = (props: PropsType) => {
     }
   };
 
-  const editPageName = async (
+  const editPage = async (
     className: string,
     oldName: string,
-    newName: string
+    newName: string,
+    pageInstructions: string
   ) => {
     try {
       if (newName.trim() === "") {
         console.log("Page name is required.");
       } else {
-        await editUserPage(className, oldName, newName);
+        await editUserPage(className, oldName, newName, pageInstructions);
         await auth?.updateClasses();
       }
     } catch (err) {
@@ -224,24 +226,40 @@ const PageView = (props: PropsType) => {
 
   const handleClosePageModal = () => {
     setIsPageModalOpen(false);
+    setEditingPage(null);
+    setEditingPageName("");
+    setEditingPageInstructions("");
   };
 
-  const handleSubmitModal = async (pageName: string) => {
+  const handleSubmitModal = async (
+    pageName: string,
+    pageInstructions: string
+  ) => {
     try {
       // Check if both fields are filled
       if (pageName.trim() === "") {
         console.log("Page name is required.");
-        // Optionally, show a user-friendly error message here
       } else {
-        // Proceed with submitting data
-        const res = await createNewPage(props.className, pageName);
+        if (editingPage) {
+          // Edit mode
+          await editPage(
+            props.className,
+            editingPage,
+            pageName,
+            pageInstructions
+          );
+        } else {
+          // Create mode
+          await createNewPage(props.className, pageName, pageInstructions);
+        }
         await auth?.updateClasses();
+        setEditingPage(null);
+        setEditingPageName("");
+        setEditingPageInstructions("");
         setIsPageModalOpen(false);
-        //navigate(`/chat/${props.className}/${pageName}`);
       }
     } catch (err) {
       console.log(err);
-      // Optionally handle errors differently, perhaps keep the modal open
     }
   };
 
@@ -324,12 +342,11 @@ const PageView = (props: PropsType) => {
                 className={props.className}
                 pageName={page.name}
                 isEditMode={page.name === editingPage}
-                onStartEditing={() => handleStartEditing(page.name)}
-                onStopEditing={handleStopEditing}
-                onPageNameUpdated={handlePageNameUpdated}
+                pageInstructions={page.pageInstructions}
+                onEditPage={() =>
+                  handleStartEditing(page.name, page.pageInstructions)
+                }
                 handleDeletePage={handleDeleteChats}
-                handleEditPage={editPageName}
-                // other props...
               />
             ))}
           </Box>
@@ -350,7 +367,9 @@ const PageView = (props: PropsType) => {
             onClose={handleClosePageModal}
             onSubmit={handleSubmitModal}
             className={props.className}
-            isNew={true}
+            isNew={!editingPage} // isNew is false if editingPage is not null
+            initialPageName={editingPageName}
+            initialPageInstructions={editingPageInstructions}
           />
         </Box>
       );
@@ -402,7 +421,9 @@ const PageView = (props: PropsType) => {
               onClose={handleClosePageModal}
               onSubmit={handleSubmitModal}
               className={props.className}
-              isNew={true}
+              isNew={!editingPage} // isNew is false if editingPage is not null
+              initialPageName={editingPageName}
+              initialPageInstructions={editingPageInstructions}
             />
           </Box>
         </Box>

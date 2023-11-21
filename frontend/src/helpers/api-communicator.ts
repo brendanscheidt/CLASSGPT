@@ -107,8 +107,16 @@ export const editUserClass = async (
   return data;
 };
 
-export const createNewPage = async (className: string, pageName: string) => {
-  const res = await axios.post("/chat/createPage", { className, pageName });
+export const createNewPage = async (
+  className: string,
+  pageName: string,
+  pageInstructions: string
+) => {
+  const res = await axios.post("/chat/createPage", {
+    className,
+    pageName,
+    pageInstructions,
+  });
 
   if (res.status != 201) {
     throw new Error("Unable to create new page");
@@ -132,12 +140,14 @@ export const deleteUserClass = async (className: string) => {
 export const editUserPage = async (
   className: string,
   oldName: string,
-  newName: string
+  newName: string,
+  pageInstructions: string
 ) => {
   const res = await axios.patch("/chat/editPage", {
     className,
     oldName,
     newName,
+    pageInstructions,
   });
 
   if (res.status != 201) {
