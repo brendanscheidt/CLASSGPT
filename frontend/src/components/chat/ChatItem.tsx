@@ -4,6 +4,10 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { coldarkDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useEffect, useMemo, useState } from "react";
 import { TypeAnimation } from "react-type-animation";
+import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css"; // Import KaTeX CSS
 
 function extractCodeFromString(message: string): string[] {
   if (message.includes("```")) {
@@ -15,15 +19,29 @@ function extractCodeFromString(message: string): string[] {
 
 function isCodeBlock(str: string) {
   if (
-    str.includes("=") ||
-    str.includes(";") ||
-    str.includes("[") ||
-    str.includes("]") ||
-    str.includes("{") ||
-    str.includes("}") ||
-    str.includes("#") ||
-    str.includes("//") ||
-    str.includes("def ")
+    (str.includes("java") ||
+      str.includes("javascript") ||
+      str.includes("typescript") ||
+      str.includes("julia") ||
+      str.includes("makefile") ||
+      str.includes("php") ||
+      str.includes("sql") ||
+      str.includes("python") ||
+      str.includes("html") ||
+      str.includes("xhtml") ||
+      str.includes("css") ||
+      str.includes("cpp") ||
+      str.includes("csharp") ||
+      str.includes("bash")) &&
+    (str.includes("=") ||
+      str.includes(";") ||
+      str.includes("[") ||
+      str.includes("]") ||
+      str.includes("{") ||
+      str.includes("}") ||
+      str.includes("#") ||
+      str.includes("//") ||
+      str.includes("def "))
   ) {
     return true;
   }
@@ -56,6 +74,30 @@ const ChatItem = ({
     }
   }, [isNewMessage, role]);
 
+  const renderContent = (block: string, index: number) => {
+    if (isCodeBlock(block)) {
+      const language = block.split("\n")[0].trim().toLowerCase();
+      const blockArr = block.split("\n");
+      blockArr.splice(0, 1);
+      const croppedBlock = blockArr.join("\n");
+      return (
+        <SyntaxHighlighter key={index} style={coldarkDark} language={language}>
+          {croppedBlock}
+        </SyntaxHighlighter>
+      );
+    } else {
+      return (
+        <ReactMarkdown
+          key={index}
+          children={block}
+          remarkPlugins={[remarkMath]}
+          rehypePlugins={[rehypeKatex]}
+          className="markdown-content"
+        />
+      );
+    }
+  };
+
   const handleBlockAnimationStart = () => {
     if (isNewMessage && role === "assistant") {
       onAnimationStart(); // Notify when typing animation starts
@@ -70,7 +112,7 @@ const ChatItem = ({
     }
   };
 
-  return role == "assistant" ? (
+  return role === "assistant" ? (
     <Box
       sx={{
         display: "flex",
@@ -90,28 +132,9 @@ const ChatItem = ({
           <Typography sx={{ fontSize: "20px" }}>{content}</Typography>
         )}
         {messageBlocks.map((block, index) => {
-          const isCode = isCodeBlock(block);
-          const language = block.split("\n")[0].trim().toLowerCase();
-          const blockArr = block.split("\n");
-          blockArr.splice(0, 1);
-          const croppedBlock = blockArr.join("\n");
-          // Show the block if it's been animated or is not a new message
           if (index < currentBlockIndex || !isNewMessage) {
-            return isCode ? (
-              <SyntaxHighlighter
-                key={index}
-                style={coldarkDark}
-                language={language}
-              >
-                {croppedBlock}
-              </SyntaxHighlighter>
-            ) : (
-              <Typography key={index} sx={{ fontSize: "20px" }}>
-                {block}
-              </Typography>
-            );
+            return renderContent(block, index); // Use renderContent here
           }
-          // Animate the current block if it's new and we're at the right index
           if (isNewMessage && index === currentBlockIndex) {
             /* return (
               <TypeAnimation
@@ -136,7 +159,7 @@ const ChatItem = ({
                 wrapper="div"
                 repeat={0}
                 cursor={true}
-                speed={80}
+                speed={99}
                 style={{ fontSize: "20px", lineHeight: "1.5" }}
               />
             );

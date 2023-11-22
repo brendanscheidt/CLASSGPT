@@ -110,7 +110,12 @@ const Chat = (props: PropsType) => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [chatMessages, prevChatMessagesRef]);
+  }, [
+    chatMessages,
+    prevChatMessagesRef,
+    tempNewAIMessage,
+    newMessageHasntBeenReceived,
+  ]);
 
   useEffect(() => {
     if (tempNewAIMessage) {
@@ -162,8 +167,42 @@ const Chat = (props: PropsType) => {
             flex: { md: 0.98, xs: 1, sm: 1 },
             flexDirection: "column",
             px: 3,
+            /* height: "60vh",
+            overflowY: "auto", */
           }}
         >
+          <Box>
+            <Typography
+              sx={{
+                fontSize: { xs: "24px", md: "40px" },
+                color: "white",
+                fontWeight: "600",
+                textAlign: "center", // Center the text
+                flexGrow: 1, // Allow it to take available space
+                whiteSpace: "nowrap",
+              }}
+            >
+              {props.userClass === "default" || props.userPage === "default"
+                ? ""
+                : `${props.userClass.toUpperCase()}`}
+            </Typography>
+          </Box>
+          <Box sx={{ mb: "10px" }}>
+            <Typography
+              sx={{
+                fontSize: { xs: "18px", md: "32px" },
+                color: "white",
+                fontWeight: "600",
+                textAlign: "center", // Center the text
+                flexGrow: 1, // Allow it to take available space
+                whiteSpace: "nowrap",
+              }}
+            >
+              {props.userClass === "default" || props.userPage === "default"
+                ? ""
+                : `${props.userPage}`}
+            </Typography>
+          </Box>
           <Box
             sx={{
               display: "flex",
@@ -197,20 +236,7 @@ const Chat = (props: PropsType) => {
             >
               <VscClearAll size={25} />
             </Button>
-            <Typography
-              sx={{
-                fontSize: { xs: "24px", md: "40px" },
-                color: "white",
-                fontWeight: "600",
-                textAlign: "center", // Center the text
-                flexGrow: 1, // Allow it to take available space
-                whiteSpace: "nowrap",
-              }}
-            >
-              {props.userClass === "default" || props.userPage === "default"
-                ? ""
-                : `${props.userClass} - (${props.userPage})`}
-            </Typography>
+
             <Link
               style={{ textDecoration: "none" }} // Centers the Link itself
               to={`/chat/${props.userClass}/default`}
@@ -291,32 +317,37 @@ const Chat = (props: PropsType) => {
                 />
               );
             })} */}
-            {chatMessages.map((chat, index) => {
-              const animationPlayed =
-                localStorage.getItem("animationPlayed") === "true";
-              const isNewMessage =
-                index === chatMessages.length - 1 && !animationPlayed;
+            <Box position={"relative"} width={"100%"} maxWidth={"100%"}>
+              {chatMessages.map((chat, index) => {
+                const animationPlayed =
+                  localStorage.getItem("animationPlayed") === "true";
+                const isNewMessage =
+                  index === chatMessages.length - 1 && !animationPlayed;
 
-              return (
-                <ChatItem
-                  content={chat.content}
-                  role={chat.role}
-                  isNewMessage={isNewMessage}
-                  key={index}
-                  onAnimationStart={() => {
-                    if (tempNewAIMessage && index === chatMessages.length - 1) {
-                      setChatMessages((prev) => [...prev, tempNewAIMessage]);
-                      setTempNewAIMessage(null);
-                    }
-                  }}
-                  onAnimationComplete={() => {
-                    if (index === chatMessages.length - 1) {
-                      setNewMessageHasntBeenReceived(false); // Reset flag once animation completes
-                    }
-                  }}
-                />
-              );
-            })}
+                return (
+                  <ChatItem
+                    content={chat.content}
+                    role={chat.role}
+                    isNewMessage={isNewMessage}
+                    key={index}
+                    onAnimationStart={() => {
+                      if (
+                        tempNewAIMessage &&
+                        index === chatMessages.length - 1
+                      ) {
+                        setChatMessages((prev) => [...prev, tempNewAIMessage]);
+                        setTempNewAIMessage(null);
+                      }
+                    }}
+                    onAnimationComplete={() => {
+                      if (index === chatMessages.length - 1) {
+                        setNewMessageHasntBeenReceived(false); // Reset flag once animation completes
+                      }
+                    }}
+                  />
+                );
+              })}
+            </Box>
 
             <div ref={messagesEndRef} />
           </Box>

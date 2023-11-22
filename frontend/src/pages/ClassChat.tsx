@@ -190,11 +190,11 @@ const ClassChat = () => {
         <Box
           sx={{
             display: "flex",
-            width: { md: "20vw", xs: "90%" },
+            width: { md: "20vw", xs: "94%" },
             minWidth: { md: "250px" },
             /* height: "100%", */
-            height: { md: "85vh", xs: "20vh" },
-            maxHeight: { md: "85vh", xs: "20vh" },
+            height: { md: "90vh", xs: "20vh" },
+            maxHeight: { md: "90vh", xs: "20vh" },
             bgcolor: "rgb(17,29,39)",
             borderRadius: 5,
             flexDirection: "column",

@@ -9,6 +9,37 @@ body {
   font-family: "Roboto Slab", serif;
 }
 
+.main-content.hidden {
+  visibility: hidden; /* or 'display: none;' based on your preference */
+}
+
+.main-content {
+  visibility: visible;
+  /* rest of your styles for main content */
+}
+
+.markdown-content {
+  font-size: 1.25rem; /* This sets the font size to 20px */
+}
+
+/* You can also target specific elements within the markdown content */
+.markdown-content h1 {
+  font-size: 2rem; /* Larger font size for h1 elements */
+}
+
+.markdown-content p {
+  font-size: 1.25rem; /* Paragraphs with 20px font size */
+}
+
+/* If you want to target the rendered math expressions specifically */
+.markdown-content .katex {
+  font-size: 1.25rem; /* Adjust as needed */
+}
+
+.no-scroll {
+  overflow: hidden;
+}
+
 .image-inverted {
   filter: invert(100%);
 }

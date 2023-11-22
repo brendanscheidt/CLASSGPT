@@ -60,23 +60,17 @@ const PageView = (props: PropsType) => {
   const [editingPageName, setEditingPageName] = useState("");
   const [editingPageInstructions, setEditingPageInstructions] = useState("");
 
-  useEffect(
-    () => {
-      console.log("effect");
-      setIsLoading(true); // Start loading when effect runs
-      const timeoutId = setTimeout(() => {
-        // ... existing logic
-        setIsLoading(false); // Stop loading once data is fetched
-      }, 700);
+  useEffect(() => {
+    setIsLoading(true); // Start loading when effect runs
+    const timeoutId = setTimeout(() => {
+      // ... existing logic
+      setIsLoading(false); // Stop loading once data is fetched
+    }, 700);
 
-      return () => {
-        clearTimeout(timeoutId);
-      };
-    },
-    [
-      /* ...dependencies */
-    ]
-  );
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, []);
 
   useEffect(() => {
     //setIsLoading(true);
