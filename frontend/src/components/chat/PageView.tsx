@@ -33,21 +33,6 @@ type PageType = {
   }[];
 }[];
 
-type ClassType = {
-  name: string;
-  model: {
-    name: string;
-    instructions: string;
-    tools: { type: string }[];
-    model: string;
-  };
-  pages: {
-    name: string;
-    pageInstructions: string;
-    chats: { id: string; role: string; content: string }[];
-  }[];
-};
-
 const PageView = (props: PropsType) => {
   const auth = useAuth();
   const [pages, setPages] = useState<PageType>([]);
@@ -73,17 +58,8 @@ const PageView = (props: PropsType) => {
   }, []);
 
   useEffect(() => {
-    //setIsLoading(true);
-    /* console.log("\n");
-    console.log("useEffect triggered");
-    console.log("auth?.classes:", auth?.classes);
-    console.log("props.className:", props.className);
-    console.log("props.pageName:", props.pageName);
-    console.log("auth?.isClassesLoading:", auth?.isClassesLoading);
-    console.log("props.classExists:", props.classExists); */
-
     const timeoutId = setTimeout(() => {
-      if (!auth?.isClassesLoading && props.classExists) {
+      if (props.classExists) {
         auth?.classes.map((userClass) => {
           if (props.className === userClass.name) {
             const instructions = userClass.model.instructions;
@@ -100,13 +76,7 @@ const PageView = (props: PropsType) => {
     }, 200);
 
     return () => clearTimeout(timeoutId);
-  }, [
-    auth?.classes,
-    props.className,
-    props.pageName,
-    auth?.isClassesLoading,
-    props.classExists,
-  ]);
+  }, [auth?.classes, props.className, props.pageName, props.classExists]);
 
   if (isLoading) {
     return (
@@ -273,11 +243,7 @@ const PageView = (props: PropsType) => {
         console.log("Both fields are required.");
       } else {
         //setIsLoading(true);
-        const res = await editUserClass(
-          props.className,
-          className,
-          modelInstructions
-        );
+        await editUserClass(props.className, className, modelInstructions);
         await auth?.updateClasses();
 
         setIsClassModalOpen(false);
@@ -304,7 +270,7 @@ const PageView = (props: PropsType) => {
         console.log("Both fields are required.");
       } else {
         setIsLoading(true);
-        const res = await createNewClass(className, {
+        await createNewClass(className, {
           name: "model",
           instructions: modelInstructions,
           model: "gpt-3.5-turbo",

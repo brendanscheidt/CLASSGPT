@@ -17,13 +17,13 @@ function App() {
   useLayoutEffect(() => {
     setIsLoading(true);
     const timeoutId = setTimeout(() => {
-      if (!auth?.isClassesLoading && !auth?.isLoading) {
+      if (!auth?.isLoading) {
         setIsLoading(false);
       }
     }, 800);
 
     return () => clearTimeout(timeoutId);
-  }, [auth?.isClassesLoading, auth?.isLoading]);
+  }, [auth?.isLoading]);
 
   useEffect(() => {
     if (isLoading) {

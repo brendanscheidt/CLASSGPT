@@ -40,7 +40,6 @@ const ClassSidebar = (props: PropsType) => {
   const [openFolder, setOpenFolder] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeClass, setActiveClass] = useState("");
-  const [isClassModalOpen, setIsClassModalOpen] = useState(false);
   const auth = useAuth();
   const navigate = useNavigate();
 

@@ -59,7 +59,7 @@ const NotePage = ({
     >
       <CardActionArea
         sx={{
-          backgroundImage: "url('../../circuit.png')", // Subtle circuit texture
+          backgroundImage: "url('../../blue.png')", // Subtle circuit texture
           backgroundSize: "cover", // Ensures the background image covers the entire Card
           backgroundRepeat: "no-repeat", // Prevents the background image from repeating
           backgroundPosition: "center", // Centers the background image
@@ -80,7 +80,7 @@ const NotePage = ({
               display: "flex",
               fontWeight: "bold", // Make the font weight bolder
               letterSpacing: "0.5px", // Adjust letter spacing
-              backgroundColor: "rgba(255, 255, 255, 0.1)", // Add a faint background color
+              backgroundColor: "rgba(11,54,66, 0.8)", // Add a faint background color
               justifyContent: "center",
               alignItems: "center",
               padding: "5px", // Add some padding if background color is used

@@ -34,7 +34,7 @@ const Login = () => {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (auth?.isLoggedIn && auth?.user && !auth.isClassesLoading) {
+      if (auth?.isLoggedIn && auth?.user) {
         if (auth.classes.length > 0) {
           navigate(`/chat/${auth.classes[0].name}/default`);
         } else {
@@ -44,13 +44,7 @@ const Login = () => {
     }, 200); // Adjust delay as needed
 
     return () => clearTimeout(timeoutId);
-  }, [
-    auth?.isLoggedIn,
-    auth?.user,
-    auth?.isClassesLoading,
-    auth?.classes,
-    navigate,
-  ]);
+  }, [auth?.isLoggedIn, auth?.user, auth?.classes, navigate]);
 
   return (
     <Box width={"100%"} height={"100%"} display="flex" flex={1}>

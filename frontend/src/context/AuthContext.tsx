@@ -42,7 +42,6 @@ type UserAuth = {
   isLoading: boolean;
   user: User | null;
   classes: UserClasses;
-  isClassesLoading: boolean;
   updateClasses: () => void;
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, email: string, password: string) => Promise<void>;
@@ -56,7 +55,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [classes, setClasses] = useState([]);
-  const [isClassesLoading, setIsClassesLoading] = useState(false);
 
   useEffect(() => {
     //fetch if user's cookies are valid then skip login
@@ -79,12 +77,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     checkStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (isLoggedIn) {
       updateClasses();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn]);
 
   const updateClasses = async () => {
@@ -145,7 +145,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     isLoading,
     classes,
     updateClasses,
-    isClassesLoading,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

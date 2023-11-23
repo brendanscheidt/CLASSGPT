@@ -3,17 +3,16 @@ import {
   Box,
   Button,
   Drawer,
-  Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
 import Chat from "../components/chat/Chat";
 import { RiFolderAddLine } from "react-icons/ri";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ClassModal from "../modals/ClassModal";
-import { createNewClass, createNewPage } from "../helpers/api-communicator";
+import { createNewClass } from "../helpers/api-communicator";
 import ClassSidebar from "../components/chat/ClassSidebar";
 import { RxHamburgerMenu } from "react-icons/rx";
 
@@ -41,6 +40,7 @@ const ClassChat = () => {
     };
 
     checkAuthAndRedirect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (auth?.isLoading) {
@@ -91,9 +91,7 @@ const ClassChat = () => {
 
         setIsModalOpen(false);
         toggleMobileDrawer();
-        if (!auth?.isClassesLoading) {
-          navigate(`/chat/${data.className}/default`);
-        }
+        navigate(`/chat/${data.className}/default`);
       }
     } catch (err) {
       console.log(err);
@@ -192,7 +190,7 @@ const ClassChat = () => {
             display: "flex",
             width: { md: "20vw", xs: "94%" },
             minWidth: { md: "250px" },
-            /* height: "100%", */
+            maxWidth: { md: "250px" },
             height: { md: "90vh", xs: "20vh" },
             maxHeight: { md: "90vh", xs: "20vh" },
             bgcolor: "rgb(17,29,39)",
