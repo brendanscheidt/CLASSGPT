@@ -55,7 +55,7 @@ const PageView = (props: PropsType) => {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, []);
+  }, [auth?.classes]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -223,7 +223,12 @@ const PageView = (props: PropsType) => {
     try {
       await deleteUserClass(props.className);
       await auth?.updateClasses();
-      navigate(`/chat/${auth?.classes[0].name}/default`);
+
+      if (props.className === auth?.classes[0].name) {
+        navigate(`/chat/${auth?.classes[1].name}/default`);
+      } else {
+        navigate(`/chat/${auth?.classes[0].name}/default`);
+      }
     } catch (err) {
       console.log(err);
     }
