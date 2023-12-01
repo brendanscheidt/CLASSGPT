@@ -101,9 +101,7 @@ const ClassSidebar = (props: PropsType) => {
           }
         });
         await createNewPage(activeClass, pageName, pageInstructions);
-        // Trigger any state updates or navigation after page creation
         setIsModalOpen(false);
-        // Update the classes data here if needed
         await auth?.updateClasses();
         if (props.onMobileDrawerClose) {
           props.onMobileDrawerClose();
@@ -113,7 +111,6 @@ const ClassSidebar = (props: PropsType) => {
       }
     } catch (err) {
       console.log(err);
-      // Optionally handle errors differently, perhaps keep the modal open
     }
   };
 
@@ -128,12 +125,12 @@ const ClassSidebar = (props: PropsType) => {
                 <Box sx={{ display: "flex", flex: "row", padding: 0 }}>
                   <Button
                     sx={{
-                      display: "inline-flex", // Use 'inline-flex' for the button to only take up as much space as needed
+                      display: "inline-flex",
                       alignItems: "center",
-                      justifyContent: "center", // Center the icon horizontally
+                      justifyContent: "center",
                       color: "white",
-                      minWidth: 0, // Set the minWidth to a smaller value or 0
-                      paddingRight: "10px", // Reduce horizontal padding
+                      minWidth: 0,
+                      paddingRight: "10px",
                       whiteSpace: "nowrap",
                     }}
                   >
@@ -146,12 +143,12 @@ const ClassSidebar = (props: PropsType) => {
                   </Button>
                   <Button
                     sx={{
-                      display: "inline-flex", // Use 'inline-flex' for the button to only take up as much space as needed
+                      display: "inline-flex",
                       alignItems: "center",
-                      justifyContent: "center", // Center the icon horizontally
+                      justifyContent: "center",
                       color: "white",
-                      minWidth: 0, // Set the minWidth to a smaller value or 0
-                      padding: "10px", // Reduce horizontal padding
+                      minWidth: 0,
+                      padding: "10px",
                       whiteSpace: "nowrap",
                     }}
                   >
@@ -186,7 +183,6 @@ const ClassSidebar = (props: PropsType) => {
               <ExpandMore sx={{ color: "white", paddingLeft: "5px" }} />
             )}
           </ListItemButton>{" "}
-          {/* Updated ListItem to ListItemButton */}
           <Collapse
             in={classItem.name === openFolder}
             timeout="auto"
@@ -194,12 +190,11 @@ const ClassSidebar = (props: PropsType) => {
           >
             <List component="div" disablePadding>
               {classItem.pages.map((page, index) => (
-                <ListItemButton // Also updated here
+                <ListItemButton
                   key={index}
                   component={Link}
                   to={`/chat/${classItem.name}/${page.name}`}
                   onClick={() => {
-                    // Call the function to close the drawer
                     if (props.onMobileDrawerClose) {
                       props.onMobileDrawerClose();
                     }
@@ -213,7 +208,7 @@ const ClassSidebar = (props: PropsType) => {
                         : page.name
                     }
                   />
-                </ListItemButton> // Also updated here
+                </ListItemButton>
               ))}
             </List>
           </Collapse>

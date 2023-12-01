@@ -107,7 +107,7 @@ const ChatItem = ({
   const handleBlockAnimationEnd = () => {
     setCurrentBlockIndex((prevIndex) => prevIndex + 1);
     if (currentBlockIndex === messageBlocks.length - 1) {
-      onAnimationComplete(); // Call this function when the last block animation completes
+      onAnimationComplete();
       localStorage.setItem("animationPlayed", "true");
     }
   };
@@ -133,20 +133,9 @@ const ChatItem = ({
         )}
         {messageBlocks.map((block, index) => {
           if (index < currentBlockIndex || !isNewMessage) {
-            return renderContent(block, index); // Use renderContent here
+            return renderContent(block, index);
           }
           if (isNewMessage && index === currentBlockIndex) {
-            /* return (
-              <TypeAnimation
-                key={index}
-                sequence={[block, 1000, () => handleBlockAnimationEnd()]}
-                wrapper="div"
-                repeat={0}
-                cursor={true}
-                speed={80}
-                style={{ fontSize: "20px" }}
-              />
-            ); */
             return (
               <TypeAnimation
                 key={index}

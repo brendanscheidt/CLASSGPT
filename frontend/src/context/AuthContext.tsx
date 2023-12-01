@@ -90,7 +90,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const updateClasses = async () => {
     if (!isLoggedIn) return; // Only fetch classes if the user is logged in
 
-    //setIsClassesLoading(true);
     try {
       console.log("fetching classes...");
       const data = await getUserClasses();
@@ -99,7 +98,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log(err);
       setClasses([]);
     } finally {
-      //setIsClassesLoading(false);
       console.log("fetching completed.");
     }
   };

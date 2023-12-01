@@ -5,11 +5,7 @@ import CustomizedInput from "../components/shared/CustomizedInput";
 type ClassModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: {
-    className: string;
-    modelInstructions: string;
-    /* newPageName: string; */
-  }) => void;
+  onSubmit: (data: { className: string; modelInstructions: string }) => void;
   isEditMode?: boolean;
   existingClassName?: string;
   existingModelInstructions?: string;
@@ -29,7 +25,6 @@ const ClassModal: React.FC<ClassModalProps> = ({
   const [modelInstructions, setModelInstructions] = useState(
     isEditMode ? existingModelInstructions : ""
   );
-  /* const [newPageName, setNewPageName] = useState(""); */
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -38,18 +33,15 @@ const ClassModal: React.FC<ClassModalProps> = ({
     if (classTrimmed.length && instructionsTrimmed.length) {
       onSubmit({
         className: classTrimmed,
-        modelInstructions: instructionsTrimmed /* newPageName */,
-      }); // Pass as an object
+        modelInstructions: instructionsTrimmed,
+      });
       handleClose();
     }
-
-    /* setNewPageName(""); */
   };
 
   const handleClose = () => {
     setClassName("");
     setModelInstructions("");
-    /* setNewPageName(""); */
     onClose();
   };
 
@@ -75,16 +67,6 @@ const ClassModal: React.FC<ClassModalProps> = ({
               onChange={(e) => setClassName(e.target.value)}
             />
           </div>
-
-          {/*  <div>
-            <CustomizedInput
-              name="newPageName"
-              label="New Page Name"
-              type="text"
-              value={newPageName}
-              onChange={(e) => setNewPageName(e.target.value)}
-            />
-          </div> */}
           <div>
             <CustomizedInput
               name="modelInstructions"
@@ -137,23 +119,22 @@ const styles = {
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.7)", // Semi-transparent dark overlay
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     zIndex: 1000,
   },
   modal: {
-    backgroundColor: "#2c2f33", // Dark background color
-    color: "#ffffff", // White text color for contrast
+    backgroundColor: "#2c2f33",
+    color: "#ffffff",
     padding: "20px",
-    borderRadius: "15px", // Increased border-radius for rounded edges
-    boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)", // Adding a subtle shadow for depth
-    maxWidth: "500px", // Max width for better aesthetics on larger screens
-    width: "90%", // Responsive width
-    margin: "0 auto", // Centering modal
-    textAlign: "center", // Center align text
-    // Modern, sleek font
+    borderRadius: "15px",
+    boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
+    maxWidth: "500px",
+    width: "90%",
+    margin: "0 auto",
+    textAlign: "center",
   },
 } as const;
 

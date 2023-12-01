@@ -34,9 +34,6 @@ const ClassChat = () => {
       if (!auth?.isLoading && !auth?.user) {
         return navigate("/login");
       }
-      /* if (classname === "none" && pagename === "none") {
-        setIsModalOpen(true);
-      } */
     };
 
     checkAuthAndRedirect();
@@ -52,28 +49,20 @@ const ClassChat = () => {
   };
 
   const handleCloseModal = () => {
-    /* if (!auth?.classes.length) {
-      return;
-    } */
     setIsModalOpen(false);
   };
 
   const handleSubmitModal = async (data: {
     className: string;
     modelInstructions: string;
-    /* newPageName: string; */
   }) => {
     try {
-      // Check if both fields are filled
       if (
         data.className.trim() === "" ||
-        data.modelInstructions.trim() === "" /* ||
-        data.newPageName.trim() === "" */
+        data.modelInstructions.trim() === ""
       ) {
         console.log("All fields are required.");
-        // Optionally, show a user-friendly error message here
       } else {
-        // Proceed with submitting data
         auth?.classes.map((userClass) => {
           if (userClass.name === data.className.trim()) {
             throw new Error("Duplicate class names not allowed.");
@@ -85,8 +74,6 @@ const ClassChat = () => {
           model: "gpt-3.5-turbo",
         });
 
-        /* await createNewPage(data.className, data.newPageName); */
-
         await auth?.updateClasses();
 
         setIsModalOpen(false);
@@ -95,7 +82,6 @@ const ClassChat = () => {
       }
     } catch (err) {
       console.log(err);
-      // Optionally handle errors differently, perhaps keep the modal open
     }
   };
 
@@ -111,7 +97,7 @@ const ClassChat = () => {
         <>
           <Box sx={{ padding: "10px" }}>
             <RxHamburgerMenu
-              onClick={toggleMobileDrawer} // Toggles the mobile drawer
+              onClick={toggleMobileDrawer}
               size={30}
               sx={{
                 my: 2,
@@ -119,9 +105,8 @@ const ClassChat = () => {
                 color: "black",
                 fontWeight: 700,
                 cursor: "pointer",
-                //position: "absolute", // Add this to position your Avatar as needed
-                top: theme.spacing(0), // Adjust the top position based on your theme spacing
-                left: theme.spacing(5), // Adjust the left position based on your theme spacing
+                top: theme.spacing(0),
+                left: theme.spacing(5),
                 margin: "10px",
               }}
             />
@@ -133,7 +118,7 @@ const ClassChat = () => {
             onClose={toggleMobileDrawer}
             sx={{
               "& .MuiDrawer-paper": {
-                bgcolor: "#111d27", // Set the background color for the Drawer's paper
+                bgcolor: "#111d27",
               },
               width: "auto",
             }}
@@ -141,8 +126,8 @@ const ClassChat = () => {
             <Box
               sx={{
                 display: "flex",
-                justifyContent: "center", // Centers the Avatar horizontally
-                p: 2, // Add some padding
+                justifyContent: "center",
+                p: 2,
               }}
             >
               <Avatar

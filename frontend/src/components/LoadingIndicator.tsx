@@ -13,19 +13,19 @@ const LoadingIndicator = () => {
     >
       <Box
         sx={{
-          width: "150px", // Increase the size of the wrapper for a bigger glow
-          height: "150px", // Same as width
+          width: "150px",
+          height: "150px",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          boxShadow: "0 0 30px 10px #00f2ff", // Increase spread and size of the glow
-          borderRadius: "50%", // Circular shape
+          boxShadow: "0 0 30px 10px #00f2ff",
+          borderRadius: "50%",
         }}
       >
         <CircularProgress
           size={100}
           sx={{
-            color: "#00f2ff", // Neon blue color
+            color: "#00f2ff",
           }}
         />
       </Box>

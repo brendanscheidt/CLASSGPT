@@ -46,10 +46,9 @@ const PageView = (props: PropsType) => {
   const [editingPageInstructions, setEditingPageInstructions] = useState("");
 
   useEffect(() => {
-    setIsLoading(true); // Start loading when effect runs
+    setIsLoading(true);
     const timeoutId = setTimeout(() => {
-      // ... existing logic
-      setIsLoading(false); // Stop loading once data is fetched
+      setIsLoading(false);
     }, 700);
 
     return () => {
@@ -72,7 +71,6 @@ const PageView = (props: PropsType) => {
           }
         });
       }
-      //setIsLoading(false);
     }, 200);
 
     return () => clearTimeout(timeoutId);
@@ -196,7 +194,6 @@ const PageView = (props: PropsType) => {
       if (newName.trim() === "") {
         console.log("Page name is required.");
       } else {
-        //setIsLoading(true);
         await editUserPage(
           className,
           oldName,
@@ -204,7 +201,6 @@ const PageView = (props: PropsType) => {
           pageInstructions
         );
         await auth?.updateClasses();
-        //setIsLoading(false);
       }
     } catch (err) {
       console.log(err);
@@ -241,23 +237,18 @@ const PageView = (props: PropsType) => {
     className: string;
     modelInstructions: string;
   }) => {
-    // Call API to update class with editedClassData
-    // Update auth classes state if necessary
     try {
       if (className.trim() === "" || modelInstructions.trim() === "") {
         console.log("Both fields are required.");
       } else {
-        //setIsLoading(true);
         await editUserClass(props.className, className, modelInstructions);
         await auth?.updateClasses();
 
         setIsClassModalOpen(false);
-        //setIsLoading(false);
         navigate(`/chat/${className}/default`);
       }
     } catch (err) {
       console.log(err);
-      //setIsLoading(false);
     }
   };
 
@@ -268,8 +259,6 @@ const PageView = (props: PropsType) => {
     className: string;
     modelInstructions: string;
   }) => {
-    // Call API to update class with editedClassData
-    // Update auth classes state if necessary
     try {
       if (className.trim() === "" || modelInstructions.trim() === "") {
         console.log("Both fields are required.");
@@ -311,8 +300,6 @@ const PageView = (props: PropsType) => {
       console.log("Page name is required.");
       return;
     }
-
-    //setIsLoading(true);
 
     try {
       if (editingPage) {
@@ -357,9 +344,9 @@ const PageView = (props: PropsType) => {
           <Box
             sx={{
               display: "flex",
-              flexDirection: "column", // Set to column to stack elements vertically
-              alignItems: "center", // Align items to the center horizontally
-              textAlign: "center", // Center the text
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: "center",
             }}
           >
             <Typography
@@ -375,7 +362,6 @@ const PageView = (props: PropsType) => {
             <Divider
               sx={{ width: "100%", mb: 3, backgroundColor: "#18465c" }}
             />{" "}
-            {/* Divider after the title */}
             <Box sx={{ display: "flex", gap: 2, mb: 4 }}>
               <Button
                 onClick={handleEditClassClick}
@@ -406,12 +392,11 @@ const PageView = (props: PropsType) => {
             />
           )}
           <Divider sx={{ width: "100%", mb: 3, backgroundColor: "#18465c" }} />{" "}
-          {/* Divider before the cards */}
           <Box
             sx={{
               display: "flex",
               flexDirection: { xs: "column", sm: "row" },
-              flexWrap: "wrap", // This allows the cards to wrap to a new row
+              flexWrap: "wrap",
               gap: 2,
             }}
           >
@@ -432,7 +417,6 @@ const PageView = (props: PropsType) => {
           <Divider
             sx={{ width: "100%", mt: 5, mb: 5, backgroundColor: "#18465c" }}
           />{" "}
-          {/* Divider before the 'Create New Page' button */}
           <Button
             onClick={handleOpenPageModal}
             variant="outlined"
@@ -466,9 +450,9 @@ const PageView = (props: PropsType) => {
           <Box
             sx={{
               display: "flex",
-              flexDirection: "column", // Set to column to stack elements vertically
-              alignItems: "center", // Align items to the center horizontally
-              textAlign: "center", // Center the text
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: "center",
             }}
           >
             <Typography
@@ -514,18 +498,18 @@ const PageView = (props: PropsType) => {
                   sx={{
                     margin: "10px",
                     textAlign: "center",
-                    fontWeight: "medium", // Adjusts weight
+                    fontWeight: "medium",
                     lineHeight: "1.6",
                     letterSpacing: "0.5px",
                     fontSize: { xs: "16px", md: "18px" },
-                    textShadow: "2px 2px 4px #000000", // Drop shadow for depth
-                    backgroundColor: "rgba(255, 255, 255, 0.1)", // Subtle highlight
-                    padding: "5px", // Padding for highlight effect
-                    borderRadius: "4px", // Rounded corners for highlight
-                    transition: "all 0.3s ease-in-out", // Animation on hover
+                    textShadow: "2px 2px 4px #000000",
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    padding: "5px",
+                    borderRadius: "4px",
+                    transition: "all 0.3s ease-in-out",
                     "&:hover": {
-                      color: "#FFFFFF", // Change color on hover
-                      backgroundColor: "rgba(255, 255, 255, 0.2)", // Change highlight
+                      color: "#FFFFFF",
+                      backgroundColor: "rgba(255, 255, 255, 0.2)",
                     },
                   }}
                 >
@@ -553,23 +537,22 @@ const PageView = (props: PropsType) => {
                   className="img-border"
                 />
                 <Typography
-                  //variant="h2"
                   color={"whitesmoke"}
                   sx={{
                     margin: "10px",
                     textAlign: "center",
-                    fontWeight: "medium", // Adjusts weight
+                    fontWeight: "medium",
                     lineHeight: "1.6",
                     letterSpacing: "0.5px",
                     fontSize: { xs: "16px", md: "18px" },
-                    textShadow: "2px 2px 4px #000000", // Drop shadow for depth
-                    backgroundColor: "rgba(255, 255, 255, 0.1)", // Subtle highlight
-                    padding: "5px", // Padding for highlight effect
-                    borderRadius: "4px", // Rounded corners for highlight
-                    transition: "all 0.3s ease-in-out", // Animation on hover
+                    textShadow: "2px 2px 4px #000000",
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    padding: "5px",
+                    borderRadius: "4px",
+                    transition: "all 0.3s ease-in-out",
                     "&:hover": {
-                      color: "#FFFFFF", // Change color on hover
-                      backgroundColor: "rgba(255, 255, 255, 0.2)", // Change highlight
+                      color: "#FFFFFF",
+                      backgroundColor: "rgba(255, 255, 255, 0.2)",
                     },
                   }}
                 >
@@ -587,14 +570,14 @@ const PageView = (props: PropsType) => {
               onClick={handleOpenPageModal}
               sx={{
                 mt: 5,
-                fontSize: "large", // Makes the font size larger
-                padding: "20px", // Adds padding to increase the button size
-                border: "2px solid black", // Adds a border with 2px thickness and black color
+                fontSize: "large",
+                padding: "20px",
+                border: "2px solid black",
                 borderRadius: "10px",
                 color: "whitesmoke",
-                backgroundColor: "#1d3e57", // Sets the background color to sky blue
+                backgroundColor: "#1d3e57",
                 "&:hover": {
-                  backgroundColor: "#234a69", // Optional: Changes background color on hover
+                  backgroundColor: "#234a69",
                 },
               }}
             >
@@ -627,9 +610,9 @@ const PageView = (props: PropsType) => {
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column", // Set to column to stack elements vertically
-            alignItems: "center", // Align items to the center horizontally
-            textAlign: "center", // Center the text
+            flexDirection: "column",
+            alignItems: "center",
+            textAlign: "center",
           }}
         >
           <Typography
@@ -670,23 +653,22 @@ const PageView = (props: PropsType) => {
                 className="img-border"
               />
               <Typography
-                //variant="h2"
                 color={"whitesmoke"}
                 sx={{
                   margin: "10px",
                   textAlign: "center",
-                  fontWeight: "medium", // Adjusts weight
+                  fontWeight: "medium",
                   lineHeight: "1.6",
                   letterSpacing: "0.5px",
                   fontSize: { xs: "16px", md: "18px" },
-                  textShadow: "2px 2px 4px #000000", // Drop shadow for depth
-                  backgroundColor: "rgba(255, 255, 255, 0.1)", // Subtle highlight
-                  padding: "5px", // Padding for highlight effect
-                  borderRadius: "4px", // Rounded corners for highlight
-                  transition: "all 0.3s ease-in-out", // Animation on hover
+                  textShadow: "2px 2px 4px #000000",
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  padding: "5px",
+                  borderRadius: "4px",
+                  transition: "all 0.3s ease-in-out",
                   "&:hover": {
-                    color: "#FFFFFF", // Change color on hover
-                    backgroundColor: "rgba(255, 255, 255, 0.2)", // Change highlight
+                    color: "#FFFFFF",
+                    backgroundColor: "rgba(255, 255, 255, 0.2)",
                   },
                 }}
               >
@@ -713,23 +695,22 @@ const PageView = (props: PropsType) => {
                 className="img-border"
               />
               <Typography
-                //variant="h2"
                 color={"whitesmoke"}
                 sx={{
                   margin: "10px",
                   textAlign: "center",
-                  fontWeight: "medium", // Adjusts weight
+                  fontWeight: "medium",
                   lineHeight: "1.6",
                   letterSpacing: "0.5px",
                   fontSize: { xs: "16px", md: "18px" },
-                  textShadow: "2px 2px 4px #000000", // Drop shadow for depth
-                  backgroundColor: "rgba(255, 255, 255, 0.1)", // Subtle highlight
-                  padding: "5px", // Padding for highlight effect
-                  borderRadius: "4px", // Rounded corners for highlight
-                  transition: "all 0.3s ease-in-out", // Animation on hover
+                  textShadow: "2px 2px 4px #000000",
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  padding: "5px",
+                  borderRadius: "4px",
+                  transition: "all 0.3s ease-in-out",
                   "&:hover": {
-                    color: "#FFFFFF", // Change color on hover
-                    backgroundColor: "rgba(255, 255, 255, 0.2)", // Change highlight
+                    color: "#FFFFFF",
+                    backgroundColor: "rgba(255, 255, 255, 0.2)",
                   },
                 }}
               >
@@ -745,14 +726,14 @@ const PageView = (props: PropsType) => {
             onClick={() => setIsClassModalOpen(true)}
             sx={{
               mt: 5,
-              fontSize: "large", // Makes the font size larger
-              padding: "20px", // Adds padding to increase the button size
-              border: "2px solid black", // Adds a border with 2px thickness and black color
+              fontSize: "large",
+              padding: "20px",
+              border: "2px solid black",
               borderRadius: "10px",
               color: "whitesmoke",
-              backgroundColor: "#1d3e57", // Sets the background color to sky blue
+              backgroundColor: "#1d3e57",
               "&:hover": {
-                backgroundColor: "#234a69", // Optional: Changes background color on hover
+                backgroundColor: "#234a69",
               },
             }}
           >

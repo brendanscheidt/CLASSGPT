@@ -22,10 +22,7 @@ const Login = () => {
       toast.loading("Signing In!", { id: "login" });
       await auth?.login(email, password);
 
-      // No need to check auth.user or auth.classes here
       toast.success("Signed In Successfully!", { id: "login" });
-
-      // The redirection logic should be handled elsewhere, where state updates are reflected
     } catch (err) {
       console.log(err);
       toast.error("Signing In Failed", { id: "login" });
@@ -41,7 +38,7 @@ const Login = () => {
           navigate("/chat/none/none");
         }
       }
-    }, 200); // Adjust delay as needed
+    }, 200);
 
     return () => clearTimeout(timeoutId);
   }, [auth?.isLoggedIn, auth?.user, auth?.classes, navigate]);

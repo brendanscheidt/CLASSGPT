@@ -63,7 +63,6 @@ const Chat = (props: PropsType) => {
         props.userPage
       );
 
-      // setChatMessages([...chatData.chats]);
       const newAIMessage: Message = chatData.chats[chatData.chats.length - 1];
       setTempNewAIMessage(newAIMessage);
       await auth?.updateClasses();
@@ -73,11 +72,7 @@ const Chat = (props: PropsType) => {
     } finally {
       prevChatMessagesRef.current = chatMessages.concat(newMessage);
       setIsSending(false);
-
-      //setNewMessageHasntBeenReceived(true);
     }
-
-    //
   };
 
   const handleDeleteChats = async () => {
@@ -95,11 +90,9 @@ const Chat = (props: PropsType) => {
 
   useLayoutEffect(() => {
     if (auth?.isLoggedIn && auth.user) {
-      //toast.loading("Loading Chats", { id: "loadchats" });
       getUserChats(props.userClass, props.userPage)
         .then((data) => {
           setChatMessages([...data.chats]);
-          //toast.success("Successfully loaded chats", { id: "loadchats" });
         })
         .catch((err) => {
           console.log(err);
@@ -156,9 +149,7 @@ const Chat = (props: PropsType) => {
           flex: 1,
           width: "100%",
           height: "100%",
-          //mt: 3,
           gap: 3,
-          // px: 3,
         }}
       >
         <Box
@@ -167,8 +158,6 @@ const Chat = (props: PropsType) => {
             flex: { md: 0.98, xs: 1, sm: 1 },
             flexDirection: "column",
             px: 3,
-            /* height: "60vh",
-            overflowY: "auto", */
           }}
         >
           <Box
@@ -185,8 +174,8 @@ const Chat = (props: PropsType) => {
                 fontSize: { xs: "24px", md: "40px" },
                 color: "white",
                 fontWeight: "600",
-                textAlign: "center", // Center the text
-                flexGrow: 1, // Allow it to take available space
+                textAlign: "center",
+                flexGrow: 1,
                 whiteSpace: "nowrap",
               }}
             >
@@ -205,7 +194,7 @@ const Chat = (props: PropsType) => {
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              justifyContent: "space-between", // Distribute space between elements
+              justifyContent: "space-between",
               backgroundColor: "#0a1c30",
               borderRadius: "10px",
               padding: "10px",
@@ -216,9 +205,9 @@ const Chat = (props: PropsType) => {
               className="button-svg-icon"
               id="deleteChatsButton"
               sx={{
-                display: "inline-flex", // Use 'inline-flex' for the button to only take up as much space as needed
+                display: "inline-flex",
                 alignItems: "center",
-                justifyContent: "center", // Center the icon horizontally
+                justifyContent: "center",
                 color: "white",
                 fontWeight: "700",
                 borderRadius: "10px",
@@ -226,16 +215,16 @@ const Chat = (props: PropsType) => {
                 ":hover": {
                   bgcolor: red.A400,
                 },
-                minWidth: 0, // Set the minWidth to a smaller value or 0
-                padding: "5px", // Reduce horizontal padding
-                whiteSpace: "nowrap", // Prevent text wrapping
+                minWidth: 0,
+                padding: "5px",
+                whiteSpace: "nowrap",
               }}
             >
               <VscClearAll size={25} />
             </Button>
 
             <Link
-              style={{ textDecoration: "none" }} // Centers the Link itself
+              style={{ textDecoration: "none" }}
               to={`/chat/${props.userClass}/default`}
             >
               <Button
@@ -250,13 +239,10 @@ const Chat = (props: PropsType) => {
                   },
                 }}
               >
-                <TbHomeEdit
-                  size={20}
-                  //style={{ marginRight: { md: "8px", xs: 0 } }}
-                />
+                <TbHomeEdit size={20} />
                 <Typography
                   sx={{
-                    display: { xs: "none", md: "block" }, // Hide text on xs, show on md and above
+                    display: { xs: "none", md: "block" },
                     marginLeft: { xs: "none", md: "10px" },
                   }}
                 >

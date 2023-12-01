@@ -34,7 +34,7 @@ const PageModal: React.FC<ClassModalProps> = ({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (pageInstructions.length && pageName.length) {
-      onSubmit(pageName.trim(), pageInstructions.trim()); // Pass as an object
+      onSubmit(pageName.trim(), pageInstructions.trim());
       setPageName("");
       setPageInstructions("");
     }
@@ -61,7 +61,6 @@ const PageModal: React.FC<ClassModalProps> = ({
               </Typography>
             </div>
             <div>
-              {/* <label htmlFor="className">Class Name:</label> */}
               <CustomizedInput
                 name="pagename"
                 label="Page Name"
@@ -71,7 +70,6 @@ const PageModal: React.FC<ClassModalProps> = ({
               />
             </div>
             <div>
-              {/* <label htmlFor="className">Class Name:</label> */}
               <CustomizedInput
                 name="pageinstructions"
                 label="Topic Instructions"
@@ -124,7 +122,6 @@ const PageModal: React.FC<ClassModalProps> = ({
               </Typography>
             </div>
             <div>
-              {/* <label htmlFor="className">Class Name:</label> */}
               <CustomizedInput
                 name="pagename"
                 label="Page Name"
@@ -134,7 +131,6 @@ const PageModal: React.FC<ClassModalProps> = ({
               />
             </div>
             <div>
-              {/* <label htmlFor="className">Class Name:</label> */}
               <CustomizedInput
                 name="pageinstructions"
                 label="Topic Instructions"
@@ -185,23 +181,22 @@ const styles = {
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.7)", // Semi-transparent dark overlay
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     zIndex: 1000,
   },
   modal: {
-    backgroundColor: "#2c2f33", // Dark background color
-    color: "#ffffff", // White text color for contrast
+    backgroundColor: "#2c2f33",
+    color: "#ffffff",
     padding: "20px",
-    borderRadius: "15px", // Increased border-radius for rounded edges
-    boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)", // Adding a subtle shadow for depth
-    maxWidth: "500px", // Max width for better aesthetics on larger screens
-    width: "90%", // Responsive width
-    margin: "0 auto", // Centering modal
-    textAlign: "center", // Center align text
-    // Modern, sleek font
+    borderRadius: "15px",
+    boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
+    maxWidth: "500px",
+    width: "90%",
+    margin: "0 auto",
+    textAlign: "center",
   },
 } as const;
 
