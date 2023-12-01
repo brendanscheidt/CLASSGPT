@@ -1,8 +1,6 @@
 import app from "./app.js";
 import { connectToDatabase } from "./db/connection.js";
 
-// Routes //
-
 // Connection //
 connectToDatabase()
   .then(() => {

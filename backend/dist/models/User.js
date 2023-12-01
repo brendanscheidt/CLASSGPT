@@ -24,7 +24,7 @@ const gptModelSchema = new mongoose.Schema({
     tools: [
         {
             type: {
-                type: String, // Note that 'type' is used twice: once to define the field and once as the field's type
+                type: String,
             },
         },
     ],
@@ -68,20 +68,6 @@ const pageSchema = new mongoose.Schema({
     thread: {
         type: Object,
     },
-    /* thread: {
-      id: {
-        type: String,
-      },
-      object: {
-        type: String,
-      },
-      created_at: {
-        type: String,
-      },
-      metadata: {
-        type: Object,
-      },
-    }, */
 }, { timestamps: true });
 const classSchema = new mongoose.Schema({
     name: {

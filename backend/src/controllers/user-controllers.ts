@@ -162,7 +162,6 @@ export const userLogout = async (
       path: "/",
       httpOnly: true,
       signed: true,
-      // domain: "localhost", // You might not need this line at all
     });
 
     return res.status(201).json({

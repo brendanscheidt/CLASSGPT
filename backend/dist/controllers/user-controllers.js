@@ -114,7 +114,6 @@ export const userLogout = async (req, res, next) => {
             path: "/",
             httpOnly: true,
             signed: true,
-            // domain: "localhost", // You might not need this line at all
         });
         return res.status(201).json({
             message: "OK",

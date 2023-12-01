@@ -33,7 +33,7 @@ export const generateChatCompletion = async (req, res, next) => {
         let parts = assistant.instructions.split(".");
         if (parts.length > 1) {
             parts[1] =
-                "Always reply in markdown format and make use of headings, lists, italics, etc. Classes and topics wont always be about mathematics, but if they are, always use Latex format for math expressions. In your responses, use `$...$` for inline math expressions and `$$...$$` for block math expressions. Replace all instances of `( ... )` with `$ ... $` and `[ ... ]` with `$$ ... $$`." +
+                "Always reply in markdown format and make use of headings, lists, italics, etc. Also always use emojis. Classes and topics wont always be about mathematics, but if they are, always use Latex format for math expressions. In your responses, use `$...$` for inline math expressions and `$$...$$` for block math expressions. Replace all instances of `( ... )` with `$ ... $` and `[ ... ]` with `$$ ... $$`." +
                     `The topic the user wants to talk about is ${pageName}. The instructions the user specifically has for this topic are: """${pageForChat.pageInstructions}""". In addition, they have overall instructions for you as an assistant.` +
                     parts[1];
         }
@@ -54,11 +54,9 @@ export const generateChatCompletion = async (req, res, next) => {
         let lastMessageContent = "";
         messages.data.forEach((message) => {
             if (message.run_id === run.id && message.role === "assistant") {
-                // Iterate through each content item in the message
                 message.content.forEach((contentItem) => {
-                    // Check if the content item is of type text
                     if (contentItem.type === "text") {
-                        lastMessageContent += contentItem.text.value; // Append the text to the final message content
+                        lastMessageContent += contentItem.text.value;
                     }
                 });
             }
@@ -71,7 +69,6 @@ export const generateChatCompletion = async (req, res, next) => {
             });
         }
         else {
-            // Handle the case where no message content is found
             return res.status(500).json({ error: "Error: No message content found" });
         }
         console.log(lastMessageContent);
@@ -213,7 +210,7 @@ export const createUserClass = async (req, res, next) => {
         }
         const assistant = await openai.beta.assistants.create({
             name: `${name} Class Tutor`,
-            instructions: "Always reply in markdown format and make use of headings, lists, italics, etc. Classes and topics wont always be about mathematics, but if they are, always use Latex format for math expressions. In your responses, use `$...$` for inline math expressions and `$$...$$` for block math expressions. Replace all instances of `( ... )` with `$ ... $` and `[ ... ]` with `$$ ... $$`." +
+            instructions: "Always reply in markdown format and make use of headings, lists, italics, etc. Also always use emojis. Classes and topics wont always be about mathematics, but if they are, always use Latex format for math expressions. In your responses, use `$...$` for inline math expressions and `$$...$$` for block math expressions. Replace all instances of `( ... )` with `$ ... $` and `[ ... ]` with `$$ ... $$`." +
                 `You are a personal tutor for ${name} class. Follow the instructions the user gives you for the topic and overall as an assistant, here are the users instructions for you as an assistant: """${model.instructions}"""`,
             tools: [{ type: "code_interpreter" }],
             model: MODEL_TYPE,
@@ -258,7 +255,7 @@ export const editUserClass = async (req, res, next) => {
         }
         classForChat.name = newClassName;
         classForChat.model.instructions =
-            "Always reply in markdown format and make use of headings, lists, italics, etc. Classes and topics wont always be about mathematics, but if they are, always use Latex format for math expressions. In your responses, use `$...$` for inline math expressions and `$$...$$` for block math expressions. Replace all instances of `( ... )` with `$ ... $` and `[ ... ]` with `$$ ... $$`." +
+            "Always reply in markdown format and make use of headings, lists, italics, etc. Also always use emojis. Classes and topics wont always be about mathematics, but if they are, always use Latex format for math expressions. In your responses, use `$...$` for inline math expressions and `$$...$$` for block math expressions. Replace all instances of `( ... )` with `$ ... $` and `[ ... ]` with `$$ ... $$`." +
                 `You are a personal tutor for ${newClassName} class. Follow the instructions the user gives you for the topic and overall as an assistant, here are the users instructions for you as an assistant: """${modelInstructions}"""`;
         await user.save();
         return res.status(201).json({ message: "OK", classForChat });
@@ -305,7 +302,6 @@ export const deleteChats = async (req, res, next) => {
         if (!classForChat) {
             return res.status(404).send("Class not found");
         }
-        // Find the index of the page to be removed
         const page = classForChat.pages.find((page) => page.name === pagename);
         if (page) {
             // Clear the chats array while maintaining the Mongoose DocumentArray type
@@ -339,7 +335,6 @@ export const deletePage = async (req, res, next) => {
         if (!classForChat) {
             return res.status(404).send("Class not found");
         }
-        // Check if the page exists
         const pageIndex = classForChat.pages.findIndex((page) => page.name === pageName);
         if (pageIndex === -1) {
             return res.status(404).send("Page not found");
