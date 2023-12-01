@@ -26,6 +26,13 @@ const ClassModal: React.FC<ClassModalProps> = ({
     isEditMode ? existingModelInstructions : ""
   );
 
+  const handleEnterPress = () => {
+    // Directly call handleSubmit without any event
+    handleSubmit(
+      new Event("submit") as unknown as React.FormEvent<HTMLFormElement>
+    );
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const classTrimmed = className.trim();
@@ -76,6 +83,7 @@ const ClassModal: React.FC<ClassModalProps> = ({
               onChange={(e) => setModelInstructions(e.target.value)}
               multiline={true}
               placeholder="Type the instructions you wish to give your tutor for this class. ie. Talk like an old-timey british guy. Make sarcastic jokes often."
+              onEnterPress={handleEnterPress}
             />
           </div>
 

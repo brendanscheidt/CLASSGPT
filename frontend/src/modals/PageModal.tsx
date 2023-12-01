@@ -31,6 +31,14 @@ const PageModal: React.FC<ClassModalProps> = ({
     setPageInstructions(initialPageInstructions);
   }, [initialPageName, initialPageInstructions]);
 
+  const handleSubmitForm = () => {
+    if (pageName.trim() && pageInstructions.trim()) {
+      handleSubmit(
+        new Event("submit") as unknown as React.FormEvent<HTMLFormElement>
+      );
+    }
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (pageInstructions.length && pageName.length) {
@@ -78,6 +86,7 @@ const PageModal: React.FC<ClassModalProps> = ({
                 onChange={(e) => setPageInstructions(e.target.value)}
                 multiline={true}
                 placeholder="Type the instructions you want your tutor to have for this specific page or topic. ie. This page is about geometry and area."
+                onEnterPress={handleSubmitForm}
               />
             </div>
             <Button
@@ -145,6 +154,7 @@ const PageModal: React.FC<ClassModalProps> = ({
                 onChange={(e) => setPageInstructions(e.target.value)}
                 multiline={true}
                 placeholder="Type the instructions you want your tutor to have for this specific page or topic. ie. This page is about geometry and area."
+                onEnterPress={handleSubmitForm}
               />
             </div>
             <Button

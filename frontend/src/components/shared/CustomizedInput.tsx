@@ -9,6 +9,7 @@ type Props = {
   multiline?: boolean;
   rows?: number;
   placeholder?: string;
+  onEnterPress?: () => void;
 };
 
 const CustomizedInput = ({
@@ -20,7 +21,15 @@ const CustomizedInput = ({
   multiline = false,
   rows = 4,
   placeholder = "",
+  onEnterPress,
 }: Props) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && !e.shiftKey && multiline) {
+      e.preventDefault(); // Prevent default behavior (new line)
+      onEnterPress?.(); // Call the onEnterPress function
+    }
+  };
+
   return (
     <TextField
       margin="normal"
@@ -30,6 +39,7 @@ const CustomizedInput = ({
       type={type}
       value={value}
       onChange={onChange}
+      onKeyDown={multiline ? handleKeyDown : undefined}
       multiline={multiline}
       rows={multiline ? rows : 1}
       placeholder={placeholder}
