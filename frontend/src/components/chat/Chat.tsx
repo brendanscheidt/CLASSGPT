@@ -297,23 +297,6 @@ const Chat = (props: PropsType) => {
               scrollbarWidth: "thin", // For Firefox
             }}
           >
-            {/* {chatMessages.map((chat, index) => {
-              const isNewMessage =
-                (prevChatMessagesRef.current &&
-                  index >= prevChatMessagesRef.current.length &&
-                  newMessageHasntBeenReceived) ??
-                false;
-
-              return (
-                <ChatItem
-                  content={chat.content}
-                  role={chat.role}
-                  isNewMessage={isNewMessage}
-                  key={index}
-                  onAnimationComplete={handleAnimationComplete}
-                />
-              );
-            })} */}
             <Box position={"relative"} width={"100%"} maxWidth={"100%"}>
               {chatMessages.map((chat, index) => {
                 const animationPlayed =
