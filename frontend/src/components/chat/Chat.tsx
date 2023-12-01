@@ -40,6 +40,29 @@ const Chat = (props: PropsType) => {
   const prevChatMessagesRef = useRef<Message[] | null>(null);
   const [newMessageHasntBeenReceived, setNewMessageHasntBeenReceived] =
     useState(true);
+  const [tempProcessingMessage, setTempProcessingMessage] =
+    useState<Message | null>(null);
+
+  const placeholderMessages: string[] = [
+    "Beep boop! I'm on it...",
+    "Activating all my silicon neurons...",
+    "Consulting with the digital brain...",
+    "Decoding the complexities of your query...",
+    "Casting a net into the ocean of data...",
+    "Fetching insights from the AI realm...",
+    "Synchronizing with the knowledge matrix...",
+    "Processing... I'm on the verge of a breakthrough!",
+    "Evaluating multiple educational perspectives...",
+    "Gleaning wisdom from the AI knowledge orchard...",
+    "Still processing...",
+    "Assembling bits of genius for you...",
+    "Just a second, I'm almost there...",
+    "Orchestrating a symphony of data...",
+    "Generating a tailored educational response...",
+    "Concocting the perfect blend of answers and insight...",
+    "Hang tight, almost done...",
+  ];
+  const messageIndex = useRef<number>(0);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -108,6 +131,7 @@ const Chat = (props: PropsType) => {
     prevChatMessagesRef,
     tempNewAIMessage,
     newMessageHasntBeenReceived,
+    tempProcessingMessage,
   ]);
 
   useEffect(() => {
@@ -136,6 +160,34 @@ const Chat = (props: PropsType) => {
     setIsClassInUser(classExists);
     setIsPageInClass(pageExists);
   }, [auth, auth?.classes, props.userClass, props.userPage]);
+
+  useEffect(() => {
+    let interval: number;
+
+    if (isSending) {
+      // Immediately set the first temporary processing message
+      setTempProcessingMessage({
+        role: "assistant",
+        content: placeholderMessages[0],
+      });
+      messageIndex.current = 1;
+
+      // Set an interval to cycle through processing messages
+      interval = setInterval(() => {
+        setTempProcessingMessage({
+          role: "assistant",
+          content: placeholderMessages[messageIndex.current],
+        });
+        messageIndex.current =
+          (messageIndex.current + 1) % placeholderMessages.length;
+      }, 5000); // Adjust the interval duration as needed
+    } else {
+      // Clear the temporary processing message when not sending
+      setTempProcessingMessage(null);
+    }
+
+    return () => clearInterval(interval);
+  }, [isSending]);
 
   if (auth?.isLoading) {
     return <div>Loading...</div>;
@@ -283,7 +335,12 @@ const Chat = (props: PropsType) => {
               scrollbarWidth: "thin", // For Firefox
             }}
           >
-            <Box position={"relative"} width={"100%"} maxWidth={"100%"}>
+            <Box
+              id="chatContainer"
+              position={"relative"}
+              width={"100%"}
+              maxWidth={"100%"}
+            >
               {chatMessages.map((chat, index) => {
                 const animationPlayed =
                   localStorage.getItem("animationPlayed") === "true";
@@ -296,6 +353,7 @@ const Chat = (props: PropsType) => {
                     role={chat.role}
                     isNewMessage={isNewMessage}
                     key={index}
+                    onContentHeightChange={scrollToBottom}
                     onAnimationStart={() => {
                       if (
                         tempNewAIMessage &&
@@ -313,6 +371,20 @@ const Chat = (props: PropsType) => {
                   />
                 );
               })}
+              {tempProcessingMessage && (
+                <ChatItem
+                  content={tempProcessingMessage.content}
+                  role={tempProcessingMessage.role}
+                  isNewMessage={false} // Adjust as needed
+                  // Add any other necessary props
+                  onContentHeightChange={scrollToBottom}
+                  onAnimationStart={scrollToBottom}
+                  onAnimationComplete={scrollToBottom}
+                  style={{
+                    animation: "pulseOpacity 2s infinite", // Adjust '2s' as needed for speed
+                  }}
+                />
+              )}
             </Box>
 
             <div ref={messagesEndRef} />

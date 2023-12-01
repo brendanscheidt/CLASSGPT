@@ -2,7 +2,7 @@ import { Box, Avatar, Typography } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { coldarkDark } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { TypeAnimation } from "react-type-animation";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
@@ -51,16 +51,22 @@ const ChatItem = ({
   content,
   role,
   isNewMessage,
+  style,
+  onContentHeightChange,
   onAnimationStart,
   onAnimationComplete,
 }: {
   content: string;
   role: "user" | "assistant";
   isNewMessage: boolean;
+  style?: React.CSSProperties;
   onAnimationComplete: () => void;
   onAnimationStart: () => void;
+  onContentHeightChange: () => void;
 }) => {
   const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [lastHeight, setLastHeight] = useState(0);
 
   const messageBlocks = useMemo(
     () => extractCodeFromString(content),
@@ -73,6 +79,22 @@ const ChatItem = ({
       setCurrentBlockIndex(0);
     }
   }, [isNewMessage, role]);
+
+  useEffect(() => {
+    const checkHeightAndScroll = () => {
+      if (contentRef.current) {
+        const currentHeight = contentRef.current.clientHeight;
+        if (currentHeight !== lastHeight) {
+          onContentHeightChange();
+          setLastHeight(currentHeight);
+        }
+      }
+    };
+
+    const interval = setInterval(checkHeightAndScroll, 200); // Check every 200ms
+
+    return () => clearInterval(interval);
+  }, [lastHeight, onContentHeightChange]);
 
   const renderContent = (block: string, index: number) => {
     if (isCodeBlock(block)) {
@@ -123,6 +145,7 @@ const ChatItem = ({
         my: 1,
         boxSizing: "border-box",
       }}
+      style={style}
     >
       <Avatar sx={{ ml: "0", backgroundColor: "#dcf0f2" }}>
         <img src="/../classgpt.png" alt="classgpt" width={"40px"} />
@@ -137,20 +160,22 @@ const ChatItem = ({
           }
           if (isNewMessage && index === currentBlockIndex) {
             return (
-              <TypeAnimation
-                key={index}
-                sequence={[
-                  () => handleBlockAnimationStart(),
-                  block,
-                  1000,
-                  () => handleBlockAnimationEnd(),
-                ]}
-                wrapper="div"
-                repeat={0}
-                cursor={true}
-                speed={99}
-                style={{ fontSize: "20px", lineHeight: "1.5" }}
-              />
+              <div ref={contentRef}>
+                <TypeAnimation
+                  key={index}
+                  sequence={[
+                    () => handleBlockAnimationStart(),
+                    block,
+                    1000,
+                    () => handleBlockAnimationEnd(),
+                  ]}
+                  wrapper="div"
+                  repeat={0}
+                  cursor={true}
+                  speed={99}
+                  style={{ fontSize: "20px", lineHeight: "1.5" }}
+                />
+              </div>
             );
           }
         })}
