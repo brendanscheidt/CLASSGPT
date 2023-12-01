@@ -86,9 +86,15 @@ const ClassModal: React.FC<ClassModalProps> = ({
               ":hover": {
                 bgcolor: "#029695",
               },
+              ":disabled": {
+                bgcolor: "grey", // Style for disabled state
+                color: "white",
+                cursor: "not-allowed",
+              },
               margin: "10px",
             }}
             type="submit"
+            disabled={!className.trim() || !modelInstructions.trim()}
           >
             {isEditMode ? "Save Changes" : "Submit"}
           </Button>

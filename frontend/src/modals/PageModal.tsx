@@ -88,10 +88,16 @@ const PageModal: React.FC<ClassModalProps> = ({
                   bgcolor: "#029695",
                 },
                 margin: "10px",
+                ":disabled": {
+                  bgcolor: "grey",
+                  color: "white",
+                  cursor: "not-allowed",
+                },
               }}
               type="submit"
+              disabled={!pageName.trim() || !pageInstructions.trim()}
             >
-              Submit
+              Save Changes
             </Button>
             <Button
               sx={{
@@ -149,8 +155,14 @@ const PageModal: React.FC<ClassModalProps> = ({
                   bgcolor: "#029695",
                 },
                 margin: "10px",
+                ":disabled": {
+                  bgcolor: "grey",
+                  color: "white",
+                  cursor: "not-allowed",
+                },
               }}
               type="submit"
+              disabled={!pageName.trim() || !pageInstructions.trim()}
             >
               Submit
             </Button>
