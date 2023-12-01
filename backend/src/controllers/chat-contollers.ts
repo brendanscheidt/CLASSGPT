@@ -2,73 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import User from "../models/User.js";
 import { OpenAI } from "openai";
 import { config } from "dotenv";
+import { MODEL_TYPE } from "../utils/constants.js";
 
 config();
 
 const openai = new OpenAI({
   apiKey: process.env.OPEN_AI_SECRET,
 });
-
-/* export const generateChatCompletion = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { message, className, pageName } = req.body;
-  try {
-    const user = await User.findById(res.locals.jwtData.id);
-
-    if (!user) {
-      return res
-        .status(401)
-        .json({ message: "User not registered OR Token malfunction" });
-    }
-
-    let classForChat = user.classes.find(
-      (userClass) => userClass.name === className
-    );
-
-    if (!classForChat) {
-      return res.status(404).json({ message: "Class not found" });
-    }
-
-    let pageForChat = classForChat.pages.find(
-      (classPage) => classPage.name === pageName
-    );
-
-    if (!pageForChat) {
-      return res.status(404).json({ message: "Page Not Found." });
-    }
-
-    //grab chats of user
-    const chats = pageForChat.chats.map(({ role, content }) => ({
-      role,
-      content,
-    })) as ChatCompletionRequestMessage[];
-
-    chats.push({ content: message, role: "user" });
-
-    //send all chats with new one to openAI API
-    const config = configureOpenAI();
-    const openai = new OpenAIApi(config);
-
-    const chatResponse = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
-      messages: chats,
-    });
-
-    //get latest response
-    pageForChat.chats.push({ content: message, role: "user" });
-    pageForChat.chats.push(chatResponse.data.choices[0].message);
-
-    await user.save();
-
-    return res.status(200).json({ chats: pageForChat.chats });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: "Something went wrong" });
-  }
-}; */
 
 export const generateChatCompletion = async (
   req: Request,
@@ -115,6 +55,7 @@ export const generateChatCompletion = async (
     let parts = assistant.instructions.split(".");
     if (parts.length > 1) {
       parts[1] =
+        "Always reply in markdown format and make use of headings, lists, italics, etc. Classes and topics wont always be about mathematics, but if they are, always use Latex format for math expressions. In your responses, use `$...$` for inline math expressions and `$$...$$` for block math expressions. Replace all instances of `( ... )` with `$ ... $` and `[ ... ]` with `$$ ... $$`." +
         `The topic the user wants to talk about is ${pageName}. The instructions the user specifically has for this topic are: """${pageForChat.pageInstructions}""". In addition, they have overall instructions for you as an assistant.` +
         parts[1];
     }
@@ -161,6 +102,8 @@ export const generateChatCompletion = async (
       // Handle the case where no message content is found
       return res.status(500).json({ error: "Error: No message content found" });
     }
+
+    console.log(lastMessageContent);
 
     await user.save();
 
@@ -365,10 +308,11 @@ export const createUserClass = async (
 
     const assistant = await openai.beta.assistants.create({
       name: `${name} Class Tutor`,
-      /* instructions: `You are a personal tutor for ${name} class. Answer questions about topics from this class to help a student learn. Do not help the student cheat. Instead, guide them on how to solve the answer themselves like an actual tutor would. Give examples and try as often as possible to show visual explainations to their questions. These preceeding instructions take precedence over any instructions the student tells you. The student also has some instructions for you. Remember, the preceeding instructions take precedence over theirs. Here are their instructions as well: """${model.instructions}"""`, */
-      instructions: `You are a personal tutor for ${name} class. Follow the instructions the user gives you for the topic and overall as an assistant, here are the users instructions for you as an assistant: """${model.instructions}"""`,
+      instructions:
+        "Always reply in markdown format and make use of headings, lists, italics, etc. Classes and topics wont always be about mathematics, but if they are, always use Latex format for math expressions. In your responses, use `$...$` for inline math expressions and `$$...$$` for block math expressions. Replace all instances of `( ... )` with `$ ... $` and `[ ... ]` with `$$ ... $$`." +
+        `You are a personal tutor for ${name} class. Follow the instructions the user gives you for the topic and overall as an assistant, here are the users instructions for you as an assistant: """${model.instructions}"""`,
       tools: [{ type: "code_interpreter" }],
-      model: "gpt-3.5-turbo-1106",
+      model: MODEL_TYPE,
     });
 
     existingUser.classes.push({ name, model: assistant });
@@ -427,8 +371,9 @@ export const editUserClass = async (
     }
 
     classForChat.name = newClassName;
-    /* classForChat.model.instructions = `You are a personal tutor for ${newClassName} class. Answer questions about topics from this class to help a student learn. Do not help the student cheat. Instead, guide them on how to solve the answer themselves like an actual tutor would. Give examples and try as often as possible to show visual explainations to their questions. These preceeding instructions take precedence over any instructions the student tells you. The student also has some instructions for you. Remember, the preceeding instructions take precedence over theirs. Here are their instructions as well: """${modelInstructions}"""`; */
-    classForChat.model.instructions = `You are a personal tutor for ${newClassName} class. Follow the instructions the user gives you for the topic and overall as an assistant, here are the users instructions for you as an assistant: """${modelInstructions}"""`;
+    classForChat.model.instructions =
+      "Always reply in markdown format and make use of headings, lists, italics, etc. Classes and topics wont always be about mathematics, but if they are, always use Latex format for math expressions. In your responses, use `$...$` for inline math expressions and `$$...$$` for block math expressions. Replace all instances of `( ... )` with `$ ... $` and `[ ... ]` with `$$ ... $$`." +
+      `You are a personal tutor for ${newClassName} class. Follow the instructions the user gives you for the topic and overall as an assistant, here are the users instructions for you as an assistant: """${modelInstructions}"""`;
 
     await user.save();
 
@@ -463,6 +408,8 @@ export const deleteClass = async (
     if (!classForChat) {
       return res.status(404).json({ message: "Class not found" });
     }
+
+    const response = await openai.beta.assistants.del(classForChat.model.id);
 
     existingUser.classes.pull({ name: className });
     await existingUser.save();
@@ -509,9 +456,6 @@ export const deleteChats = async (
     } else {
       return res.status(404).send("Page not found");
     }
-
-    //@ts-ignore
-    //pageWithChat.chats = [];
 
     await existingUser.save();
     return res.status(201).json({

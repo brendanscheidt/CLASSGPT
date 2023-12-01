@@ -156,7 +156,7 @@ const Chat = (props: PropsType) => {
           flex: 1,
           width: "100%",
           height: "100%",
-          mt: 3,
+          //mt: 3,
           gap: 3,
           // px: 3,
         }}
@@ -171,7 +171,15 @@ const Chat = (props: PropsType) => {
             overflowY: "auto", */
           }}
         >
-          <Box>
+          <Box
+            sx={{
+              mb: "10px",
+              display: "flex",
+              flex: "row",
+              alignContent: "center",
+              justifyContent: "center",
+            }}
+          >
             <Typography
               sx={{
                 fontSize: { xs: "24px", md: "40px" },
@@ -185,22 +193,11 @@ const Chat = (props: PropsType) => {
               {props.userClass === "default" || props.userPage === "default"
                 ? ""
                 : `${props.userClass.toUpperCase()}`}
-            </Typography>
-          </Box>
-          <Box sx={{ mb: "10px" }}>
-            <Typography
-              sx={{
-                fontSize: { xs: "18px", md: "32px" },
-                color: "white",
-                fontWeight: "600",
-                textAlign: "center", // Center the text
-                flexGrow: 1, // Allow it to take available space
-                whiteSpace: "nowrap",
-              }}
-            >
+              {" - ("}
               {props.userClass === "default" || props.userPage === "default"
                 ? ""
                 : `${props.userPage}`}
+              {")"}
             </Typography>
           </Box>
           <Box
@@ -359,6 +356,7 @@ const Chat = (props: PropsType) => {
               display: "flex",
               margin: "auto",
               marginTop: "10px",
+              marginBottom: "10px",
             }}
           >
             {" "}
