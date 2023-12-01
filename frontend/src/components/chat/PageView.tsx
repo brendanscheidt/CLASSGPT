@@ -323,21 +323,22 @@ const PageView = (props: PropsType) => {
           pageName,
           pageInstructions
         );
+        setIsPageModalOpen(false);
+        setEditingPage(null);
+        setEditingPageName("");
+        setEditingPageInstructions("");
       } else {
         // Create mode
         await createNewPage(props.className, pageName, pageInstructions);
+        setIsPageModalOpen(false);
+        setEditingPage(null);
+        setEditingPageName("");
+        setEditingPageInstructions("");
+        navigate(`/chat/${props.className}/${pageName}`);
       }
       await auth?.updateClasses();
     } catch (err) {
       console.log(err);
-    } finally {
-      // Update all states at once
-      setIsPageModalOpen(false);
-      setEditingPage(null);
-      setEditingPageName("");
-      setEditingPageInstructions("");
-
-      //setIsLoading(false);
     }
   };
 
@@ -472,15 +473,120 @@ const PageView = (props: PropsType) => {
           >
             <Typography
               variant="h2"
-              color={"whitesmoke"}
-              sx={{ mt: 10, letterSpacing: 2, fontWeight: "bold" }}
+              color={"#e3b964"}
+              sx={{ mt: 0, letterSpacing: 2, fontWeight: "bold" }}
             >
               Create The First Page For Your {props.className} Class
             </Typography>
+            <Divider
+              variant="middle"
+              sx={{ width: "80%", mt: 3, backgroundColor: "whitesmoke" }}
+            />
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: { md: "row", xs: "column" },
+                width: "100%",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                mt: "30px",
+              }}
+            >
+              <Box
+                sx={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  paddingLeft: { md: "10px", xs: "none" },
+                  margin: "15px",
+                }}
+              >
+                <img
+                  src="../../PageCreation.png"
+                  alt="aitutor"
+                  style={{ width: "200px" }}
+                  className="img-border"
+                />
+                <Typography
+                  //variant="h2"
+                  color={"whitesmoke"}
+                  sx={{
+                    margin: "10px",
+                    textAlign: "center",
+                    fontWeight: "medium", // Adjusts weight
+                    lineHeight: "1.6",
+                    letterSpacing: "0.5px",
+                    fontSize: { xs: "16px", md: "18px" },
+                    textShadow: "2px 2px 4px #000000", // Drop shadow for depth
+                    backgroundColor: "rgba(255, 255, 255, 0.1)", // Subtle highlight
+                    padding: "5px", // Padding for highlight effect
+                    borderRadius: "4px", // Rounded corners for highlight
+                    transition: "all 0.3s ease-in-out", // Animation on hover
+                    "&:hover": {
+                      color: "#FFFFFF", // Change color on hover
+                      backgroundColor: "rgba(255, 255, 255, 0.2)", // Change highlight
+                    },
+                  }}
+                >
+                  Giving your page a name will update your tutor with context
+                  about the topic the page is about within this class! If your
+                  class name is "Geometry", a new page name of "Trangles" will
+                  update your class tutor to know the topic you want to talk
+                  about is triangles in relation to geometry.
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  paddingRight: { md: "10px", xs: "none" },
+                  margin: "15px",
+                }}
+              >
+                <img
+                  src="../../PageInstructions.png"
+                  alt="instructions"
+                  style={{ width: "200px" }}
+                  className="img-border"
+                />
+                <Typography
+                  //variant="h2"
+                  color={"whitesmoke"}
+                  sx={{
+                    margin: "10px",
+                    textAlign: "center",
+                    fontWeight: "medium", // Adjusts weight
+                    lineHeight: "1.6",
+                    letterSpacing: "0.5px",
+                    fontSize: { xs: "16px", md: "18px" },
+                    textShadow: "2px 2px 4px #000000", // Drop shadow for depth
+                    backgroundColor: "rgba(255, 255, 255, 0.1)", // Subtle highlight
+                    padding: "5px", // Padding for highlight effect
+                    borderRadius: "4px", // Rounded corners for highlight
+                    transition: "all 0.3s ease-in-out", // Animation on hover
+                    "&:hover": {
+                      color: "#FFFFFF", // Change color on hover
+                      backgroundColor: "rgba(255, 255, 255, 0.2)", // Change highlight
+                    },
+                  }}
+                >
+                  You must also add additional instructions for your tutor
+                  specific to the new page or topic you're creating. These
+                  topic-specific instructions will be used to inform your tutor
+                  in conjunction with the class instructions. When complete, you
+                  can navigate to all of your pages within a specific class
+                  folder via the sidebar on the right or by entering your class
+                  management page.
+                </Typography>
+              </Box>
+            </Box>
             <Button
               onClick={handleOpenPageModal}
               sx={{
-                mt: 20,
+                mt: 5,
                 fontSize: "large", // Makes the font size larger
                 padding: "20px", // Adds padding to increase the button size
                 border: "2px solid black", // Adds a border with 2px thickness and black color
@@ -586,7 +692,8 @@ const PageView = (props: PropsType) => {
               >
                 Giving your new class a name creates a new AI tutor model for
                 you! It will be updated with instructions automatically
-                regarding which class it should be a tutor for.
+                regarding which class it should be a tutor for. Try "Calculus
+                1", or "History of Western Civilization", or "English".
               </Typography>
             </Box>
             <Box
@@ -626,10 +733,11 @@ const PageView = (props: PropsType) => {
                   },
                 }}
               >
-                You can also add additional instructions for your tutor! Try
-                telling it to "provide examples wherever possible", "explain
-                concepts using real life metaphors", or even silly suggestions
-                like "always talk like you're on a walkie talkie"!
+                You must also add additional instructions for your tutor
+                specific to the new class you're creating. Try telling it to
+                "provide examples wherever possible", "explain concepts using
+                real life metaphors", or even silly suggestions like "always
+                talk like you're on a walkie talkie"!
               </Typography>
             </Box>
           </Box>
