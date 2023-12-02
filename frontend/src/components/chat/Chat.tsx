@@ -180,7 +180,7 @@ const Chat = (props: PropsType) => {
         });
         messageIndex.current =
           (messageIndex.current + 1) % placeholderMessages.length;
-      }, 5000); // Adjust the interval duration as needed
+      }, 5000) as unknown as number; // Adjust the interval duration as needed
     } else {
       // Clear the temporary processing message when not sending
       setTempProcessingMessage(null);
