@@ -1,4 +1,4 @@
-import { Box, Avatar, Typography } from "@mui/material";
+import { Box, Avatar, Typography, CircularProgress } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { coldarkDark } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -51,6 +51,7 @@ const ChatItem = ({
   content,
   role,
   isNewMessage,
+  isProcessing,
   style,
   onContentHeightChange,
   onAnimationStart,
@@ -59,6 +60,7 @@ const ChatItem = ({
   content: string;
   role: "user" | "assistant";
   isNewMessage: boolean;
+  isProcessing?: boolean;
   style?: React.CSSProperties;
   onAnimationComplete: () => void;
   onAnimationStart: () => void;
@@ -144,10 +146,28 @@ const ChatItem = ({
         borderRadius: 2,
         my: 1,
         boxSizing: "border-box",
+        position: "relative",
       }}
       style={style}
     >
-      <Avatar sx={{ ml: "0", backgroundColor: "#dcf0f2" }}>
+      {isProcessing &&
+        (console.log("Rendering CircularProgress"),
+        (
+          <CircularProgress
+            size={40} // Adjust the size as needed
+            thickness={6}
+            sx={{
+              color: "#ecaaf2", // Adjust color as needed
+              position: "absolute",
+              //top: "-5px", // Adjust these values as needed for positioning
+              //left: "-5px",
+              zIndex: 1,
+            }}
+          />
+        ))}
+      <Avatar
+        sx={{ ml: "0", backgroundColor: "#dcf0f2", position: "relative" }}
+      >
         <img src="/../classgpt.png" alt="classgpt" width={"40px"} />
       </Avatar>
       <Box>

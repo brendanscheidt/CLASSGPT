@@ -371,6 +371,7 @@ const Chat = (props: PropsType) => {
                   />
                 );
               })}
+              {/* Temp message waiting for response */}
               {tempProcessingMessage && (
                 <ChatItem
                   content={tempProcessingMessage.content}
@@ -380,6 +381,7 @@ const Chat = (props: PropsType) => {
                   onContentHeightChange={scrollToBottom}
                   onAnimationStart={scrollToBottom}
                   onAnimationComplete={scrollToBottom}
+                  isProcessing={true}
                   style={{
                     animation: "pulseOpacity 2s infinite", // Adjust '2s' as needed for speed
                   }}
