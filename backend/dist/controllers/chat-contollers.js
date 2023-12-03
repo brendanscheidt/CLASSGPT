@@ -111,14 +111,14 @@ export const generateChatCompletion = async (req, res, next) => {
         className: req.body.className,
         pageName: req.body.pageName,
         userId: res.locals.jwtData.id,
+    }, {
+        removeOnComplete: true,
     });
-    console.log(job.id);
     res.json({ jobId: job.id });
 };
 export const checkJobStatus = async (req, res, next) => {
     const jobId = req.params.jobid;
     const job = await chatQueue.getJob(jobId);
-    console.log(job);
     if (job === null) {
         return res.status(404).json({ message: "Job not found" });
     }

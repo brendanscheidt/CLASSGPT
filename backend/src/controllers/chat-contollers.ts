@@ -115,12 +115,17 @@ export const generateChatCompletion = async (
   res: Response,
   next: NextFunction
 ) => {
-  const job = await chatQueue.add({
-    message: req.body.message,
-    className: req.body.className,
-    pageName: req.body.pageName,
-    userId: res.locals.jwtData.id,
-  });
+  const job = await chatQueue.add(
+    {
+      message: req.body.message,
+      className: req.body.className,
+      pageName: req.body.pageName,
+      userId: res.locals.jwtData.id,
+    },
+    {
+      removeOnComplete: true,
+    }
+  );
 
   res.json({ jobId: job.id });
 };
