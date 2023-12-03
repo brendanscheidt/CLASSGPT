@@ -115,17 +115,12 @@ export const generateChatCompletion = async (
   res: Response,
   next: NextFunction
 ) => {
-  const job = await chatQueue.add(
-    {
-      message: req.body.message,
-      className: req.body.className,
-      pageName: req.body.pageName,
-      userId: res.locals.jwtData.id,
-    },
-    {
-      removeOnComplete: true,
-    }
-  );
+  const job = await chatQueue.add({
+    message: req.body.message,
+    className: req.body.className,
+    pageName: req.body.pageName,
+    userId: res.locals.jwtData.id,
+  });
 
   res.json({ jobId: job.id });
 };
@@ -148,6 +143,22 @@ export const checkJobStatus = async (
   const error = job.failedReason;
 
   res.status(200).json({ id: job.id, state, progress, result, error });
+};
+
+export const deleteJob = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const jobId = req.params.jobid;
+  const job = await chatQueue.getJob(jobId);
+
+  if (job) {
+    await job.remove();
+    res.status(200).json({ message: "Job successfully deleted" });
+  } else {
+    res.status(404).json({ message: "Job not found" });
+  }
 };
 
 export const createClassPage = async (

@@ -6,6 +6,7 @@ import { IoMdSend } from "react-icons/io";
 import { CircularProgress } from "@mui/material";
 import {
   checkJobStatus,
+  deleteJob,
   deleteUserChats,
   getUserChats,
   sendChatRequest,
@@ -99,6 +100,7 @@ const Chat = (props: PropsType) => {
               status.result.chats[status.result.chats.length - 1];
             setTempNewAIMessage(newAIMessage);
             setIsSending(false);
+            await deleteJob(jobId);
             clearInterval(pollInterval); // Stop polling
           }
         } catch (error) {

@@ -7,6 +7,7 @@ import {
   createUserClass,
   deleteChats,
   deleteClass,
+  deleteJob,
   deletePage,
   editClassPage,
   editUserClass,
@@ -27,6 +28,7 @@ chatRoutes.post(
 
 chatRoutes.get("/classes", verifyToken, sendClassesToUser);
 chatRoutes.get("/jobstatus/:jobid", verifyToken, checkJobStatus);
+chatRoutes.get("/deleteJob/:jobid", verifyToken, deleteJob);
 chatRoutes.post("/createClass", verifyToken, createUserClass);
 chatRoutes.patch("/editClass", verifyToken, editUserClass);
 chatRoutes.post("/createPage", verifyToken, createClassPage);

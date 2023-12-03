@@ -49,6 +49,17 @@ export const checkJobStatus = async (jobId: string) => {
   return data;
 };
 
+export const deleteJob = async (jobId: string) => {
+  const res = await axios.delete(`/chat/deleteJob/${jobId}`);
+
+  if (res.status != 200) {
+    throw new Error("Unable to delete job.");
+  }
+
+  const data = res.data;
+  return data;
+};
+
 export const sendChatRequest = async (
   message: string,
   className: string,
