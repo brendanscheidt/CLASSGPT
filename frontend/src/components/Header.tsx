@@ -16,7 +16,7 @@ const Header = () => {
         <Logo />
         <Box sx={{ fontSize: { md: "20px", xs: "12px" } }}>
           {auth?.isLoggedIn ? (
-            auth.classes.length ? (
+            auth.classes?.length ? (
               auth.classes[0].pages.length ? (
                 <>
                   <NavigationLink
