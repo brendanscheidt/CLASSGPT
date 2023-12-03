@@ -21,6 +21,5 @@ if (isNaN(port)) {
 
 const redisUrl = `redis://default:${process.env.REDIS_PASS}@${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`;
 const chatQueue = new Queue("chatQueue", redisUrl);
-console.log(chatQueue);
 
 export default chatQueue;

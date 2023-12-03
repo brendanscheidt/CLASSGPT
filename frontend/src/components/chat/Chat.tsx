@@ -93,6 +93,7 @@ const Chat = (props: PropsType) => {
       const pollJobStatus = async () => {
         try {
           const status = await checkJobStatus(jobId);
+          console.log(status);
           if (status.completed) {
             const newAIMessage: Message =
               status.chatData.chats[status.chatData.chats.length - 1];
