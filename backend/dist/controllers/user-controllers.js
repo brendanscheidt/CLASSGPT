@@ -32,7 +32,6 @@ export const userSignup = async (req, res, next) => {
         expires.setDate(expires.getDate() + 7);
         res.cookie(COOKIE_NAME, token, {
             path: "/",
-            domain: "localhost",
             expires,
             httpOnly: true,
             signed: true,
@@ -64,7 +63,6 @@ export const userLogin = async (req, res, next) => {
         expires.setDate(expires.getDate() + 7);
         res.cookie(COOKIE_NAME, token, {
             path: "/",
-            domain: "localhost",
             expires,
             httpOnly: true,
             signed: true,
@@ -90,7 +88,7 @@ export const verifyUser = async (req, res, next) => {
         if (existingUser._id.toString() !== res.locals.jwtData.id) {
             return res.status(401).send("Permissions didn't match");
         }
-        return res.status(201).json({
+        return res.status(200).json({
             message: "OK",
             name: existingUser.name,
             email: existingUser.email,

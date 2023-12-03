@@ -9,8 +9,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "cd backend && npm run build",
     "start": "cd backend && node dist/index.js",
-    "start-worker": "cd backend && node dist/chatWorker.js",
+    "start-worker": "cd backend && node dist/worker/chatWorker.js",
     "postinstall": "cd frontend && npm install && npx tsc && vite build && cd ../backend && npm install && npm run build"
   },
   "dependencies": {
