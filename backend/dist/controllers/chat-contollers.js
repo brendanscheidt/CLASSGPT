@@ -111,8 +111,6 @@ export const generateChatCompletion = async (req, res, next) => {
         className: req.body.className,
         pageName: req.body.pageName,
         userId: res.locals.jwtData.id,
-    }, {
-        removeOnComplete: true,
     });
     res.json({ jobId: job.id });
 };
@@ -127,6 +125,18 @@ export const checkJobStatus = async (req, res, next) => {
     const result = job.returnvalue;
     const error = job.failedReason;
     res.status(200).json({ id: job.id, state, progress, result, error });
+};
+export const deleteJob = async (req, res, next) => {
+    const jobId = req.params.jobid;
+    const job = await chatQueue.getJob(jobId);
+    console.log(job);
+    if (job) {
+        await job.remove();
+        res.status(200).json({ message: "Job successfully deleted" });
+    }
+    else {
+        res.status(404).json({ message: "Job not found" });
+    }
 };
 export const createClassPage = async (req, res, next) => {
     try {

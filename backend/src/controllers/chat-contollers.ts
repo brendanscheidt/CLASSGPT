@@ -153,6 +153,8 @@ export const deleteJob = async (
   const jobId = req.params.jobid;
   const job = await chatQueue.getJob(jobId);
 
+  console.log(job);
+
   if (job) {
     await job.remove();
     res.status(200).json({ message: "Job successfully deleted" });
