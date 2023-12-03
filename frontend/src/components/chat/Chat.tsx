@@ -94,7 +94,7 @@ const Chat = (props: PropsType) => {
         try {
           const status = await checkJobStatus(jobId);
           console.log(status);
-          if (status.completed) {
+          if (status.state === "completed") {
             const newAIMessage: Message =
               status.chatData.chats[status.chatData.chats.length - 1];
             setTempNewAIMessage(newAIMessage);
