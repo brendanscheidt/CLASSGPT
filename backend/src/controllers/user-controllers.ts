@@ -49,7 +49,6 @@ export const userSignup = async (
 
     res.cookie(COOKIE_NAME, token, {
       path: "/",
-      domain: "localhost",
       expires,
       httpOnly: true,
       signed: true,
@@ -95,7 +94,6 @@ export const userLogin = async (
 
     res.cookie(COOKIE_NAME, token, {
       path: "/",
-      domain: "localhost",
       expires,
       httpOnly: true,
       signed: true,

@@ -18,7 +18,12 @@ config();
 const app = express();
 
 // Middleware //
-app.use(cors({ origin: true, credentials: true }));
+app.use(
+  cors({
+    origin: "https://class-gpt-70992c3b881c.herokuapp.com",
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 
