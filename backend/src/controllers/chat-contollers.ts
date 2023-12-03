@@ -3,10 +3,9 @@ import User from "../models/User.js";
 import { OpenAI } from "openai";
 import { config } from "dotenv";
 import { MODEL_TYPE } from "../utils/constants.js";
+import chatQueue from "../worker/JobQueue.js";
 
 config();
-
-const chatQueue = require("./jobQueue");
 
 export const openai = new OpenAI({
   apiKey: process.env.OPEN_AI_SECRET,
@@ -139,7 +138,7 @@ export const checkJobStatus = async (
   }
 
   const state = await job.getState();
-  const progress = job._progress;
+  const progress = await job.progress();
   const result = job.returnvalue;
   const error = job.failedReason;
 
