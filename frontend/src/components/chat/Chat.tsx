@@ -100,8 +100,8 @@ const Chat = (props: PropsType) => {
               status.result.chats[status.result.chats.length - 1];
             setTempNewAIMessage(newAIMessage);
             setIsSending(false);
-            await deleteJob(jobId);
             clearInterval(pollInterval); // Stop polling
+            await deleteJob(jobId);
           }
         } catch (error) {
           console.error(error);
