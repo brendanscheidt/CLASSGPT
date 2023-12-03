@@ -62,12 +62,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       try {
         setIsLoading(true);
         const data = await checkAuthStatus();
+        console.log(data);
 
         if (data) {
           await updateClasses();
           setUser({ email: data.email, name: data.name });
           console.log(user);
           setIsLoggedIn(true);
+          console.log(isLoggedIn);
         }
       } catch (err) {
         setIsLoggedIn(false);
