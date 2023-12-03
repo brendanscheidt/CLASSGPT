@@ -248,7 +248,7 @@ export const sendChatsToUser = async (
       }
     });
 
-    return res.status(201).json({
+    return res.status(200).json({
       message: "OK",
       chats: userPageChats,
     });
@@ -275,7 +275,7 @@ export const sendClassesToUser = async (
       return res.status(401).send("Permissions didn't match");
     }
 
-    return res.status(201).json({
+    return res.status(200).json({
       message: "OK",
       classes: existingUser.classes,
     });

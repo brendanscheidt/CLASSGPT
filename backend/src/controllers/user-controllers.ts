@@ -128,7 +128,7 @@ export const verifyUser = async (
       return res.status(401).send("Permissions didn't match");
     }
 
-    return res.status(201).json({
+    return res.status(200).json({
       message: "OK",
       name: existingUser.name,
       email: existingUser.email,

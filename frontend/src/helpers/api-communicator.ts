@@ -29,7 +29,7 @@ export const signupUser = async (
 export const checkAuthStatus = async () => {
   const res = await axios.get("/user/auth-status");
 
-  if (res.status != 201) {
+  if (res.status != 200) {
     throw new Error("Unable to authenticate");
   }
 
@@ -55,7 +55,7 @@ export const sendChatRequest = async (
 export const getUserChats = async (className: string, pageName: string) => {
   const res = await axios.get(`/chat/${className}/${pageName}`);
 
-  if (res.status != 201) {
+  if (res.status != 200) {
     throw new Error("Unable to send chat");
   }
 
@@ -66,7 +66,7 @@ export const getUserChats = async (className: string, pageName: string) => {
 export const getUserClasses = async () => {
   const res = await axios.get(`/chat/classes`);
 
-  if (res.status != 201) {
+  if (res.status != 200) {
     throw new Error("Unable to get classes");
   }
 
