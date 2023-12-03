@@ -66,6 +66,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (data) {
           await updateClasses();
           setUser({ email: data.email, name: data.name });
+          console.log(user);
           setIsLoggedIn(true);
         }
       } catch (err) {
@@ -94,6 +95,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log("fetching classes...");
       const data = await getUserClasses();
       setClasses(data.classes);
+      console.log(classes);
     } catch (err) {
       console.log(err);
       setClasses([]);
