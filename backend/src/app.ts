@@ -6,6 +6,13 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import path from "path";
 
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const frontendPath = path.join(__dirname, "../frontend/dist");
+
 config();
 
 const app = express();
@@ -18,7 +25,6 @@ app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // Serve static files from frontend build directory
-const frontendPath = path.join(__dirname, "../frontend/dist");
 app.use(express.static(frontendPath));
 
 // Serve index.html on all other routes

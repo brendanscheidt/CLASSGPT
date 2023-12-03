@@ -1,14 +1,14 @@
-import app from "./App.js";
+import app from "./app.js";
 import { connectToDatabase } from "./db/connection.js";
 // Connection //
 connectToDatabase()
-  .then(() => {
+    .then(() => {
     console.log("Connected to MongoDB 🍃");
     app.listen(process.env.PORT, () => {
-      console.log("Server Open ✅");
+        console.log("Server Open ✅");
     });
-  })
-  .catch((err) => {
+})
+    .catch((err) => {
     console.log(err);
-  });
+});
 //# sourceMappingURL=index.js.map
