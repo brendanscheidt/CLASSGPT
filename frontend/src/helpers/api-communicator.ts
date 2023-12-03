@@ -37,6 +37,18 @@ export const checkAuthStatus = async () => {
   return data;
 };
 
+export const checkJobStatus = async (jobId: string) => {
+  const res = await axios.get(`/chat/jobstatus/${jobId}`);
+
+  if (res.status != 200) {
+    // Usually, a 200 status code is used for successful GET requests
+    throw new Error("Unable to get job status");
+  }
+
+  const data = res.data;
+  return data;
+};
+
 export const sendChatRequest = async (
   message: string,
   className: string,

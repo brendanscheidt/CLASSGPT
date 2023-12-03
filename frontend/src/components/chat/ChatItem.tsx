@@ -150,21 +150,19 @@ const ChatItem = ({
       }}
       style={style}
     >
-      {isProcessing &&
-        (console.log("Rendering CircularProgress"),
-        (
-          <CircularProgress
-            size={40} // Adjust the size as needed
-            thickness={6}
-            sx={{
-              color: "#ecaaf2", // Adjust color as needed
-              position: "absolute",
-              //top: "-5px", // Adjust these values as needed for positioning
-              //left: "-5px",
-              zIndex: 1,
-            }}
-          />
-        ))}
+      {isProcessing && (
+        <CircularProgress
+          size={40} // Adjust the size as needed
+          thickness={6}
+          sx={{
+            color: "#ecaaf2", // Adjust color as needed
+            position: "absolute",
+            //top: "-5px", // Adjust these values as needed for positioning
+            //left: "-5px",
+            zIndex: 1,
+          }}
+        />
+      )}
       <Avatar
         sx={{ ml: "0", backgroundColor: "#dcf0f2", position: "relative" }}
       >

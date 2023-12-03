@@ -5,6 +5,7 @@ import ChatItem from "./ChatItem";
 import { IoMdSend } from "react-icons/io";
 import { CircularProgress } from "@mui/material";
 import {
+  checkJobStatus,
   deleteUserChats,
   getUserChats,
   sendChatRequest,
@@ -79,22 +80,40 @@ const Chat = (props: PropsType) => {
     const newMessage: Message = { role: "user", content };
     setChatMessages((prev) => [...prev, newMessage]);
     setIsSending(true);
+
     try {
-      const chatData = await sendChatRequest(
+      // Send the chat request and get the job ID
+      const { jobId } = await sendChatRequest(
         content,
         props.userClass,
         props.userPage
       );
 
-      const newAIMessage: Message = chatData.chats[chatData.chats.length - 1];
-      setTempNewAIMessage(newAIMessage);
-      await auth?.updateClasses();
+      // Function to poll for job status
+      const pollJobStatus = async () => {
+        try {
+          const status = await checkJobStatus(jobId);
+          if (status.completed) {
+            const newAIMessage: Message =
+              status.chatData.chats[status.chatData.chats.length - 1];
+            setTempNewAIMessage(newAIMessage);
+            setIsSending(false);
+            clearInterval(pollInterval); // Stop polling
+          }
+        } catch (error) {
+          console.error(error);
+          toast.error("Failed to check job status.");
+        }
+      };
+
+      // Start polling
+      const pollInterval = setInterval(pollJobStatus, 2000); // Poll every 2 seconds
     } catch (err) {
       console.error(err);
       toast.error("Failed to send message.");
+      setIsSending(false);
     } finally {
       prevChatMessagesRef.current = chatMessages.concat(newMessage);
-      setIsSending(false);
     }
   };
 
