@@ -2,6 +2,7 @@ import { Router } from "express";
 import { verifyToken } from "../utils/token-manager.js";
 import { chatCompletionValidator, validate } from "../utils/validators.js";
 import {
+  checkJobStatus,
   createClassPage,
   createUserClass,
   deleteChats,
@@ -25,6 +26,7 @@ chatRoutes.post(
 );
 
 chatRoutes.get("/classes", verifyToken, sendClassesToUser);
+chatRoutes.get("/jobstatus/:jobid", verifyToken, checkJobStatus);
 chatRoutes.post("/createClass", verifyToken, createUserClass);
 chatRoutes.patch("/editClass", verifyToken, editUserClass);
 chatRoutes.post("/createPage", verifyToken, createClassPage);

@@ -6,11 +6,13 @@ import { MODEL_TYPE } from "../utils/constants.js";
 
 config();
 
-const openai = new OpenAI({
+const chatQueue = require("./jobQueue");
+
+export const openai = new OpenAI({
   apiKey: process.env.OPEN_AI_SECRET,
 });
 
-export const generateChatCompletion = async (
+/* export const generateChatCompletion = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -100,8 +102,6 @@ export const generateChatCompletion = async (
       return res.status(500).json({ error: "Error: No message content found" });
     }
 
-    console.log(lastMessageContent);
-
     await user.save();
 
     return res.status(200).json({ chats: pageForChat.chats });
@@ -109,6 +109,41 @@ export const generateChatCompletion = async (
     console.log(err);
     return res.status(500).json({ message: "Something went wrong" });
   }
+}; */
+
+export const generateChatCompletion = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const job = await chatQueue.add({
+    message: req.body.message,
+    className: req.body.className,
+    pageName: req.body.pageName,
+    userId: res.locals.jwtData.id,
+  });
+
+  res.json({ jobId: job.id });
+};
+
+export const checkJobStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const jobId = req.params.jobId;
+  const job = await chatQueue.getJob(jobId);
+
+  if (job === null) {
+    return res.status(404).json({ message: "Job not found" });
+  }
+
+  const state = await job.getState();
+  const progress = job._progress;
+  const result = job.returnvalue;
+  const error = job.failedReason;
+
+  res.status(200).json({ id: job.id, state, progress, result, error });
 };
 
 export const createClassPage = async (
