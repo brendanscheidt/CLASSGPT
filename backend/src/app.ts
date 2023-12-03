@@ -29,6 +29,8 @@ app.use(express.json());
 
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
+app.use("/api/v1", appRouter);
+
 // Serve static files from frontend build directory
 app.use(express.static(frontendPath));
 
@@ -36,7 +38,5 @@ app.use(express.static(frontendPath));
 app.get("*", (req, res) => {
   res.sendFile(path.join(frontendPath, "index.html"));
 });
-
-app.use("/api/v1", appRouter);
 
 export default app;
