@@ -96,7 +96,7 @@ const Chat = (props: PropsType) => {
           console.log(status);
           if (status.state === "completed") {
             const newAIMessage: Message =
-              status.chatData.chats[status.chatData.chats.length - 1];
+              status.result.chats[status.result.chats.length - 1];
             setTempNewAIMessage(newAIMessage);
             setIsSending(false);
             clearInterval(pollInterval); // Stop polling
