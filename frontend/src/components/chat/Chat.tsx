@@ -150,10 +150,10 @@ const Chat = (props: PropsType) => {
 
   useEffect(() => {
     const classExists =
-      auth?.classes.some((userClass) => userClass.name === props.userClass) ??
+      auth?.classes?.some((userClass) => userClass.name === props.userClass) ??
       false;
     const pageExists =
-      auth?.classes.some((userClass) =>
+      auth?.classes?.some((userClass) =>
         userClass.pages.some((page) => page.name === props.userPage)
       ) ?? false;
 

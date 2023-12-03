@@ -63,7 +63,7 @@ const ClassChat = () => {
       ) {
         console.log("All fields are required.");
       } else {
-        auth?.classes.map((userClass) => {
+        auth?.classes?.map((userClass) => {
           if (userClass.name === data.className.trim()) {
             throw new Error("Duplicate class names not allowed.");
           }

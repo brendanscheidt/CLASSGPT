@@ -32,7 +32,7 @@ const Login = () => {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (auth?.isLoggedIn && auth?.user) {
-        if (auth.classes.length > 0) {
+        if (auth.classes?.length > 0) {
           navigate(`/chat/${auth.classes[0].name}/default`);
         } else {
           navigate("/chat/none/none");
