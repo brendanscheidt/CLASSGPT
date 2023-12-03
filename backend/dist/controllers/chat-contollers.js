@@ -116,7 +116,7 @@ export const generateChatCompletion = async (req, res, next) => {
     res.json({ jobId: job.id });
 };
 export const checkJobStatus = async (req, res, next) => {
-    const jobId = req.params.jobId;
+    const jobId = req.params.jobid;
     const job = await chatQueue.getJob(jobId);
     console.log(job);
     if (job === null) {

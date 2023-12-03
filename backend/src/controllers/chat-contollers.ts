@@ -132,7 +132,7 @@ export const checkJobStatus = async (
   res: Response,
   next: NextFunction
 ) => {
-  const jobId = req.params.jobId;
+  const jobId = req.params.jobid;
   const job = await chatQueue.getJob(jobId);
 
   console.log(job);
