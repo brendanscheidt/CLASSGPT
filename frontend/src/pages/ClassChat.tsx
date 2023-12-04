@@ -250,11 +250,13 @@ const ClassChat = () => {
           </Box>
         </Box>
       )}
-      {classname && pagename ? (
-        <Chat userClass={classname} userPage={pagename} />
-      ) : (
-        <Chat userClass="default" userPage="default" />
-      )}
+      <Box sx={{ flexGrow: 1 }}>
+        {classname && pagename ? (
+          <Chat userClass={classname} userPage={pagename} />
+        ) : (
+          <Chat userClass="default" userPage="default" />
+        )}
+      </Box>
     </Box>
   );
 };
