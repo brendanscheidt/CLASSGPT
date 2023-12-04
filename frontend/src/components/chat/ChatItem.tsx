@@ -223,7 +223,13 @@ const ChatItem = ({
           ? auth?.user?.name.split(" ")[1][0]
           : ""}
       </Avatar>
-      <Box>
+      <Box
+        sx={{
+          wordBreak: "break-all", // Or 'break-word' depending on preference
+          overflowWrap: "break-word",
+          width: "100%",
+        }}
+      >
         {messageBlocks &&
           messageBlocks.length > 0 &&
           messageBlocks.map((block, index) => {

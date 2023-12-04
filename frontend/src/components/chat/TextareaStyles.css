@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;600;800&family=Work+Sans&display=swap");
+
 /* TextareaStyles.css */
 .textarea-scroll {
   /* Scrollbar styles */
@@ -24,4 +26,5 @@
   color: white;
   opacity: 0.5;
   font-size: 20px;
+  font-family: "Roboto Slab", serif;
 }
