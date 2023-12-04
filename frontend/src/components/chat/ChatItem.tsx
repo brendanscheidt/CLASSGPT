@@ -211,6 +211,9 @@ const ChatItem = ({
         gap: 2,
         borderRadius: 2,
         boxSizing: "border-box",
+        wordWrap: "break-word",
+        overflowWrap: "break-word",
+        maxWidth: "100%",
       }}
     >
       <Avatar sx={{ ml: "0", bgcolor: "black", color: "white" }}>
