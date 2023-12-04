@@ -156,8 +156,6 @@ export const deleteJob = async (
   const jobId = req.params.jobid;
   const job = await chatQueue.getJob(jobId);
 
-  console.log(job);
-
   if (job) {
     await job.remove();
     res.status(200).json({ message: "Job successfully deleted" });
@@ -409,8 +407,6 @@ export const editUserClass = async (
         }
       }
     });
-
-    console.log(classAlreadyExists);
 
     if (classAlreadyExists) return res.status(500).json({ message: "Error" });
 

@@ -116,11 +116,16 @@ chatQueue.process(2, async (job, done) => {
     try {
       const { message, className, pageName, userId } = job.data;
 
+      console.log(
+        `Entering chat generation...\n\tmessage: ${message}, className: ${className}, pageName: ${pageName}, userId: ${userId}`
+      );
+
       // Fetch the user and perform the necessary logic
       const user = await User.findById(userId);
       if (!user) {
         throw new Error("User not registered OR Token malfunction");
       }
+      console.log(`Found user...\n\t${user}`);
 
       let classForChat = user.classes.find(
         (userClass) => userClass.name === className
@@ -128,6 +133,7 @@ chatQueue.process(2, async (job, done) => {
       if (!classForChat) {
         throw new Error("Class not found");
       }
+      console.log(`Found class...\n\t${classForChat}`);
 
       let pageForChat = classForChat.pages.find(
         (classPage) => classPage.name === pageName
@@ -135,9 +141,14 @@ chatQueue.process(2, async (job, done) => {
       if (!pageForChat) {
         throw new Error("Page Not Found.");
       }
+      console.log(
+        `Found page...\n\t${pageForChat}\n\tChats in page: ${pageForChat.chats}`
+      );
 
       // Add user's message to chat
       pageForChat.chats.push({ content: message, role: "user" });
+
+      console.log(`User chat pushed: \n\t${pageForChat.chats}`);
 
       const assistant = classForChat.model;
       const thread = pageForChat.thread;
@@ -146,6 +157,8 @@ chatQueue.process(2, async (job, done) => {
         role: "user",
         content: message,
       });
+
+      console.log(`openai thread received message...`);
 
       let parts = assistant.instructions.split(".");
       if (parts.length > 1) {
@@ -162,20 +175,31 @@ chatQueue.process(2, async (job, done) => {
         instructions: completeInstructions,
       });
 
+      console.log(`run created...`);
+
       let runStatus = await openai.beta.threads.runs.retrieve(
         thread.id,
         run.id
       );
 
+      console.log(`run status at start:\n\t${runStatus}`);
+
       //polling mechanism to see if runStatus is completed
       //** make more robust (check more than completed)**
       while (runStatus.status !== "completed") {
+        console.log("polling run...");
         await new Promise((resolve) => setTimeout(resolve, 500));
         runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
+
+        console.log(`\trun status: ${runStatus}`);
       }
+
+      console.log(`Polling complete, run complete...`);
 
       // Get the last assistant message from the messages array
       const messages = await openai.beta.threads.messages.list(thread.id);
+
+      console.log(`messages retrieved from openai run...\n\t${messages}`);
 
       let lastMessageContent = "";
       messages.data.forEach((message) => {
@@ -188,19 +212,25 @@ chatQueue.process(2, async (job, done) => {
         }
       });
 
+      console.log(`last message grabbed...\n\t${lastMessageContent}`);
+
       // If assistant message content found, add it to the chats
       if (lastMessageContent) {
+        console.log(`pushing last message to chats in page...`);
         pageForChat.chats.push({
           content: lastMessageContent,
           role: "assistant",
         });
+        console.log(`message pushed...\n\t${pageForChat.chats}`);
       } else {
         throw new Error("Error: No message content found");
       }
 
       // After completing the task
+      console.log(`Attempting to save user...`);
 
       await user.save();
+      console.log(`User saved sucessful!`);
       done(null, { chats: pageForChat.chats }); // Return the result
       break; // Break the loop on successful save
     } catch (error) {
