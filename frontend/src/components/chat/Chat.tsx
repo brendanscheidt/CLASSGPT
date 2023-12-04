@@ -103,6 +103,12 @@ const Chat = (props: PropsType) => {
             clearInterval(pollInterval); // Stop polling
             await deleteJob(jobId);
           }
+          if (status.state === "failed") {
+            setIsSending(false);
+            clearInterval(pollInterval);
+            await deleteJob(jobId);
+            throw new Error("Job failed.");
+          }
         } catch (error) {
           console.error(error);
           toast.error("Failed to check job status.");
