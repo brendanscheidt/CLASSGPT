@@ -218,9 +218,6 @@ const ChatItem = ({
           : ""}
       </Avatar>
       <Box>
-        {!messageBlocks && (
-          <Typography sx={{ fontSize: "20px" }}>{content}</Typography>
-        )}
         {messageBlocks &&
           messageBlocks.length > 0 &&
           messageBlocks.map((block, index) => {
@@ -240,10 +237,16 @@ const ChatItem = ({
                 </SyntaxHighlighter>
               );
             } else {
+              // Split by newlines and join with two spaces and a newline
+              const markdownFormattedText = block.split("\n").join("  \n");
               return (
-                <Typography key={index} sx={{ fontSize: "20px" }}>
-                  {block}
-                </Typography>
+                <ReactMarkdown
+                  key={index}
+                  children={markdownFormattedText}
+                  remarkPlugins={[remarkMath]}
+                  rehypePlugins={[rehypeKatex]}
+                  className="markdown-content"
+                />
               );
             }
           })}
