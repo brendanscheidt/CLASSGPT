@@ -184,7 +184,7 @@ chatQueue.process(2, async (job, done) => {
         run.id
       );
 
-      console.log(`run status at start:\n\t${runStatus}`);
+      console.log(`run status at start:\n\t${runStatus.status}`);
 
       //polling mechanism to see if runStatus is completed
       //** make more robust (check more than completed)**
