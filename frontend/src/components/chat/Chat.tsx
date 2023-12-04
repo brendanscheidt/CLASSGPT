@@ -246,6 +246,7 @@ const Chat = (props: PropsType) => {
           width: "100%",
           height: "100%",
           gap: 3,
+          overflowX: "hidden",
         }}
       >
         <Box

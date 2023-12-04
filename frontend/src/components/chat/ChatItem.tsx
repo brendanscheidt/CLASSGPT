@@ -147,6 +147,9 @@ const ChatItem = ({
         my: 1,
         boxSizing: "border-box",
         position: "relative",
+        wordWrap: "break-word",
+        overflowWrap: "break-word",
+        maxWidth: "100%",
       }}
       style={style}
     >
