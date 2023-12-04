@@ -2,7 +2,7 @@ import chatQueue from "./JobQueue.js";
 import User from "../models/User.js"; // Import your User model
 import { openai } from "../controllers/chat-contollers.js"; // Import your OpenAI setup
 
-chatQueue.process(async (job, done) => {
+chatQueue.process(2, async (job, done) => {
   try {
     const { message, className, pageName, userId } = job.data;
 
