@@ -36,6 +36,34 @@ body {
   font-size: 1.25rem; /* Adjust as needed */
 }
 
+/* TextareaStyles.css */
+.textarea-scroll {
+  /* Scrollbar styles */
+  overflow: auto;
+  scroll-behavior: smooth;
+}
+
+.textarea-scroll::-webkit-scrollbar {
+  width: 0.4em;
+}
+
+.textarea-scroll::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+}
+
+.textarea-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1);
+  outline: 1px solid slategrey;
+  border-radius: 2px;
+}
+
+.textarea-scroll::placeholder {
+  color: white;
+  opacity: 0.5;
+  font-size: 20px;
+}
+
 .no-scroll {
   overflow: hidden;
 }

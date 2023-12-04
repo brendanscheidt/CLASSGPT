@@ -17,6 +17,7 @@ import PageView from "./PageView";
 import { Link } from "react-router-dom";
 import { TbHomeEdit } from "react-icons/tb";
 import { VscClearAll } from "react-icons/vsc";
+import "./TextareaStyles.css";
 
 type Message = {
   role: "user" | "assistant";
@@ -68,6 +69,13 @@ const Chat = (props: PropsType) => {
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const lineCount = (e.target.value.match(/\n/g) || []).length + 1;
+    if (inputRef.current) {
+      inputRef.current.rows = lineCount; // Adjust the number of rows based on line count
+    }
   };
 
   const handleSubmit = async () => {
@@ -481,6 +489,7 @@ const Chat = (props: PropsType) => {
             }}
           >
             <textarea
+              className="textarea-scroll"
               disabled={isSending}
               placeholder={
                 isSending
@@ -488,12 +497,8 @@ const Chat = (props: PropsType) => {
                   : `Message Your ${props.userClass} Tutor...`
               }
               ref={inputRef}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSubmit();
-                }
-              }}
+              rows={1}
+              onChange={handleInputChange}
               style={{
                 width: "100%",
                 backgroundColor: "transparent",
@@ -503,9 +508,8 @@ const Chat = (props: PropsType) => {
                 color: "white",
                 fontSize: "20px",
                 cursor: isSending ? "wait" : "text",
-                resize: "none", // Prevents resizing of the textarea
+                resize: "none",
               }}
-              rows={4} // You can adjust this number to change the default size of the textarea
             />
             <IconButton
               onClick={handleSubmit}
