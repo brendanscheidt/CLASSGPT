@@ -111,7 +111,7 @@ export const generateChatCompletion = async (req, res, next) => {
         className: req.body.className,
         pageName: req.body.pageName,
         userId: res.locals.jwtData.id,
-    });
+    }, { timeout: 90000 });
     res.json({ jobId: job.id });
 };
 export const checkJobStatus = async (req, res, next) => {
@@ -129,7 +129,6 @@ export const checkJobStatus = async (req, res, next) => {
 export const deleteJob = async (req, res, next) => {
     const jobId = req.params.jobid;
     const job = await chatQueue.getJob(jobId);
-    console.log(job);
     if (job) {
         await job.remove();
         res.status(200).json({ message: "Job successfully deleted" });
@@ -304,7 +303,6 @@ export const editUserClass = async (req, res, next) => {
                 }
             }
         });
-        console.log(classAlreadyExists);
         if (classAlreadyExists)
             return res.status(500).json({ message: "Error" });
         const classForChat = user.classes.find((userClass) => userClass.name === oldClassName);

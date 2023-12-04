@@ -7,7 +7,7 @@ const chatRoutes = Router();
 chatRoutes.post("/new", validate(chatCompletionValidator), verifyToken, generateChatCompletion);
 chatRoutes.get("/classes", verifyToken, sendClassesToUser);
 chatRoutes.get("/jobstatus/:jobid", verifyToken, checkJobStatus);
-chatRoutes.get("/deleteJob/:jobid", verifyToken, deleteJob);
+chatRoutes.delete("/deleteJob/:jobid", verifyToken, deleteJob);
 chatRoutes.post("/createClass", verifyToken, createUserClass);
 chatRoutes.patch("/editClass", verifyToken, editUserClass);
 chatRoutes.post("/createPage", verifyToken, createClassPage);

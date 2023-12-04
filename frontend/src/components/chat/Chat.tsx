@@ -46,6 +46,8 @@ const Chat = (props: PropsType) => {
   const [tempProcessingMessage, setTempProcessingMessage] =
     useState<Message | null>(null);
 
+  const DEFAULT_ROWS = 1; // Set your default rows value
+
   const placeholderMessages: string[] = [
     "Beep boop! I'm on it...",
     "Activating all my silicon neurons...",
@@ -72,7 +74,10 @@ const Chat = (props: PropsType) => {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const lineCount = (e.target.value.match(/\n/g) || []).length + 1;
+    const lineCount = Math.max(
+      (e.target.value.match(/\n/g) || []).length + 1,
+      DEFAULT_ROWS
+    );
     if (inputRef.current) {
       inputRef.current.rows = lineCount; // Adjust the number of rows based on line count
     }
@@ -84,6 +89,9 @@ const Chat = (props: PropsType) => {
       if (inputRef && inputRef.current) {
         inputRef.current.value = "";
       }
+    }
+    if (inputRef.current) {
+      inputRef.current.rows = DEFAULT_ROWS;
     }
     localStorage.removeItem("animationPlayed");
     const newMessage: Message = { role: "user", content };
@@ -497,7 +505,7 @@ const Chat = (props: PropsType) => {
                   : `Message Your ${props.userClass} Tutor...`
               }
               ref={inputRef}
-              rows={1}
+              rows={DEFAULT_ROWS}
               onChange={handleInputChange}
               style={{
                 width: "100%",

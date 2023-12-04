@@ -40,7 +40,7 @@ const gptModelSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-});
+}, { optimisticConcurrency: true });
 const chatSchema = new mongoose.Schema({
     id: {
         type: String,
@@ -54,7 +54,7 @@ const chatSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-});
+}, { optimisticConcurrency: true });
 const pageSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -68,7 +68,7 @@ const pageSchema = new mongoose.Schema({
     thread: {
         type: Object,
     },
-}, { timestamps: true });
+}, { timestamps: true, optimisticConcurrency: true });
 const classSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -81,7 +81,7 @@ const classSchema = new mongoose.Schema({
     pages: {
         type: [pageSchema],
     },
-});
+}, { optimisticConcurrency: true });
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -99,6 +99,6 @@ const userSchema = new mongoose.Schema({
     classes: {
         type: [classSchema],
     },
-});
+}, { optimisticConcurrency: true });
 export default mongoose.model("User", userSchema);
 //# sourceMappingURL=User.js.map
