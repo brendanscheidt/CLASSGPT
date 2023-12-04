@@ -1,62 +1,68 @@
 import mongoose from "mongoose";
 import { randomUUID } from "crypto";
 
-const gptModelSchema = new mongoose.Schema({
-  id: {
-    type: String,
-  },
-  object: {
-    type: String,
-  },
-  created_at: {
-    type: Number,
-  },
-  name: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-  },
-  instructions: {
-    type: String,
-    required: true,
-  },
-  tools: [
-    {
-      type: {
-        type: String,
-      },
-    },
-  ],
-  file_ids: [
-    {
+const gptModelSchema = new mongoose.Schema(
+  {
+    id: {
       type: String,
     },
-  ],
-  metadata: {
-    type: Object,
+    object: {
+      type: String,
+    },
+    created_at: {
+      type: Number,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+    },
+    instructions: {
+      type: String,
+      required: true,
+    },
+    tools: [
+      {
+        type: {
+          type: String,
+        },
+      },
+    ],
+    file_ids: [
+      {
+        type: String,
+      },
+    ],
+    metadata: {
+      type: Object,
+    },
+    model: {
+      type: String,
+      required: true,
+    },
   },
-  model: {
-    type: String,
-    required: true,
-  },
-});
+  { optimisticConcurrency: true }
+);
 
-const chatSchema = new mongoose.Schema({
-  id: {
-    type: String,
-    default: randomUUID(),
+const chatSchema = new mongoose.Schema(
+  {
+    id: {
+      type: String,
+      default: randomUUID(),
+    },
+    role: {
+      type: String,
+      required: true,
+    },
+    content: {
+      type: String,
+      required: true,
+    },
   },
-  role: {
-    type: String,
-    required: true,
-  },
-  content: {
-    type: String,
-    required: true,
-  },
-});
+  { optimisticConcurrency: true }
+);
 
 const pageSchema = new mongoose.Schema(
   {
@@ -73,40 +79,46 @@ const pageSchema = new mongoose.Schema(
       type: Object,
     },
   },
-  { timestamps: true }
+  { timestamps: true, optimisticConcurrency: true }
 );
 
-const classSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
+const classSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    model: {
+      type: gptModelSchema,
+      required: true,
+    },
+    pages: {
+      type: [pageSchema],
+    },
   },
-  model: {
-    type: gptModelSchema,
-    required: true,
-  },
-  pages: {
-    type: [pageSchema],
-  },
-});
+  { optimisticConcurrency: true }
+);
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    classes: {
+      type: [classSchema],
+    },
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  classes: {
-    type: [classSchema],
-  },
-});
+  { optimisticConcurrency: true }
+);
 
 export default mongoose.model("User", userSchema);
