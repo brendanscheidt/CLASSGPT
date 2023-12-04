@@ -110,6 +110,8 @@ import mongoose from "mongoose";
 const MAX_RETRIES = 3; // Maximum number of retries
 
 chatQueue.process(2, async (job, done) => {
+  const startTime = new Date(); // Capture start time
+  let elapsedTime = 0;
   let retries = 0;
 
   while (retries < MAX_RETRIES) {
@@ -191,7 +193,12 @@ chatQueue.process(2, async (job, done) => {
         await new Promise((resolve) => setTimeout(resolve, 500));
         runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
 
-        console.log(`\trun status: ${runStatus}`);
+        console.log(`\trun status: ${runStatus.status}`);
+
+        const elapsedTime = new Date().getTime() - startTime.getTime();
+
+        // Print the elapsed time
+        console.log(`Elapsed time: ${elapsedTime} milliseconds`);
       }
 
       console.log(`Polling complete, run complete...`);
