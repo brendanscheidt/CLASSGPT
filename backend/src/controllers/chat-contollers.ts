@@ -115,12 +115,15 @@ export const generateChatCompletion = async (
   res: Response,
   next: NextFunction
 ) => {
-  const job = await chatQueue.add({
-    message: req.body.message,
-    className: req.body.className,
-    pageName: req.body.pageName,
-    userId: res.locals.jwtData.id,
-  });
+  const job = await chatQueue.add(
+    {
+      message: req.body.message,
+      className: req.body.className,
+      pageName: req.body.pageName,
+      userId: res.locals.jwtData.id,
+    },
+    { timeout: 60000 }
+  );
 
   res.json({ jobId: job.id });
 };
