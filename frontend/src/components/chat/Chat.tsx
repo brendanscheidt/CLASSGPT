@@ -35,7 +35,7 @@ const Chat = (props: PropsType) => {
   );
   const [isClassInUser, setIsClassInUser] = useState(false);
   const [isPageInClass, setIsPageInClass] = useState(false);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const auth = useAuth();
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
@@ -111,7 +111,7 @@ const Chat = (props: PropsType) => {
           }
         } catch (error) {
           console.error(error);
-          toast.error("Failed to check job status.");
+          toast.error("Failed to check send chat.");
         }
       };
 
@@ -419,7 +419,7 @@ const Chat = (props: PropsType) => {
 
             <div ref={messagesEndRef} />
           </Box>
-          <div
+          {/* <div
             style={{
               width: "100%",
               borderRadius: 8,
@@ -456,6 +456,56 @@ const Chat = (props: PropsType) => {
                 fontSize: "20px",
                 cursor: isSending ? "wait" : "text",
               }}
+            />
+            <IconButton
+              onClick={handleSubmit}
+              disabled={isSending}
+              sx={{ color: "white", mx: 1 }}
+            >
+              {isSending ? (
+                <CircularProgress sx={{ color: "#03fcfc" }} size={24} />
+              ) : (
+                <IoMdSend />
+              )}
+            </IconButton>
+          </div> */}
+          <div
+            style={{
+              width: "100%",
+              borderRadius: 8,
+              backgroundColor: isSending ? "#0E1620" : "#111b27",
+              display: "flex",
+              margin: "auto",
+              marginTop: "10px",
+              marginBottom: "10px",
+            }}
+          >
+            <textarea
+              disabled={isSending}
+              placeholder={
+                isSending
+                  ? "Waiting for response..."
+                  : `Message Your ${props.userClass} Tutor...`
+              }
+              ref={inputRef}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSubmit();
+                }
+              }}
+              style={{
+                width: "100%",
+                backgroundColor: "transparent",
+                padding: "30px",
+                border: "none",
+                outline: "none",
+                color: "white",
+                fontSize: "20px",
+                cursor: isSending ? "wait" : "text",
+                resize: "none", // Prevents resizing of the textarea
+              }}
+              rows={4} // You can adjust this number to change the default size of the textarea
             />
             <IconButton
               onClick={handleSubmit}
