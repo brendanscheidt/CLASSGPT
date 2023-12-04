@@ -199,6 +199,9 @@ chatQueue.process(2, async (job, done) => {
 
         // Print the elapsed time
         console.log(`Elapsed time: ${elapsedTime} milliseconds`);
+        if (elapsedTime > 90000) {
+          await openai.beta.threads.runs.cancel(thread.id, run.id);
+        }
       }
 
       console.log(`Polling complete, run complete...`);
