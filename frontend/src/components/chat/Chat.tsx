@@ -515,7 +515,7 @@ const Chat = (props: PropsType) => {
                 outline: "none",
                 color: "white",
                 fontSize: "18px",
-                lineHeight: "normal",
+                lineHeight: 1,
                 cursor: isSending ? "wait" : "text",
                 resize: "none",
               }}
