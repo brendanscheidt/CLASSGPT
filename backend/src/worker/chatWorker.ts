@@ -239,7 +239,9 @@ chatQueue.process(2, async (job, done) => {
         pageForChat.chats.push({
           content:
             lastMessageContent +
-            "\n(Last response timed out! send 'continue' to continue generating response!)",
+            "\n" +
+            "\n" +
+            "(Last response timed out! send 'continue' to continue generating response!)",
           role: "assistant",
         });
         console.log(`message pushed...\n\t${pageForChat.chats}`);
