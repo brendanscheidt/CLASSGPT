@@ -188,7 +188,11 @@ chatQueue.process(2, async (job, done) => {
 
       //polling mechanism to see if runStatus is completed
       //** make more robust (check more than completed)**
-      while (runStatus.status !== "completed" && runStatus.status !== "cancelled" && runStatus.status !== "failed") {
+      while (
+        runStatus.status !== "completed" &&
+        runStatus.status !== "cancelled" &&
+        runStatus.status !== "failed"
+      ) {
         console.log("polling run...");
         await new Promise((resolve) => setTimeout(resolve, 500));
         runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
@@ -199,7 +203,7 @@ chatQueue.process(2, async (job, done) => {
 
         // Print the elapsed time
         console.log(`Elapsed time: ${elapsedTime} milliseconds`);
-        if (elapsedTime > 90000) {
+        if (elapsedTime > 10000) {
           await openai.beta.threads.runs.cancel(thread.id, run.id);
         }
       }
