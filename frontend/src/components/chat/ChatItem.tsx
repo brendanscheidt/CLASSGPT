@@ -77,6 +77,7 @@ const ChatItem = ({
   const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
   const [lastHeight, setLastHeight] = useState(0);
+  const [isAnimationDone, setIsAnimationDone] = useState(false);
 
   const messageBlocks = useMemo(
     () => extractCodeFromString(content),
@@ -141,6 +142,7 @@ const ChatItem = ({
     if (currentBlockIndex === messageBlocks.length - 1) {
       onAnimationComplete();
       localStorage.setItem("animationPlayed", "true");
+      setIsAnimationDone(true);
     }
   };
 
@@ -209,12 +211,13 @@ const ChatItem = ({
           }
         })}
         {/* Button rendered conditionally based on isPartialResponse and isNewMessage */}
-        {isPartialResponse && isNewMessage && (
+        {/* Button rendered conditionally based on isPartialResponse and isAnimationDone */}
+        {isPartialResponse && isAnimationDone && (
           <Button
             variant="contained"
             color="primary"
-            onClick={() => console.log("Button Clicked")} // Replace with your actual click handler
-            sx={{ mt: 2 }} // Add some margin top for spacing
+            onClick={() => console.log("Button Clicked")}
+            sx={{ mt: 2 }}
           >
             Complete Message
           </Button>
