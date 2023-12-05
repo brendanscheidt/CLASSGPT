@@ -228,6 +228,10 @@ chatQueue.process(2, async (job, done) => {
 
       console.log(`last message grabbed...\n\t${lastMessageContent}`);
 
+      if (!lastMessageContent) {
+        throw new Error("Error: No message content found");
+      }
+
       // If assistant message content found, add it to the chats
       if (runStatus.status === "cancelled" && lastMessageContent) {
         console.log(`Run was cancelled!`);
@@ -248,8 +252,6 @@ chatQueue.process(2, async (job, done) => {
           role: "assistant",
         });
         console.log(`message pushed...\n\t${pageForChat.chats}`);
-      } else {
-        throw new Error("Error: No message content found");
       }
 
       // After completing the task
