@@ -18,7 +18,7 @@ import { Link } from "react-router-dom";
 import { TbHomeEdit } from "react-icons/tb";
 import { VscClearAll } from "react-icons/vsc";
 import "./TextareaStyles.css";
-import ConfirmationModal from "../../modals/confirmationModal";
+import ConfirmationModal from "../../modals/ConfirmationModal";
 
 type Message = {
   role: "user" | "assistant";
@@ -264,6 +264,7 @@ const Chat = (props: PropsType) => {
     }
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line
   }, [isSending]);
 
   if (auth?.isLoading) {
