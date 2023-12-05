@@ -87,8 +87,8 @@ const ChatItem = ({
       if (contentRef.current) {
         const currentHeight = contentRef.current.clientHeight;
         if (currentHeight !== lastHeight) {
-          onContentHeightChange();
           setLastHeight(currentHeight);
+          onContentHeightChange();
         }
       }
     };
