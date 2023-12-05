@@ -203,7 +203,7 @@ chatQueue.process(2, async (job, done) => {
 
         // Print the elapsed time
         console.log(`Elapsed time: ${elapsedTime} milliseconds`);
-        if (elapsedTime > 10000) {
+        if (elapsedTime > 10000 && runStatus.status !== "cancelled") {
           await openai.beta.threads.runs.cancel(thread.id, run.id);
         }
       }
