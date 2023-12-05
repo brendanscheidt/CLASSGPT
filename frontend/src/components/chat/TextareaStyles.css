@@ -8,7 +8,7 @@
 }
 
 .textarea-scroll::-webkit-scrollbar {
-  width: 0.4em;
+  width: 0.2em;
 }
 
 .textarea-scroll::-webkit-scrollbar-track {

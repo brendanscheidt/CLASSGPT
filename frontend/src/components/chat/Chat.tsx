@@ -83,6 +83,16 @@ const Chat = (props: PropsType) => {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      // Prevent the default behavior of Enter key to insert a new line
+      e.preventDefault();
+      // Call the submit function here
+      handleSubmit();
+    }
+    // If Shift+Enter is pressed, allow the default behavior (insert new line)
+  };
+
   const handleSubmit = async () => {
     const content = inputRef.current?.value as string;
     if (content.trim()) {
@@ -498,6 +508,7 @@ const Chat = (props: PropsType) => {
           >
             <textarea
               className="textarea-scroll"
+              onKeyDown={handleKeyDown}
               disabled={isSending}
               placeholder={
                 isSending
