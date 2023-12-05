@@ -18,6 +18,7 @@ import { Link } from "react-router-dom";
 import { TbHomeEdit } from "react-icons/tb";
 import { VscClearAll } from "react-icons/vsc";
 import "./TextareaStyles.css";
+import ConfirmationModal from "../../modals/confirmationModal";
 
 type Message = {
   role: "user" | "assistant";
@@ -45,6 +46,7 @@ const Chat = (props: PropsType) => {
     useState(true);
   const [tempProcessingMessage, setTempProcessingMessage] =
     useState<Message | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const DEFAULT_ROWS = 1; // Set your default rows value
 
@@ -95,6 +97,9 @@ const Chat = (props: PropsType) => {
 
   const handleSubmit = async () => {
     const content = inputRef.current?.value as string;
+    if (content.trim() === "") {
+      return;
+    }
     if (content.trim()) {
       if (inputRef && inputRef.current) {
         inputRef.current.value = "";
@@ -152,7 +157,7 @@ const Chat = (props: PropsType) => {
     }
   };
 
-  const handleDeleteChats = async () => {
+  /* const handleDeleteChats = async () => {
     try {
       toast.loading("Deleting Chats", { id: "deletechats" });
       await deleteUserChats(props.userClass, props.userPage);
@@ -163,6 +168,24 @@ const Chat = (props: PropsType) => {
       console.log(error);
       toast.error("Deleting chats failed", { id: "deletechats" });
     }
+  }; */
+
+  const confirmDeleteChats = async () => {
+    try {
+      toast.loading("Deleting Chats", { id: "deletechats" });
+      await deleteUserChats(props.userClass, props.userPage);
+      setChatMessages([]);
+      await auth?.updateClasses();
+      toast.success("Deleted Chats Successfully", { id: "deletechats" });
+      setIsDeleteModalOpen(false); // Close the modal after deletion
+    } catch (error) {
+      console.log(error);
+      toast.error("Deleting chats failed", { id: "deletechats" });
+    }
+  };
+
+  const handleDeleteChats = () => {
+    setIsDeleteModalOpen(true); // Open the confirmation modal
   };
 
   useLayoutEffect(() => {
@@ -306,28 +329,37 @@ const Chat = (props: PropsType) => {
               padding: "10px",
             }}
           >
-            <Button
-              onClick={handleDeleteChats}
-              className="button-svg-icon"
-              id="deleteChatsButton"
-              sx={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "white",
-                fontWeight: "700",
-                borderRadius: "10px",
-                bgcolor: red[300],
-                ":hover": {
-                  bgcolor: red.A400,
-                },
-                minWidth: 0,
-                padding: "5px",
-                whiteSpace: "nowrap",
-              }}
-            >
-              <VscClearAll size={25} />
-            </Button>
+            <div>
+              {/* Confirmation Modal */}
+              {isDeleteModalOpen && (
+                <ConfirmationModal
+                  onConfirm={confirmDeleteChats}
+                  onCancel={() => setIsDeleteModalOpen(false)}
+                />
+              )}
+              <Button
+                onClick={handleDeleteChats}
+                className="button-svg-icon"
+                id="deleteChatsButton"
+                sx={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "white",
+                  fontWeight: "700",
+                  borderRadius: "10px",
+                  bgcolor: red[300],
+                  ":hover": {
+                    bgcolor: red.A400,
+                  },
+                  minWidth: 0,
+                  padding: "5px",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                <VscClearAll size={25} />
+              </Button>
+            </div>
 
             <Link
               style={{ textDecoration: "none" }}
