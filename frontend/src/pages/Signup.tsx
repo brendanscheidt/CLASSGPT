@@ -88,7 +88,7 @@ const Signup = () => {
                 px: 2,
                 py: 1,
                 mt: 2,
-                width: "400px",
+                width: { md: "400px", xs: "100%" },
                 borderRadius: 2,
                 bgcolor: "#00fffc",
                 ":hover": {

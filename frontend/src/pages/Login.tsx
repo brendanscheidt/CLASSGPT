@@ -59,7 +59,7 @@ const Login = () => {
         justifyContent={"center"}
         alignItems={"center"}
         padding={2}
-        ml={"auto"}
+        ml={0}
         mt={16}
       >
         <form
@@ -95,7 +95,7 @@ const Login = () => {
                 px: 2,
                 py: 1,
                 mt: 2,
-                width: "100%",
+                width: { md: "400px", xs: "100%" },
                 borderRadius: 2,
                 bgcolor: "#00fffc",
                 ":hover": {
