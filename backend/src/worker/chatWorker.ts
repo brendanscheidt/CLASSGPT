@@ -188,7 +188,7 @@ chatQueue.process(2, async (job, done) => {
 
       //polling mechanism to see if runStatus is completed
       //** make more robust (check more than completed)**
-      while (runStatus.status !== "completed") {
+      while (runStatus.status !== "completed" && runStatus.status !== "cancelled" && runStatus.status !== "failed") {
         console.log("polling run...");
         await new Promise((resolve) => setTimeout(resolve, 500));
         runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
