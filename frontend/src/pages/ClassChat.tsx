@@ -177,7 +177,7 @@ const ClassChat = () => {
             minWidth: { md: "250px" },
             maxWidth: { md: "250px" },
             height: { md: "90vh", xs: "20vh" },
-            maxHeight: { md: "90vh", xs: "20vh" },
+            /* maxHeight: { md: "90vh", xs: "20vh" }, */
             bgcolor: "rgb(17,29,39)",
             borderRadius: 5,
             flexDirection: "column",

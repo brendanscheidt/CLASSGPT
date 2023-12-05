@@ -510,7 +510,7 @@ const Chat = (props: PropsType) => {
               style={{
                 width: "100%",
                 backgroundColor: "transparent",
-                padding: "15px 30px",
+                padding: "30px",
                 border: "none",
                 outline: "none",
                 color: "white",
