@@ -444,7 +444,7 @@ const Chat = (props: PropsType) => {
                   <Box>
                     {chat.content.includes(
                       "(Last response timed out! send 'continue' to continue generating response!)"
-                    ) ? (
+                    ) && index === chatMessages.length - 1 ? (
                       <ChatItem
                         content={chat.content}
                         role={chat.role}
