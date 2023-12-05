@@ -134,11 +134,16 @@ const Chat = (props: PropsType) => {
             clearInterval(pollInterval); // Stop polling
             await deleteJob(jobId);
           }
-          if (status.state === "failed" || status.state === "cancelled") {
+          if (status.state === "failed") {
             setIsSending(false);
             clearInterval(pollInterval);
             await deleteJob(jobId);
             throw new Error("Job failed.");
+          }
+          if (status.state === "cancelled") {
+            setIsSending(false);
+            clearInterval(pollInterval);
+            toast.error("Response timed out.");
           }
         } catch (error) {
           console.error(error);
