@@ -476,8 +476,8 @@ const Chat = (props: PropsType) => {
                 />
               )}
             </Box>
+            <div ref={messagesEndRef} />
           </Box>
-          <div ref={messagesEndRef} />
           {/* <div
             style={{
               width: "100%",
