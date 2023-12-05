@@ -1,3 +1,5 @@
+import { Button } from "@mui/material";
+
 type ConfirmModalProps = {
   onConfirm: () => void;
   onCancel: () => void;
@@ -11,8 +13,34 @@ const ConfirmationModal: React.FC<ConfirmModalProps> = ({
     <div style={styles.modalOverlay}>
       <div style={styles.modal}>
         <p>Are you sure you want to delete the chats?</p>
-        <button onClick={onConfirm}>Yes, Delete</button>
-        <button onClick={onCancel}>Cancel</button>
+        <Button
+          sx={{
+            color: "#333",
+            bgcolor: "#00fffc",
+            ":hover": {
+              bgcolor: "#029695",
+            },
+            margin: "10px",
+          }}
+          type="button"
+          onClick={onConfirm}
+        >
+          Yes, Delete
+        </Button>
+        <Button
+          sx={{
+            color: "white",
+            bgcolor: "#51538f",
+            ":hover": {
+              bgcolor: "#6466b3",
+            },
+            margin: "10px",
+          }}
+          type="button"
+          onClick={onCancel}
+        >
+          Cancel
+        </Button>
       </div>
     </div>
   );
