@@ -44,7 +44,7 @@ const CustomizedInput = ({
       rows={multiline ? rows : 1}
       placeholder={placeholder}
       sx={{
-        width: 400,
+        width: "100%",
         "& .MuiInputBase-input": {
           color: "white", // Input text color
           "&::placeholder": {
