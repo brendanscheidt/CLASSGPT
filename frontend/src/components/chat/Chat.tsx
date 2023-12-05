@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Box, Typography, IconButton, Button } from "@mui/material";
+import { Box, Typography, IconButton, Button, TextField } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
 import ChatItem from "./ChatItem";
 import { IoMdSend } from "react-icons/io";
@@ -85,7 +85,7 @@ const Chat = (props: PropsType) => {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       // Prevent the default behavior of Enter key to insert a new line
       e.preventDefault();
@@ -288,6 +288,7 @@ const Chat = (props: PropsType) => {
             flex: { md: 0.98, xs: 1, sm: 1 },
             flexDirection: "column",
             px: 3,
+            width: "90%",
           }}
         >
           <Box
@@ -301,7 +302,7 @@ const Chat = (props: PropsType) => {
           >
             <Typography
               sx={{
-                fontSize: { xs: "24px", md: "40px" },
+                fontSize: { sm: "20px", xs: "18px", md: "40px" },
                 color: "white",
                 fontWeight: "600",
                 textAlign: "center",
@@ -539,7 +540,7 @@ const Chat = (props: PropsType) => {
               marginBottom: "10px",
             }}
           >
-            <textarea
+            {/* <textarea
               className="textarea-scroll"
               onKeyDown={handleKeyDown}
               disabled={isSending}
@@ -562,6 +563,44 @@ const Chat = (props: PropsType) => {
                 lineHeight: 1,
                 cursor: isSending ? "wait" : "text",
                 resize: "none",
+              }}
+            /> */}
+            <TextField
+              multiline
+              rows={DEFAULT_ROWS}
+              onKeyDown={handleKeyDown}
+              disabled={isSending}
+              placeholder={
+                isSending
+                  ? "Waiting for response..."
+                  : `Message Your ${props.userClass} Tutor...`
+              }
+              inputRef={inputRef}
+              onChange={handleInputChange}
+              variant="outlined"
+              className="textarea-scroll"
+              InputProps={{
+                style: {
+                  backgroundColor: "transparent",
+                  color: "white",
+                  resize: "none",
+                },
+              }}
+              sx={{
+                width: "100%",
+                fontSize: "18px",
+                lineHeight: "normal", // Adjust this value as needed
+                ".MuiOutlinedInput-notchedOutline": {
+                  border: "none",
+                },
+                ".MuiInputBase-inputMultiline": {
+                  fontFamily: '"Roboto Slab", serif',
+                  padding: "30px",
+                  "&::placeholder": {
+                    color: "white",
+                    opacity: 0.5,
+                  },
+                },
               }}
             />
             <IconButton
