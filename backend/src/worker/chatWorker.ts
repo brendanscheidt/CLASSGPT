@@ -229,7 +229,19 @@ chatQueue.process(2, async (job, done) => {
       console.log(`last message grabbed...\n\t${lastMessageContent}`);
 
       // If assistant message content found, add it to the chats
-      if (lastMessageContent) {
+      if (runStatus.status === "cancelled" && lastMessageContent) {
+        console.log(`Run was cancelled!`);
+        console.log(`pushing last message to chats in page...`);
+        pageForChat.chats.push({
+          content:
+            lastMessageContent +
+            "\n(Last response timed out! send 'continue' to continue generating response!)",
+          role: "assistant",
+        });
+        console.log(`message pushed...\n\t${pageForChat.chats}`);
+      }
+
+      if (runStatus.status !== "cancelled" && lastMessageContent) {
         console.log(`pushing last message to chats in page...`);
         pageForChat.chats.push({
           content: lastMessageContent,

@@ -134,7 +134,7 @@ const Chat = (props: PropsType) => {
             clearInterval(pollInterval); // Stop polling
             await deleteJob(jobId);
           }
-          if (status.state === "failed") {
+          if (status.state === "failed" || status.state === "cancelled") {
             setIsSending(false);
             clearInterval(pollInterval);
             await deleteJob(jobId);
@@ -142,7 +142,7 @@ const Chat = (props: PropsType) => {
           }
         } catch (error) {
           console.error(error);
-          toast.error("Failed to check send chat.");
+          toast.error("Failed to send chat.");
         }
       };
 
