@@ -476,9 +476,8 @@ const Chat = (props: PropsType) => {
                 />
               )}
             </Box>
-
-            <div ref={messagesEndRef} />
           </Box>
+          <div ref={messagesEndRef} />
           {/* <div
             style={{
               width: "100%",
@@ -595,7 +594,7 @@ const Chat = (props: PropsType) => {
                 },
                 ".MuiInputBase-inputMultiline": {
                   fontFamily: '"Roboto Slab", serif',
-                  padding: "30px",
+                  //padding: "30px",
                   "&::placeholder": {
                     color: "white",
                     opacity: 0.5,
