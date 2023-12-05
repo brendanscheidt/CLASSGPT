@@ -246,7 +246,6 @@ const Chat = (props: PropsType) => {
           width: "100%",
           height: "100%",
           gap: 3,
-          overflowX: "hidden",
         }}
       >
         <Box
@@ -511,11 +510,12 @@ const Chat = (props: PropsType) => {
               style={{
                 width: "100%",
                 backgroundColor: "transparent",
-                padding: "30px",
+                padding: "15px 30px",
                 border: "none",
                 outline: "none",
                 color: "white",
-                fontSize: "20px",
+                fontSize: "18px",
+                lineHeight: "normal",
                 cursor: isSending ? "wait" : "text",
                 resize: "none",
               }}
