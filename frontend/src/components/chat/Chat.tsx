@@ -445,7 +445,31 @@ const Chat = (props: PropsType) => {
                     {chat.content.includes(
                       "(Last response timed out! send 'continue' to continue generating response!)"
                     ) ? (
-                      <Typography>Failed</Typography>
+                      <ChatItem
+                        content={chat.content}
+                        role={chat.role}
+                        isNewMessage={isNewMessage}
+                        isPartialResponse={true}
+                        key={index}
+                        onContentHeightChange={scrollToBottom}
+                        onAnimationStart={() => {
+                          if (
+                            tempNewAIMessage &&
+                            index === chatMessages.length - 1
+                          ) {
+                            setChatMessages((prev) => [
+                              ...prev,
+                              tempNewAIMessage,
+                            ]);
+                            setTempNewAIMessage(null);
+                          }
+                        }}
+                        onAnimationComplete={() => {
+                          if (index === chatMessages.length - 1) {
+                            setNewMessageHasntBeenReceived(false); // Reset flag once animation completes
+                          }
+                        }}
+                      />
                     ) : (
                       <ChatItem
                         content={chat.content}

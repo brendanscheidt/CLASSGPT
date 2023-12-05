@@ -1,4 +1,10 @@
-import { Box, Avatar, Typography, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Avatar,
+  Typography,
+  CircularProgress,
+  Button,
+} from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { coldarkDark } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -56,11 +62,13 @@ const ChatItem = ({
   onContentHeightChange,
   onAnimationStart,
   onAnimationComplete,
+  isPartialResponse,
 }: {
   content: string;
   role: "user" | "assistant";
   isNewMessage: boolean;
   isProcessing?: boolean;
+  isPartialResponse?: boolean;
   style?: React.CSSProperties;
   onAnimationComplete: () => void;
   onAnimationStart: () => void;
@@ -200,6 +208,17 @@ const ChatItem = ({
             );
           }
         })}
+        {/* Button rendered conditionally based on isPartialResponse and isNewMessage */}
+        {isPartialResponse && isNewMessage && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => console.log("Button Clicked")} // Replace with your actual click handler
+            sx={{ mt: 2 }} // Add some margin top for spacing
+          >
+            Complete Message
+          </Button>
+        )}
       </Box>
     </Box>
   ) : (
