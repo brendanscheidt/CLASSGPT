@@ -583,18 +583,20 @@ const Chat = (props: PropsType) => {
                   backgroundColor: "transparent",
                   color: "white",
                   resize: "none",
+                  padding: "10px",
                 },
               }}
               sx={{
                 width: "100%",
                 fontSize: "18px",
+                padding: "10px",
                 lineHeight: "normal", // Adjust this value as needed
                 ".MuiOutlinedInput-notchedOutline": {
                   border: "none",
                 },
                 ".MuiInputBase-inputMultiline": {
                   fontFamily: '"Roboto Slab", serif',
-                  //padding: "30px",
+                  padding: "10px",
                   "&::placeholder": {
                     color: "white",
                     opacity: 0.5,
