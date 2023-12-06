@@ -394,6 +394,33 @@ const Chat = (props: PropsType) => {
               padding: "10px",
             }}
           >
+            <Link
+              style={{ textDecoration: "none" }}
+              to={`/chat/${props.userClass}/default`}
+            >
+              <Button
+                sx={{
+                  display: "flex",
+
+                  borderRadius: "10px",
+                  color: "white",
+                  backgroundColor: "#355b87",
+                  ":hover": {
+                    bgcolor: "#1a2b40",
+                  },
+                }}
+              >
+                <TbHomeEdit size={20} />
+                <Typography
+                  sx={{
+                    display: { xs: "none", md: "block" },
+                    marginLeft: { xs: "none", md: "10px" },
+                  }}
+                >
+                  Manage {props.userClass} Class
+                </Typography>
+              </Button>
+            </Link>
             <div>
               {/* Confirmation Modal */}
               {isDeleteModalOpen && (
@@ -425,34 +452,6 @@ const Chat = (props: PropsType) => {
                 <VscClearAll size={25} />
               </Button>
             </div>
-
-            <Link
-              style={{ textDecoration: "none" }}
-              to={`/chat/${props.userClass}/default`}
-            >
-              <Button
-                sx={{
-                  display: "flex",
-
-                  borderRadius: "10px",
-                  color: "white",
-                  backgroundColor: "#355b87",
-                  ":hover": {
-                    bgcolor: "#1a2b40",
-                  },
-                }}
-              >
-                <TbHomeEdit size={20} />
-                <Typography
-                  sx={{
-                    display: { xs: "none", md: "block" },
-                    marginLeft: { xs: "none", md: "10px" },
-                  }}
-                >
-                  Manage {props.userClass} Class
-                </Typography>
-              </Button>
-            </Link>
           </Box>
 
           <Box
