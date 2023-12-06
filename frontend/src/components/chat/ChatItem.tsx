@@ -94,6 +94,12 @@ const ChatItem = ({
   }, [isNewMessage, role]);
 
   useEffect(() => {
+    if (isProcessing) {
+      setIsAnimationDone(false);
+    }
+  }, [isProcessing]);
+
+  useEffect(() => {
     const checkHeightAndScroll = () => {
       if (contentRef.current) {
         const currentHeight = contentRef.current.clientHeight;
@@ -230,7 +236,7 @@ const ChatItem = ({
             onClick={handleButtonClick}
             sx={{ mt: 2 }}
           >
-            Complete Message
+            Continue
           </Button>
         )}
       </Box>
