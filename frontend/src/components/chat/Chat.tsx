@@ -439,63 +439,40 @@ const Chat = (props: PropsType) => {
                   localStorage.getItem("animationPlayed") === "true";
                 const isNewMessage =
                   index === chatMessages.length - 1 && !animationPlayed;
+                const isLastMessage = index === chatMessages.length - 1;
+                const isIncompleteLastMessage =
+                  isLastMessage &&
+                  chat.content.includes(
+                    "(Last response timed out! send 'continue' to continue generating response!)"
+                  );
 
                 return (
                   <Box>
-                    {chat.content.includes(
-                      "(Last response timed out! send 'continue' to continue generating response!)"
-                    ) && index === chatMessages.length - 1 ? (
-                      <ChatItem
-                        content={chat.content}
-                        role={chat.role}
-                        isNewMessage={isNewMessage}
-                        isPartialResponse={true}
-                        key={index}
-                        onContentHeightChange={scrollToBottom}
-                        onAnimationStart={() => {
-                          if (
-                            tempNewAIMessage &&
-                            index === chatMessages.length - 1
-                          ) {
-                            setChatMessages((prev) => [
-                              ...prev,
-                              tempNewAIMessage,
-                            ]);
-                            setTempNewAIMessage(null);
-                          }
-                        }}
-                        onAnimationComplete={() => {
-                          if (index === chatMessages.length - 1) {
-                            setNewMessageHasntBeenReceived(false); // Reset flag once animation completes
-                          }
-                        }}
-                      />
-                    ) : (
-                      <ChatItem
-                        content={chat.content}
-                        role={chat.role}
-                        isNewMessage={isNewMessage}
-                        key={index}
-                        onContentHeightChange={scrollToBottom}
-                        onAnimationStart={() => {
-                          if (
-                            tempNewAIMessage &&
-                            index === chatMessages.length - 1
-                          ) {
-                            setChatMessages((prev) => [
-                              ...prev,
-                              tempNewAIMessage,
-                            ]);
-                            setTempNewAIMessage(null);
-                          }
-                        }}
-                        onAnimationComplete={() => {
-                          if (index === chatMessages.length - 1) {
-                            setNewMessageHasntBeenReceived(false); // Reset flag once animation completes
-                          }
-                        }}
-                      />
-                    )}
+                    <ChatItem
+                      content={chat.content}
+                      role={chat.role}
+                      isNewMessage={isNewMessage}
+                      isPartialResponse={isIncompleteLastMessage}
+                      key={index}
+                      onContentHeightChange={scrollToBottom}
+                      onAnimationStart={() => {
+                        if (
+                          tempNewAIMessage &&
+                          index === chatMessages.length - 1
+                        ) {
+                          setChatMessages((prev) => [
+                            ...prev,
+                            tempNewAIMessage,
+                          ]);
+                          setTempNewAIMessage(null);
+                        }
+                      }}
+                      onAnimationComplete={() => {
+                        if (index === chatMessages.length - 1) {
+                          setNewMessageHasntBeenReceived(false); // Reset flag once animation completes
+                        }
+                      }}
+                    />
                   </Box>
                 );
               })}
