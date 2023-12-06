@@ -229,12 +229,13 @@ const ChatItem = ({
         })}
         {/* Button rendered conditionally based on isPartialResponse and isNewMessage */}
         {/* Button rendered conditionally based on isPartialResponse and isAnimationDone */}
-        {isPartialResponse && isAnimationDone && !isProcessing && (
+        {isPartialResponse && isAnimationDone && (
           <Button
             variant="contained"
             color="primary"
             onClick={handleButtonClick}
             sx={{ mt: 2 }}
+            disabled={isProcessing}
           >
             Continue
           </Button>
