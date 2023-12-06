@@ -148,9 +148,15 @@ chatQueue.process(2, async (job, done) => {
       );
 
       // Add user's message to chat
-      pageForChat.chats.push({ content: message, role: "user" });
-
-      console.log(`User chat pushed: \n\t${pageForChat.chats}`);
+      if (
+        message !==
+        "Your generation stopped early, continue your response from the last message you sent that ended early."
+      ) {
+        pageForChat.chats.push({ content: message, role: "user" });
+        console.log(`User chat pushed: \n\t${pageForChat.chats}`);
+      } else {
+        console.log("User requested continue response...");
+      }
 
       const assistant = classForChat.model;
       const thread = pageForChat.thread;
