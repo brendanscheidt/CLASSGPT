@@ -498,16 +498,22 @@ const Chat = (props: PropsType) => {
                 const isNewMessage =
                   index === chatMessages.length - 1 && !animationPlayed;
                 const isLastMessage = index === chatMessages.length - 1;
+                const timeoutMessage =
+                  "(Last response timed out! click 'continue' to continue generating response!)";
                 const isIncompleteLastMessage =
-                  isLastMessage &&
-                  chat.content.includes(
-                    "(Last response timed out! click 'continue' to continue generating response!)"
-                  );
+                  isLastMessage && chat.content.includes(timeoutMessage);
+
+                let modifiedContent = chat.content;
+                if (isIncompleteLastMessage) {
+                  modifiedContent = chat.content
+                    .replace(timeoutMessage, "")
+                    .trim();
+                }
 
                 return (
                   <Box>
                     <ChatItem
-                      content={chat.content}
+                      content={modifiedContent}
                       role={chat.role}
                       isNewMessage={isNewMessage}
                       isPartialResponse={isIncompleteLastMessage}
