@@ -229,7 +229,7 @@ const ChatItem = ({
         })}
         {/* Button rendered conditionally based on isPartialResponse and isNewMessage */}
         {/* Button rendered conditionally based on isPartialResponse and isAnimationDone */}
-        {isPartialResponse && isAnimationDone && (
+        {isPartialResponse && isAnimationDone && !isProcessing && (
           <Button
             variant="contained"
             color="primary"
