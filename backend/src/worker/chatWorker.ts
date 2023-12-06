@@ -239,6 +239,8 @@ chatQueue.process(2, async (job, done) => {
         pageForChat.chats.push({
           content:
             lastMessageContent +
+            "\n" +
+            "\n" +
             "..." +
             "\n" +
             "\n" +
