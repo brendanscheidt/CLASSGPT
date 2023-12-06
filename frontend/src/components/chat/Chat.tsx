@@ -95,6 +95,64 @@ const Chat = (props: PropsType) => {
     // If Shift+Enter is pressed, allow the default behavior (insert new line)
   };
 
+  const handleReSubmit = async (retryMessage: string) => {
+    if (retryMessage.trim() === "") {
+      return;
+    }
+
+    localStorage.removeItem("animationPlayed");
+    const newMessage: Message = { role: "user", content: retryMessage };
+    setIsSending(true);
+
+    try {
+      // Send the chat request and get the job ID
+      const { jobId } = await sendChatRequest(
+        retryMessage,
+        props.userClass,
+        props.userPage
+      );
+
+      // Function to poll for job status
+      const pollJobStatus = async () => {
+        try {
+          const status = await checkJobStatus(jobId);
+          console.log(status);
+          if (status.state === "completed") {
+            const newAIMessage: Message =
+              status.result.chats[status.result.chats.length - 1];
+            setTempNewAIMessage(newAIMessage);
+            setIsSending(false);
+            clearInterval(pollInterval); // Stop polling
+            await deleteJob(jobId);
+          }
+          if (status.state === "failed") {
+            setIsSending(false);
+            clearInterval(pollInterval);
+            await deleteJob(jobId);
+            throw new Error("Job failed.");
+          }
+          if (status.state === "cancelled") {
+            setIsSending(false);
+            clearInterval(pollInterval);
+            toast.error("Response timed out.");
+          }
+        } catch (error) {
+          console.error(error);
+          toast.error("Failed to send chat.");
+        }
+      };
+
+      // Start polling
+      const pollInterval = setInterval(pollJobStatus, 2000); // Poll every 2 seconds
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to send message.");
+      setIsSending(false);
+    } finally {
+      prevChatMessagesRef.current = chatMessages.concat(newMessage);
+    }
+  };
+
   const handleSubmit = async () => {
     const content = inputRef.current?.value as string;
     if (content.trim() === "") {
@@ -453,6 +511,7 @@ const Chat = (props: PropsType) => {
                       role={chat.role}
                       isNewMessage={isNewMessage}
                       isPartialResponse={isIncompleteLastMessage}
+                      handleCompleteMessage={handleReSubmit}
                       key={index}
                       onContentHeightChange={scrollToBottom}
                       onAnimationStart={() => {

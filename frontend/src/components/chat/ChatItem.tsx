@@ -63,6 +63,7 @@ const ChatItem = ({
   onAnimationStart,
   onAnimationComplete,
   isPartialResponse,
+  handleCompleteMessage,
 }: {
   content: string;
   role: "user" | "assistant";
@@ -73,6 +74,7 @@ const ChatItem = ({
   onAnimationComplete: () => void;
   onAnimationStart: () => void;
   onContentHeightChange: () => void;
+  handleCompleteMessage?: (retryMessage: string) => void;
 }) => {
   const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -127,6 +129,14 @@ const ChatItem = ({
           rehypePlugins={[rehypeKatex]}
           className="markdown-content"
         />
+      );
+    }
+  };
+
+  const handleButtonClick = () => {
+    if (handleCompleteMessage) {
+      handleCompleteMessage(
+        "Your generation stopped early, continue your response from the last message you sent that ended early."
       );
     }
   };
@@ -217,7 +227,7 @@ const ChatItem = ({
           <Button
             variant="contained"
             color="primary"
-            onClick={() => console.log("Button Clicked")}
+            onClick={handleButtonClick}
             sx={{ mt: 2 }}
           >
             Complete Message
