@@ -122,7 +122,7 @@ export const generateChatCompletion = async (
       pageName: req.body.pageName,
       userId: res.locals.jwtData.id,
     },
-    { timeout: 90000 }
+    { timeout: 60000 }
   );
 
   res.json({ jobId: job.id });
