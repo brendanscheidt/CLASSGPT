@@ -77,7 +77,7 @@ const ChatItem = ({
   const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
   const [lastHeight, setLastHeight] = useState(0);
-  const [isAnimationDone, setIsAnimationDone] = useState(false);
+  const [isAnimationDone, setIsAnimationDone] = useState(true);
 
   const messageBlocks = useMemo(
     () => extractCodeFromString(content),
@@ -133,6 +133,7 @@ const ChatItem = ({
 
   const handleBlockAnimationStart = () => {
     if (isNewMessage && role === "assistant") {
+      setIsAnimationDone(false);
       onAnimationStart(); // Notify when typing animation starts
     }
   };
