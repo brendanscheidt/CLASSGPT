@@ -500,11 +500,12 @@ const Chat = (props: PropsType) => {
                 const isLastMessage = index === chatMessages.length - 1;
                 const timeoutMessage =
                   "(Last response timed out! click 'continue' to continue generating response!)";
+                const isPartialResponse = chat.content.includes(timeoutMessage);
                 const isIncompleteLastMessage =
                   isLastMessage && chat.content.includes(timeoutMessage);
 
                 let modifiedContent = chat.content;
-                if (isIncompleteLastMessage) {
+                if (isPartialResponse) {
                   modifiedContent = chat.content
                     .replace(timeoutMessage, "")
                     .trim();

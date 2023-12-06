@@ -239,6 +239,7 @@ chatQueue.process(2, async (job, done) => {
         pageForChat.chats.push({
           content:
             lastMessageContent +
+            "..." +
             "\n" +
             "\n" +
             "(Last response timed out! click 'continue' to continue generating response!)",
