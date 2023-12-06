@@ -103,3 +103,13 @@ body {
 .MuiOutlinedInput-notchedOutline {
   border-color: white !important;
 }
+
+.markdown-content p,
+.markdown-content .katex {
+  width: 80%;
+  word-break: break-word;
+}
+
+.code {
+  width: 70%;
+}

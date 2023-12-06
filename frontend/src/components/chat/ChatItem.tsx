@@ -122,19 +122,40 @@ const ChatItem = ({
       blockArr.splice(0, 1);
       const croppedBlock = blockArr.join("\n");
       return (
-        <SyntaxHighlighter key={index} style={coldarkDark} language={language}>
-          {croppedBlock}
-        </SyntaxHighlighter>
+        <Box
+          sx={{
+            wordBreak: "break-all", // Or 'break-word' depending on preference
+            overflowWrap: "break-word",
+            width: "100%",
+          }}
+        >
+          <SyntaxHighlighter
+            className="code"
+            key={index}
+            style={coldarkDark}
+            language={language}
+          >
+            {croppedBlock}
+          </SyntaxHighlighter>
+        </Box>
       );
     } else {
       return (
-        <ReactMarkdown
-          key={index}
-          children={block}
-          remarkPlugins={[remarkMath]}
-          rehypePlugins={[rehypeKatex]}
-          className="markdown-content"
-        />
+        <Box
+          sx={{
+            wordBreak: "break-all", // Or 'break-word' depending on preference
+            overflowWrap: "break-word",
+            width: "100%",
+          }}
+        >
+          <ReactMarkdown
+            key={index}
+            children={block}
+            remarkPlugins={[remarkMath]}
+            rehypePlugins={[rehypeKatex]}
+            className="markdown-content"
+          />
+        </Box>
       );
     }
   };
@@ -281,6 +302,7 @@ const ChatItem = ({
               const croppedBlock = blockArr.join("\n");
               return (
                 <SyntaxHighlighter
+                  className="code"
                   key={index}
                   style={coldarkDark}
                   language={language}
