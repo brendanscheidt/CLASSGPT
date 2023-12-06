@@ -520,6 +520,7 @@ const Chat = (props: PropsType) => {
                       isPartialResponse={isIncompleteLastMessage}
                       handleCompleteMessage={handleReSubmit}
                       key={index}
+                      isProcessing={!!tempProcessingMessage}
                       onContentHeightChange={scrollToBottom}
                       onAnimationStart={() => {
                         if (
