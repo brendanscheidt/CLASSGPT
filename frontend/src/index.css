@@ -111,6 +111,34 @@ body {
   word-break: break-word;
 }
 
+/* ExtraSmall Screens */
 .code {
-  width: 250px;
+  width: 50vw;
+}
+
+/* Small Screens */
+@media (min-width: 400px) {
+  /* Adjust the min-width as needed */
+  .code {
+    width: 60vw; /* Adjust the width as needed for medium screens */
+    /* Other styles for medium screens */
+  }
+}
+
+/* Medium screens */
+@media (min-width: 600px) {
+  /* Adjust the min-width as needed */
+  .code {
+    width: 70vw; /* Adjust the width as needed for medium screens */
+    /* Other styles for medium screens */
+  }
+}
+
+/* Large screens */
+@media (min-width: 900px) {
+  /* Adjust the min-width as needed */
+  .code {
+    width: 60vw; /* Adjust the width as needed for large screens */
+    /* Other styles for large screens */
+  }
 }
