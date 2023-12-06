@@ -100,7 +100,6 @@ const Chat = (props: PropsType) => {
       return;
     }
 
-    localStorage.removeItem("animationPlayed");
     const newMessage: Message = { role: "user", content: retryMessage };
     setIsSending(true);
 
@@ -118,6 +117,7 @@ const Chat = (props: PropsType) => {
           const status = await checkJobStatus(jobId);
           console.log(status);
           if (status.state === "completed") {
+            localStorage.removeItem("animationPlayed");
             const newAIMessage: Message =
               status.result.chats[status.result.chats.length - 1];
             setTempNewAIMessage(newAIMessage);
@@ -501,7 +501,7 @@ const Chat = (props: PropsType) => {
                 const isIncompleteLastMessage =
                   isLastMessage &&
                   chat.content.includes(
-                    "(Last response timed out! send 'continue' to continue generating response!)"
+                    "(Last response timed out! click 'continue' to continue generating response!)"
                   );
 
                 return (
