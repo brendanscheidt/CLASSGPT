@@ -30,19 +30,27 @@ const Login = () => {
       toast.success("Signed In Successfully!", { id: "login" });
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {
-        const responseData = err.response.data as ErrorResponse;
-        if ("errors" in responseData && responseData.errors.length > 0) {
-          const errorMessage = responseData.errors[0].msg;
-          console.log(errorMessage);
-          toast.error(errorMessage, { id: "signup" });
+        if (typeof err.response.data === "string") {
+          console.log(err.response.data);
+          toast.error(err.response.data, { id: "login" });
         } else {
-          toast.error("An error occurred, but no error message was provided.", {
-            id: "signup",
-          });
+          const responseData = err.response.data as ErrorResponse;
+          if ("errors" in responseData && responseData.errors.length > 0) {
+            const errorMessage = responseData.errors[0].msg;
+            console.log(errorMessage);
+            toast.error(errorMessage, { id: "login" });
+          } else {
+            toast.error(
+              "An error occurred, but no error message was provided.",
+              {
+                id: "login",
+              }
+            );
+          }
         }
       } else {
         console.log("An unexpected error occurred");
-        toast.error("An unexpected error occurred", { id: "signup" });
+        toast.error("An unexpected error occurred", { id: "login" });
       }
     }
   };
