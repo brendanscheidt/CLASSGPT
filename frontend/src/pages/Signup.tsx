@@ -18,6 +18,11 @@ const Signup = () => {
     let email = formData.get("email") as string;
     email = email.toLowerCase();
     const password = formData.get("password") as string;
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters long!", {
+        id: "signup",
+      });
+    }
 
     try {
       toast.loading("Signing Up!", { id: "signup" });
