@@ -5,6 +5,11 @@ import { toast } from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import axios, { AxiosError } from "axios";
+
+interface ErrorResponse {
+  errors: { msg: string }[];
+}
 
 const Signup = () => {
   const auth = useAuth();
@@ -29,8 +34,21 @@ const Signup = () => {
       await auth?.signup(name, email, password);
       toast.success("Signed Up Successfully!", { id: "signup" });
     } catch (err) {
-      console.log(err);
-      toast.error("Signing Up Failed", { id: "signup" });
+      if (axios.isAxiosError(err) && err.response) {
+        const responseData = err.response.data as ErrorResponse;
+        if ("errors" in responseData && responseData.errors.length > 0) {
+          const errorMessage = responseData.errors[0].msg;
+          console.log(errorMessage);
+          toast.error(errorMessage, { id: "signup" });
+        } else {
+          toast.error("An error occurred, but no error message was provided.", {
+            id: "signup",
+          });
+        }
+      } else {
+        console.log("An unexpected error occurred");
+        toast.error("An unexpected error occurred", { id: "signup" });
+      }
     }
   };
 
