@@ -16,7 +16,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.18",
     "@mui/material": "^5.14.16",
-    "axios": "^1.6.0",
+    "axios": "^1.6.2",
     "bull": "^4.11.5",
     "katex": "^0.16.9",
     "react": "^18.2.0",
