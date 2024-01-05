@@ -26,7 +26,7 @@
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react": "^4.0.3",
-    "axios": "^1.6.0",
+    "axios": "^1.6.4",
     "bcrypt": "^5.1.0",
     "bull": "^4.11.5",
     "concurrently": "^8.2.0",
